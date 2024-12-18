@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar">
     <div class="sidebar-header">
-      <img src="@/assets/logo.png" alt="Logo" class="logo" />
+      <!-- <img src="@/assets/logo.png" alt="Logo" class="logo" /> -->
       <h1 class="brand-name">{{ brandName }}</h1>
     </div>
 

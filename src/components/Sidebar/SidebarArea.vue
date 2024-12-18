@@ -3,7 +3,6 @@ import { useSidebarStore } from '@/stores/sidebar'
 import { onClickOutside } from '@vueuse/core'
 import { ref } from 'vue'
 import SidebarItem from './SidebarItem.vue'
-import Logo from '@/assets/images/logo.png'
 
 const target = ref(null)
 

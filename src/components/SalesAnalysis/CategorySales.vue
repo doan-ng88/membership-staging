@@ -91,7 +91,6 @@ import { message } from 'ant-design-vue'
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
 import dayjs from 'dayjs'
-import * as echarts from 'echarts'
 
 interface Brand {
   value: string;
