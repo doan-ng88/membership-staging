@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const axiosInstance = axios.create({
-  baseURL: 'https://lxwvj138-8081.asse.devtunnels.ms/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://lxwvj138-8081.asse.devtunnels.ms/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'

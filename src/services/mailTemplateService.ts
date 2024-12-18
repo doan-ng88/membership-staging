@@ -1,5 +1,4 @@
-import axios from 'axios'
-import { useAuthStore } from '@/stores/auth'
+import axiosClient from '@/api/axiosClient';
 
 export interface MailTemplate {
   mailTemplateID: number
@@ -25,16 +24,13 @@ export interface TemplateCategory {
 }
 
 export class MailTemplateService {
-  private baseUrl: string
-
-  constructor() {
-    this.baseUrl = import.meta.env.VITE_API_BASE_URL
-  }
-
-  private get headers() {
-    const authStore = useAuthStore()
-    return {
-      Authorization: `Bearer ${authStore.token}`
+  async getTemplate(id: number) {
+    try {
+      const response = await axiosClient.get(`/membership/mail/templates/${id}`);
+      return response;
+    } catch (error: any) {
+      console.error('Error fetching template:', error);
+      throw error;
     }
   }
 
@@ -43,37 +39,33 @@ export class MailTemplateService {
     pageSize: number
     searchParams?: Array<{key: string, value: string}>
   }) {
-    const response = await axios.post(
-      `${this.baseUrl}/membership/mail/get-mail-template`,
-      params,
-      { headers: this.headers }
+    const response = await axiosClient.post(
+      `/membership/mail/get-mail-template`,
+      params
     )
     return response.data
   }
 
   async getTemplateTypes() {
-    const response = await axios.get(
-      `${this.baseUrl}/membership/mail/template-types`,
-      { headers: this.headers }
+    const response = await axiosClient.get(
+      `/membership/mail/template-types`
     )
     return response.data
   }
 
   async getTemplateCategories() {
-    const response = await axios.get(
-      `${this.baseUrl}/membership/mail/template-categories`,
-      { headers: this.headers }
+    const response = await axiosClient.get(
+      `/membership/mail/template-categories`
     )
     return response.data
   }
 
   async createTemplate(formData: FormData) {
-    const response = await axios.post(
-      `${this.baseUrl}/membership/mail/upload-template`,
+    const response = await axiosClient.post(
+      `/membership/mail/upload-template`,
       formData,
       { 
         headers: {
-          ...this.headers,
           'Content-Type': 'multipart/form-data'
         }
       }
@@ -82,12 +74,11 @@ export class MailTemplateService {
   }
 
   async updateTemplate(id: number, formData: FormData) {
-    const response = await axios.post(
-      `${this.baseUrl}/membership/mail/update-template/${id}`,
+    const response = await axiosClient.post(
+      `/membership/mail/update-template/${id}`,
       formData,
       { 
         headers: {
-          ...this.headers,
           'Content-Type': 'multipart/form-data'
         }
       }
@@ -96,18 +87,15 @@ export class MailTemplateService {
   }
 
   async deleteTemplate(id: number) {
-    const response = await axios.delete(
-      `${this.baseUrl}/membership/mail/templates/${id}`,
-      { headers: this.headers }
+    const response = await axiosClient.delete(
+      `/membership/mail/templates/${id}`
     )
     return response.data
   }
 
   async duplicateTemplate(id: number) {
-    const response = await axios.post(
-      `${this.baseUrl}/membership/mail/clone-template/${id}`,
-      {},
-      { headers: this.headers }
+    const response = await axiosClient.post(
+      `/membership/mail/clone-template/${id}`
     )
     return response.data
   }
