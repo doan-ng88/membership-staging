@@ -1,7 +1,7 @@
 <template>
   <DefaultLayout>
     <div class="p-6">
-      <h1 class="text-2xl font-bold text-center mb-8">Quản Lý Thành Viên</h1>
+      <h1 class="text-2xl font-bold text-center mb-8">Membership Management</h1>
       <ProfileTabs v-model="activeTab" />
       <div class="mt-4">
         <SearchFilters :tab="activeTab" @filter="handleFilter" @reset="handleReset" />
