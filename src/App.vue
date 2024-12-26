@@ -21,6 +21,7 @@ import { RouterView } from 'vue-router'
 import { defineComponent, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import DropdownUser from '@/components/Header/DropdownUser.vue';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'App',
@@ -28,11 +29,19 @@ export default defineComponent({
     DropdownUser
   },
   setup() {
+    const router = useRouter();
     const authStore = useAuthStore();
 
     onMounted(async () => {
-      // Khởi tạo auth và fetch user info
-      await authStore.initializeAuth();
+      try {
+        // Kiểm tra và refresh token khi reload trang
+        if (localStorage.getItem('token')) {
+          await authStore.checkAuth();
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        router.push('/login');
+      }
     });
 
     const handleLogout = async () => {
