@@ -2,7 +2,8 @@
 import axios from 'axios';
 import type { LoginCredentials, RegisterCredentials, AuthResponse } from '@/types/auth';
 
-const API_URL = '/api/membership'; // URL API của bạn
+const API_URL = import.meta.env.VITE_API_BASE_URL + '/membership';
+// const API_URL = '/api/membership'; // URL API của bạn
 
 // Tạo instance axios với base URL
 const axiosInstance = axios.create({
