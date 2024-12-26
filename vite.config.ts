@@ -24,7 +24,8 @@ export default defineConfig({
         target: import.meta.env.VITE_API_BASE_URL,
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        // Nếu cần rewrite path
+        // rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
   },
