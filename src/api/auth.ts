@@ -15,7 +15,13 @@ const axiosInstance = axios.create({
     'Pragma': 'no-cache',
     'Expires': '0',
   },
-  withCredentials: true
+  withCredentials: true,
+  // Add proxy config for production
+  proxy: {
+    protocol: 'https',
+    host: 'lxwvj138-8081.asse.devtunnels.ms',
+    port: 443
+  }
 });
 
 export const authApi = {
