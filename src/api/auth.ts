@@ -2,8 +2,7 @@
 import axios from 'axios';
 import type { LoginCredentials, RegisterCredentials, AuthResponse } from '@/types/auth';
 
-const API_URL = import.meta.env.VITE_API_BASE_URL + '/membership';
-// const API_URL = '/api/membership'; // URL API của bạn
+const API_URL = '/api/membership';
 
 // Tạo instance axios với base URL
 const axiosInstance = axios.create({
@@ -15,13 +14,7 @@ const axiosInstance = axios.create({
     'Pragma': 'no-cache',
     'Expires': '0',
   },
-  withCredentials: true,
-  // Add proxy config for production
-  proxy: {
-    protocol: 'https',
-    host: 'lxwvj138-8081.asse.devtunnels.ms',
-    port: 443
-  }
+  withCredentials: true
 });
 
 export const authApi = {

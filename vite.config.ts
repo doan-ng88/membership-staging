@@ -21,14 +21,10 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://lxwvj138-8081.asse.devtunnels.ms',
+        target: import.meta.env.VITE_API_BASE_URL,
         changeOrigin: true,
         secure: false,
-        configure: (proxy, _options) => {
-          proxy.on('proxyReq', (proxyReq, req, _res) => {
-            proxyReq.setHeader('origin', 'https://lxwvj138-8081.asse.devtunnels.ms');
-          });
-        }
+        rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
   },

@@ -2,12 +2,15 @@
 import axios from 'axios'
 
 const axiosClient = axios.create({
-  // baseURL: import.meta.env.VITE_API_BASE_URL || '{{base_url}}',
   baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  }
+    'Accept': 'application/json',
+    'Cache-Control': 'no-cache',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  },
+  withCredentials: true
 })
 
 // Thêm interceptor để xử lý token
