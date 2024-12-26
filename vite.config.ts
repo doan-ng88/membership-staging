@@ -21,11 +21,18 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: import.meta.env.VITE_API_BASE_URL,
+        target: 'https://lxwvj138-8081.asse.devtunnels.ms',
         changeOrigin: true,
         secure: false,
-        // Nếu cần rewrite path
-        // rewrite: (path) => path.replace(/^\/api/, '')
+        rewrite: (path) => path.replace(/^\/api/, ''),
+        configure: (proxy, _options) => {
+          proxy.on('proxyReq', (proxyReq, req, _res) => {
+            proxyReq.removeHeader('Origin');
+            proxyReq.removeHeader('Referer');
+            proxyReq.removeHeader('Cache-Control');
+            proxyReq.removeHeader('Pragma');
+          });
+        }
       }
     }
   },

@@ -1,19 +1,24 @@
 // # Cấu hình axios instance
 
 import axios from 'axios'
+import { useAuthStore } from '@/stores/auth'
+
+const isDevelopment = process.env.NODE_ENV === 'development'
 
 const axiosInstance = axios.create({
-  baseURL: 'https://lxwvj138-8081.asse.devtunnels.ms',
-  timeout: 10000,
+  baseURL: isDevelopment ? '/api' : import.meta.env.VITE_API_BASE_URL,
+  timeout: 30000,
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
   }
 })
 
 // Request interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token')
+    const authStore = useAuthStore()
+    const token = authStore.token
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -25,9 +30,10 @@ axiosInstance.interceptors.request.use(
 // Response interceptor
 axiosInstance.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token')
+      const authStore = useAuthStore()
+      await authStore.logout()
       window.location.href = '/login'
     }
     return Promise.reject(error)
