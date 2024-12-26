@@ -1,6 +1,6 @@
 import './assets/css/satoshi.css'
 import './assets/css/style.css'
-import 'jsvectormap/dist/css/jsvectormap.min.css'
+// import 'jsvectormap/dist/css/jsvectormap.css'
 import 'flatpickr/dist/flatpickr.min.css'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { QuillEditor } from '@vueup/vue-quill'
