@@ -24,13 +24,11 @@ export default defineConfig({
         target: 'https://lxwvj138-8081.asse.devtunnels.ms',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        rewrite: (path) => path.replace(/^\/api/, '/api'),
         configure: (proxy, _options) => {
           proxy.on('proxyReq', (proxyReq, req, _res) => {
             proxyReq.removeHeader('Origin');
             proxyReq.removeHeader('Referer');
-            proxyReq.removeHeader('Cache-Control');
-            proxyReq.removeHeader('Pragma');
           });
         }
       }

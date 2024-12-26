@@ -15,7 +15,7 @@ export class ApiError extends Error {
 export const levelService = {
   async getLevelSettings(): Promise<ApiResponse<LevelSetting[]>> {
     try {
-      const response = await axiosInstance.get('/api/membership/get/get-level-setting')
+      const response = await axiosInstance.get('/membership/get/get-level-setting')
       return response.data
     } catch (error) {
       console.error('Error getting levels:', error)
@@ -25,7 +25,7 @@ export const levelService = {
 
   async checkNameExists(websiteId: number, name: string, excludeLevelId?: number): Promise<boolean> {
     try {
-      const response = await axiosInstance.get('/api/membership/get/get-level-setting')
+      const response = await axiosInstance.get('/membership/get/get-level-setting')
       const levels = response.data.data
       return levels.some((level: LevelSetting) => 
         level.websiteId === websiteId && 
@@ -136,19 +136,12 @@ export const levelService = {
   },
 
   async getRankStatistics(websiteId: string, params: { startDate: string, endDate: string }) {
-    const authStore = useAuthStore()
     try {
       const response = await axiosInstance.post(
-        `api/membership/get/get-rank-statistics/${websiteId}`, 
+        `/membership/get/get-rank-statistics/${websiteId}`, 
         {
           startDate: params.startDate,
           endDate: params.endDate
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${authStore.token}`,
-            'Content-Type': 'application/json'
-          }
         }
       )
       return response.data

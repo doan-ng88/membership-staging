@@ -12,7 +12,7 @@ export class ApiError extends Error {
 export class LevelUpDownRulesApi {
   async getLevelSettings(): Promise<ApiResponse<LevelSetting[]>> {
     try {
-      const response = await axiosInstance.get('/api/membership/get/get-level-setting');
+      const response = await axiosInstance.get('/membership/get/get-level-setting');
       // console.log('API Response:', response);
       
       return {
