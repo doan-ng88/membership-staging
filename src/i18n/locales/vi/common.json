@@ -1,0 +1,39 @@
+{
+  "common": {
+    "actions": {
+      "add": "Thêm mới",
+      "edit": "Chỉnh sửa",
+      "delete": "Xóa",
+      "save": "Lưu",
+      "cancel": "Hủy",
+      "confirm": "Xác nhận",
+      "search": "Tìm kiếm",
+      "reset": "Đặt lại",
+      "back": "Quay lại",
+      "next": "Tiếp theo"
+    },
+    "status": {
+      "active": "Hoạt động",
+      "inactive": "Không hoạt động",
+      "pending": "Đang chờ",
+      "completed": "Hoàn thành"
+    },
+    "messages": {
+      "success": {
+        "create": "Tạo mới thành công",
+        "update": "Cập nhật thành công",
+        "delete": "Xóa thành công"
+      },
+      "error": {
+        "create": "Không thể tạo mới",
+        "update": "Không thể cập nhật",
+        "delete": "Không thể xóa",
+        "network": "Lỗi kết nối",
+        "unknown": "Đã có lỗi xảy ra"
+      },
+      "confirm": {
+        "delete": "Bạn có chắc chắn muốn xóa?"
+      }
+    }
+  }
+} 

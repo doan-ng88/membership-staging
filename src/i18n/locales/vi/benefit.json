@@ -1,0 +1,56 @@
+{
+  "benefit": {
+    "settings": "Cài đặt quyền lợi",
+    "selectBrand": "Chọn Website",
+    "memberLevelList": "Danh sách cấp bậc thành viên",
+    "addLevel": "Thêm cấp bậc",
+    "deleteConfirmTitle": "Xác nhận xóa",
+    "deleteConfirmMessage": "Bạn có chắc chắn muốn xóa cấp bậc này?",
+    "editLevel": "Chỉnh sửa cấp bậc",
+    "deleteLevel": "Xóa cấp bậc",
+    "loading": "Đang tải dữ liệu...",
+    "error": {
+      "title": "Đã xảy ra lỗi",
+      "retry": "Thử lại"
+    },
+    "noData": {
+      "title": "Không có dữ liệu",
+      "description": "Bắt đầu bằng cách thêm cấp bậc mới"
+    },
+    "notification": {
+      "deleteSuccess": "Xóa cấp bậc thành công",
+      "deleteError": "Có lỗi xảy ra khi xóa cấp bậc"
+    },
+    "messages": {
+      "createSuccess": "Tạo mới thành công",
+      "updateSuccess": "Cập nhật thành công",
+      "deleteSuccess": "Xóa thành công",
+      "deleteError": "Có lỗi xảy ra khi xóa"
+    },
+    "table": {
+      "rank": "Cấp Bậc",
+      "minAmount": "Số tiền tích lũy tối thiểu (VNĐ)",
+      "rewardRate": "Tỷ Lệ Tích Điểm (%)",
+      "redeemRate": "Tỷ Lệ Đổi Điểm (%)", 
+      "duration": "Thời Hạn Hiệu Lực (Tháng)",
+      "discount": "Giảm Giá (%)",
+      "unlimited": "Không giới hạn"
+    },
+    "noData": {
+      "title": "Chưa có dữ liệu",
+      "description": "Bắt đầu bằng cách thêm cấp bậc mới"
+    }
+  },
+  "common": {
+    "loading": "Đang tải...",
+    "error": {
+      "title": "Đã xảy ra lỗi"
+    },
+    "retry": "Thử lại",
+    "confirm": "Xác nhận",
+    "cancel": "Hủy",
+    "actions": "Thao tác",
+    "edit": "Sửa",
+    "delete": "Xóa"
+  }
+} 

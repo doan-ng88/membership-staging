@@ -1,11 +1,11 @@
 <template>
   <div class="mb-12">
-    <h3 class="text-2xl font-semibold mb-4">Phân Tích Đóng Góp Của Kênh</h3>
+    <h3 class="text-2xl font-semibold mb-4">Channel Contribution Analysis</h3>
     
     <!-- Time Range Selection -->
     <div class="mb-4 flex items-center">
       <label for="contributionTimeRange" class="text-gray-700 font-medium mr-4">
-        Chọn Khoảng Thời Gian:
+        Select Time Range:
       </label>
       <select 
         v-model="selectedTimeRange" 
@@ -43,9 +43,9 @@ const emit = defineEmits(['update:timeRange'])
 
 const selectedTimeRange = ref(6)
 const timeRanges = [
-  { value: 6, label: '6 Tháng Gần Nhất' },
-  { value: 12, label: '12 Tháng Gần Nhất' },
-  { value: 24, label: '24 Tháng Gần Nhất' }
+  { value: 6, label: 'Last 6 Months' },
+  { value: 12, label: 'Last 12 Months' },
+  { value: 24, label: 'Last 24 Months' }
 ]
 
 // Chart Data
@@ -59,7 +59,7 @@ const contributionChartOptions = {
   labels: ['Email', 'SMS', 'Social Media', 'Direct Mail', 'Other'],
   colors: ['#2196F3', '#4CAF50', '#FFC107', '#9C27B0', '#FF5722'],
   title: {
-    text: 'Đóng Góp Của Các Kênh Marketing',
+    text: 'Marketing Channel Contribution',
     align: 'center'
   },
   legend: {

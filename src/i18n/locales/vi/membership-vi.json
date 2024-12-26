@@ -1,0 +1,34 @@
+{
+  "membership": {
+    "campaign": {
+      "title": "Quản lý chiến dịch",
+      "form": {
+        "name": "Tên chiến dịch",
+        "description": "Mô tả",
+        "startDate": "Ngày bắt đầu",
+        "endDate": "Ngày kết thúc",
+        "status": "Trạng thái",
+        "priority": "Độ ưu tiên",
+        "type": "Loại chiến dịch"
+      },
+      "table": {
+        "columns": {
+          "name": "Tên chiến dịch",
+          "startDate": "Ngày bắt đầu",
+          "endDate": "Ngày kết thúc",
+          "status": "Trạng thái",
+          "actions": "Thao tác"
+        }
+      },
+      "validation": {
+        "name": {
+          "required": "Vui lòng nhập tên chiến dịch"
+        },
+        "dates": {
+          "required": "Vui lòng chọn ngày",
+          "startBeforeEnd": "Ngày bắt đầu phải trước ngày kết thúc"
+        }
+      }
+    }
+  }
+} 

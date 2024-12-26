@@ -3,7 +3,7 @@
     <div class="flex flex-wrap gap-4">
       <a-input-search
         v-model:value="searchText"
-        placeholder="Tìm kiếm template"
+        placeholder="Search template"
         style="width: 300px"
         @search="handleSearch"
       />
@@ -12,7 +12,7 @@
         v-model:value="filters.templateType"
         mode="multiple"
         style="width: 250px"
-        placeholder="Loại template"
+        placeholder="Template type"
         :options="templateTypes.map(type => ({
           label: type.templateTypeName,
           value: type.templateTypeID
@@ -20,7 +20,7 @@
         @change="handleSearch"
       >
         <template #maxTagPlaceholder="{ omittedValues }">
-          <span>+{{ omittedValues.length }} loại</span>
+          <span>+{{ omittedValues.length }} types</span>
         </template>
       </a-select>
 
@@ -28,7 +28,7 @@
         v-model:value="filters.templateCategory"
         mode="multiple"
         style="width: 250px"
-        placeholder="Danh mục"
+        placeholder="Category"
         :options="templateCategories.map(category => ({
           label: category.templateCategoryName,
           value: category.templateCategoryID
@@ -36,13 +36,13 @@
         @change="handleSearch"
       >
         <template #maxTagPlaceholder="{ omittedValues }">
-          <span>+{{ omittedValues.length }} danh mục</span>
+          <span>+{{ omittedValues.length }} categories</span>
         </template>
       </a-select>
 
       <a-button @click="handleReset" class="dark:text-gray-300">
         <template #icon><ReloadOutlined /></template>
-        Đặt lại
+        Reset
       </a-button>
     </div>
   </div>
@@ -164,7 +164,7 @@ const fetchTemplateTypes = async () => {
     }
   } catch (error) {
     console.error('Error fetching template types:', error)
-    message.error('Không thể tải danh sách loại template')
+    message.error('Unable to load template types')
     if ((error as AxiosError)?.response?.status === 401) {
       authStore.logout()
       router.push('/login')
@@ -180,7 +180,7 @@ const fetchTemplateCategories = async () => {
     }
   } catch (error) {
     console.error('Error fetching template categories:', error)
-    message.error('Không thể tải danh sách danh mục')
+    message.error('Unable to load categories')
     if ((error as AxiosError)?.response?.status === 401) {
       authStore.logout()
       router.push('/login')

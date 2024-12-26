@@ -40,7 +40,7 @@ class MailCampaignService {
 
   constructor() {
     this.api = axios.create({
-      baseURL: `${import.meta.env.VITE_API_BASE_URL}`,
+      baseURL: import.meta.env.VITE_API_BASE_URL,
       headers: {
         'Content-Type': 'application/json'
       }
@@ -91,7 +91,7 @@ class MailCampaignService {
       console.log('Service received response:', response.data); // Debug log
 
       return {
-        data: (response.data.data || []).map(this.transformCampaign.bind(this)),
+        data: (response.data.data || []).map(this.transformCampaign.bind(this)), // TODO: fix backend error: return null when no data => return []
         pagination: {
           pageIndex: Number(response.data.pageIndex),
           pageSize: Number(response.data.pageSize),
@@ -126,6 +126,10 @@ class MailCampaignService {
       createdBy: campaign.createdBy
     };
   }
+
+  createCampaign(data: any) {
+    return axios.post('membership/update/create-campaign', data);
+  }
 }
 
-export default new MailCampaignService(); 
+export const mailCampaignService = new MailCampaignService(); 

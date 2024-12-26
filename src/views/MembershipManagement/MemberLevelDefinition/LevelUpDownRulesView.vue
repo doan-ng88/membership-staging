@@ -3,18 +3,18 @@
     <div class="p-4">
       <div class="flex justify-between items-center mb-4">
         <div class="flex items-center gap-4">
-          <h1 class="text-2xl font-bold">Quản Lý Cấp Bậc</h1>
+              <h1 class="text-2xl font-bold">Level Management</h1>
 
           <!-- Brand Selection -->
           <div class="mb-6">
             <label for="brandSelect" class="block text-sm font-medium text-gray-700">
-              <h3 class="text-lg leading-6 font-medium text-gray-900">Chọn Website</h3>
+              <h3 class="text-lg leading-6 font-medium text-gray-900">Select Website</h3>
             </label>
             <select
               id="brandSelect"
               v-model="selectedWebsiteId"
               style="width: 200px"
-              placeholder="Chọn Website"
+              placeholder="Select Website"
               class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
             >
               <option v-for="web in websites" :key="web.websiteId" :value="web.websiteId">
@@ -33,7 +33,7 @@
             </a-select-option>
           </a-select> -->
         </div>
-        <Button type="primary" @click="handleAdd">Thêm Cấp Bậc</Button>
+        <Button type="primary" @click="handleAdd">Add Level</Button>
       </div>
 
       <Table
@@ -47,10 +47,10 @@
           <template v-if="column.key === 'action'">
             <div class="flex gap-2">
               <Button type="primary" @click="handleEdit(record)">
-                <EditOutlined /> Sửa
+                <EditOutlined /> Edit
               </Button>
               <Button type="primary" danger @click="handleDelete(record)">
-                <DeleteOutlined /> Xóa
+                <DeleteOutlined /> Delete
               </Button>
             </div>
           </template>
@@ -98,18 +98,18 @@ const filteredLevelSettings = computed(() =>
 // Columns definition
 const columns = [
   {
-    title: 'Tên Cấp Bậc',
+    title: 'Level Name',
     dataIndex: 'Name',
     key: 'Name',
   },
   {
-    title: 'Thứ Hạng',
+    title: 'Rank',
     dataIndex: 'rank',
     key: 'rank',
     sorter: (a: LevelSetting, b: LevelSetting) => a.rank - b.rank,
   },
   {
-    title: 'Số Tiền Ngưỡng',
+    title: 'Threshold Amount',
     dataIndex: 'thresholdAmount',
     key: 'thresholdAmount',
     customRender: ({ text }: { text: number }) => {
@@ -117,12 +117,12 @@ const columns = [
     },
   },
   {
-    title: 'Thời Hạn (Tháng)',
+    title: 'Duration (Months)',
     dataIndex: 'durationExpired',
     key: 'durationExpired',
   },
   {
-    title: 'Thao Tác',
+    title: 'Actions',
     key: 'action',
     fixed: 'right',
     width: 200,
@@ -137,7 +137,7 @@ const fetchData = async () => {
     console.log('Data loaded:', filteredLevelSettings.value);
   } catch (error) {
     console.error('Error fetching data:', error);
-    message.error('Có lỗi xảy ra khi tải dữ liệu');
+    message.error('An error occurred while loading data');
   } finally {
     loading.value = false;
   }
@@ -159,23 +159,23 @@ const handleEdit = (record: LevelSetting) => {
 const handleDelete = async (record: LevelSetting) => {
   try {
     await levelSettingStore.deleteLevel(record.levelId);
-    message.success('Xóa cấp bậc thành công');
+    message.success('Level deleted successfully');
     await fetchData();
   } catch (error) {
     console.error('Error deleting level:', error);
-    message.error('Có lỗi xảy ra khi xóa cấp bậc');
+    message.error('An error occurred while deleting the level');
   }
 };
 
 const handleSubmit = async (data: LevelSetting) => {
   try {
     await levelSettingStore.updateLevel(data);
-    message.success('Cập nhật thành công');
+    message.success('Updated successfully');
     showModal.value = false;
     // Refresh data
     await levelSettingStore.fetchLevelSettings();
   } catch (error) {
-    message.error('Có lỗi xảy ra khi cập nhật');
+    message.error('An error occurred while updating');
   }
 };
 

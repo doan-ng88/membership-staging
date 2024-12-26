@@ -56,6 +56,8 @@ import PromotionSalesView from '@/views/AnalysisReporting/SalesAnalysis/Promotio
 
 // 5 - Call Campaign
 import CallCampaignView from '@/features/call-campaign/views/CallCampaignView.vue';
+import NewCampaignView from '@/features/new-campaign/views/NewCampaignView.vue'
+import CallCampaignDetailView from '@/features/call-campaign/views/CallCampaignDetailView.vue'
 
 // 6 - System Management
 
@@ -309,6 +311,31 @@ const routes = [
   },
   // End Call Campaign
 
+  // Call Campaign Detail
+  {
+    path: '/call-campaign/:id',
+    name: 'CallCampaignDetail',
+    component: CallCampaignDetailView,
+    meta: {
+      requiresAuth: true,
+      title: 'Call Campaign Detail',
+      permissions: ['view_campaign']
+    }
+  },
+  // End Call Campaign
+
+  // New Campaign
+  {
+    path: '/new-campaign',
+    name: 'NewCampaign',
+    component: NewCampaignView,
+    meta: {
+      requiresAuth: true,
+      title: 'Create Campaign',
+    }
+  },
+  // End New Campaign
+
   // Mail Integration
   {
     path: '/mail/editor-test',
@@ -351,7 +378,7 @@ const routes = [
 
 const router = createRouter({
   // Fix bug 
-  history: createWebHistory(''),
+  history: createWebHistory('/'),
   routes,
   scrollBehavior(to, from, savedPosition) {
     return savedPosition || { left: 0, top: 0 }

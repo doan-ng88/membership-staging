@@ -1,6 +1,6 @@
 <template>
   <div class="mb-12">
-    <h3 class="text-2xl font-semibold mb-4">Thống Kê Thành Viên Theo Cấp Bậc</h3>
+    <h3 class="text-2xl font-semibold mb-4">Member Statistics by Level</h3>
     <div class="overflow-x-auto">
       <table class="min-w-full bg-white shadow rounded">
         <thead>
@@ -27,7 +27,7 @@
         </tbody>
       </table>
     </div>
-    <p class="mt-4 text-gray-700">Tổng Số Thành Viên: {{ total }}</p>
+    <p class="mt-4 text-gray-700">Total Members: {{ total }}</p>
   </div>
 </template>
 
@@ -47,7 +47,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const headers = ['Cấp Bậc', 'Số Lượng Thành Viên', 'Tỷ Lệ (%)']
+    const headers = ['Level', 'Member Count', 'Percentage (%)']
     
     const total = computed(() => 
       Object.values(props.statistics).reduce((a, b) => a + b, 0)

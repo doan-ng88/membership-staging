@@ -1,7 +1,7 @@
 <template>
   <a-modal
     :visible="visible"
-    :title="'Chỉnh sửa chiến dịch'"
+    :title="'Edit Campaign'"
     @cancel="handleCancel"
     @ok="handleSubmit"
     :confirmLoading="loading"
@@ -13,16 +13,16 @@
       :rules="rules"
       layout="vertical"
     >
-      <a-form-item label="Tên chiến dịch" name="campaignName">
+      <a-form-item label="Campaign Name" name="campaignName">
         <a-input v-model:value="formState.CampaignName" />
       </a-form-item>
 
-      <a-form-item label="Mô tả" name="description">
+      <a-form-item label="Description" name="description">
         <a-textarea v-model:value="formState.Description" :rows="3" />
       </a-form-item>
 
       <div class="grid grid-cols-2 gap-4">
-        <a-form-item label="Ngày bắt đầu" name="startDate">
+        <a-form-item label="Start Date" name="startDate">
           <a-date-picker 
             v-model:value="formState.StartDate" 
             style="width: 100%"
@@ -30,7 +30,7 @@
           />
         </a-form-item>
 
-        <a-form-item label="Ngày kết thúc" name="dueDate">
+        <a-form-item label="End Date" name="dueDate">
           <a-date-picker 
             v-model:value="formState.DueDate" 
             style="width: 100%"
@@ -39,45 +39,45 @@
         </a-form-item>
       </div>
 
-      <a-form-item label="Vấn đề" name="issue">
+      <a-form-item label="Issue" name="issue">
         <a-input v-model:value="formState.Issue" />
       </a-form-item>
 
       <div class="grid grid-cols-2 gap-4">
-        <a-form-item label="Mức độ ưu tiên" name="priorityLevel">
+        <a-form-item label="Priority Level" name="priorityLevel">
           <a-select v-model:value="formState.PriorityLevel">
-            <a-select-option value="High">Cao</a-select-option>
-            <a-select-option value="Medium">Trung bình</a-select-option>
-            <a-select-option value="Low">Thấp</a-select-option>
-            <a-select-option value="Not Set">Chưa đặt</a-select-option>
+            <a-select-option value="High">High</a-select-option>
+            <a-select-option value="Medium">Medium</a-select-option>
+            <a-select-option value="Low">Low</a-select-option>
+            <a-select-option value="Not Set">Not Set</a-select-option>
           </a-select>
         </a-form-item>
 
-        <a-form-item label="Trạng thái" name="status">
+        <a-form-item label="Status" name="status">
           <a-select v-model:value="formState.Status">
-            <a-select-option value="Created">Đã tạo</a-select-option>
-            <a-select-option value="Planning">Lên kế hoạch</a-select-option>
-            <a-select-option value="In Progress">Đang thực hiện</a-select-option>
-            <a-select-option value="On Hold">Tạm dừng</a-select-option>
-            <a-select-option value="Completed">Hoàn thành</a-select-option>
-            <a-select-option value="Closed">Đã đóng</a-select-option>
-            <a-select-option value="Cancelled">Đã hủy</a-select-option>
+            <a-select-option value="Created">Created</a-select-option>
+            <a-select-option value="Planning">Planning</a-select-option>
+            <a-select-option value="In Progress">In Progress</a-select-option>
+            <a-select-option value="On Hold">On Hold</a-select-option>
+            <a-select-option value="Completed">Completed</a-select-option>
+            <a-select-option value="Closed">Closed</a-select-option>
+            <a-select-option value="Cancelled">Cancelled</a-select-option>
           </a-select>
         </a-form-item>
       </div>
 
       <div class="grid grid-cols-2 gap-4 mt-4">
         <a-form-item>
-          <a-checkbox v-model:checked="formState.IsPrivated">Riêng tư</a-checkbox>
+          <a-checkbox v-model:checked="formState.IsPrivated">Private</a-checkbox>
         </a-form-item>
         <a-form-item>
-          <a-checkbox v-model:checked="formState.isServiceCall">Gọi điện</a-checkbox>
+          <a-checkbox v-model:checked="formState.isServiceCall">Call Service</a-checkbox>
         </a-form-item>
         <a-form-item>
-          <a-checkbox v-model:checked="formState.isAppPush">Thông báo App</a-checkbox>
+          <a-checkbox v-model:checked="formState.isAppPush">App Notification</a-checkbox>
         </a-form-item>
         <a-form-item>
-          <a-checkbox v-model:checked="formState.isServiceEmail">Gửi Email</a-checkbox>
+          <a-checkbox v-model:checked="formState.isServiceEmail">Send Email</a-checkbox>
         </a-form-item>
       </div>
     </a-form>
@@ -132,19 +132,19 @@ export default defineComponent({
 
     const rules = {
       CampaignName: [
-        { required: true, message: 'Vui lòng nhập tên chiến dịch' }
+        { required: true, message: 'Please enter campaign name' }
       ],
       StartDate: [
-        { required: true, message: 'Vui lòng chọn ngày bắt đầu' }
+        { required: true, message: 'Please select start date' }
       ],
       Issue: [
-        { required: true, message: 'Vui lòng nhập vấn đề' }
+        { required: true, message: 'Please enter issue' }
       ],
       DueDate: [
         {
           validator: async (_rule: any, value: any) => {
             if (value && formState.StartDate && dayjs(value).isBefore(formState.StartDate)) {
-              throw new Error('Ngày kết thúc phải sau ngày bắt đầu')
+              throw new Error('End date must be after start date')
             }
           }
         }
@@ -167,7 +167,7 @@ export default defineComponent({
         loading.value = true
 
         if (!formState.StartDate) {
-          message.error('Vui lòng chọn ngày bắt đầu')
+          message.error('Please select start date')
           return
         }
 
@@ -191,7 +191,7 @@ export default defineComponent({
 
         if (!response.ok) throw new Error('Failed to update campaign')
 
-        message.success('Cập nhật chiến dịch thành công')
+        message.success('Campaign updated successfully')
         emit('success')
         emit('update:visible', false)
       } catch (error) {
@@ -199,7 +199,7 @@ export default defineComponent({
         if (error instanceof Error) {
           message.error(error.message)
         } else {
-          message.error('Vui lòng kiểm tra lại thông tin')
+          message.error('Please check the information')
         }
       } finally {
         loading.value = false

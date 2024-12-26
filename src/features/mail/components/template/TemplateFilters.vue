@@ -3,7 +3,7 @@
     <div class="mb-6 flex gap-4">
       <a-input-search
         v-model:value="searchText"
-        placeholder="Tìm kiếm template"
+        placeholder="Search template"
         style="width: 300px"
         @search="handleSearch"
       />
@@ -12,12 +12,12 @@
         v-model:value="selectedTypes"
         mode="multiple"
         style="width: 250px"
-        placeholder="Loại template"
+        placeholder="Template type"
         :options="templateTypeOptions"
         @change="handleSearch"
       >
         <template #maxTagPlaceholder="{ omittedValues }">
-          <span>+{{ omittedValues.length }} loại</span>
+          <span>+{{ omittedValues.length }} types</span>
         </template>
       </a-select>
   
@@ -25,12 +25,12 @@
         v-model:value="selectedCategories" 
         mode="multiple"
         style="width: 250px"
-        placeholder="Danh mục"
+        placeholder="Category"
         :options="templateCategoryOptions"
         @change="handleSearch"
       >
         <template #maxTagPlaceholder="{ omittedValues }">
-          <span>+{{ omittedValues.length }} danh mục</span>
+          <span>+{{ omittedValues.length }} categories</span>
         </template>
       </a-select>
     </div>

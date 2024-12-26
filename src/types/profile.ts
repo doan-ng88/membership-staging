@@ -22,20 +22,24 @@ export interface Member {
 }
 
 export interface FilterParams {
-  // Text search
-  search?: string
-  
-  // Date filters
-  startDate?: string
-  endDate?: string
-  
-  // Member filters
-  orderPoint?: number
-  levelUpCondition?: string
+  registeredTimeFrom?: string
+  registeredTimeTo?: string
+  websiteId?: string | number
+  levelId?: string | number
   memberDowngradeMonth?: number
-  
-  // Website filter  
-  websiteId?: number
+  searchParams?: Array<{
+    key: string
+    value: string | number
+  }>
+}
+
+export interface PaginationParams {
+  pageIndex: number
+  pageSize: number
+  searchParams: Array<{
+    key: string
+    value: string | number
+  }>
 }
 
 // interface PurchaseProduct {

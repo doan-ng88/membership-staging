@@ -1,10 +1,9 @@
-
 <template>
   <DefaultLayout>
     <div class="p-6">
-      <h2 class="text-2xl font-bold mb-6">Lịch Sử Sử Dụng Mã Giảm Giá</h2>
+      <h2 class="text-2xl font-bold mb-6">Discount Code Usage History</h2>
 
-      <!-- Bộ lọc -->
+      <!-- Filters -->
       <div class="mb-6 bg-white p-4 rounded shadow">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <!-- Website Selection -->
@@ -23,22 +22,22 @@
 
           <!-- Status Filter -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Trạng thái</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
             <a-select
               v-model:value="filters.status"
               style="width: 100%"
               @change="handleSearch"
             >
-              <a-select-option value="all">Tất cả</a-select-option>
-              <a-select-option value="draft">Nháp</a-select-option>
-              <a-select-option value="future">Sắp tới</a-select-option>
-              <a-select-option value="publish">Đang hoạt động</a-select-option>
+              <a-select-option value="all">All</a-select-option>
+              <a-select-option value="draft">Draft</a-select-option>
+              <a-select-option value="future">Upcoming</a-select-option>
+              <a-select-option value="publish">Active</a-select-option>
             </a-select>
           </div>
 
           <!-- Date Range -->
           <div class="col-span-2">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Thời gian</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
             <a-range-picker
               v-model:value="filters.dateRange"
               style="width: 100%"
@@ -121,25 +120,25 @@ export default defineComponent({
     // Table Columns
     const columns = [
       {
-        title: 'Mã giảm giá',
+        title: 'Discount Code',
         dataIndex: 'code',
         key: 'code'
       },
       {
-        title: 'Trạng thái',
+        title: 'Status',
         dataIndex: 'status',
         key: 'status'
       },
       {
-        title: 'Giảm giá',
+        title: 'Discount',
         key: 'discount'
       },
       {
-        title: 'Ngày hết hạn',
+        title: 'Expiry Date',
         key: 'expiry_date'
       },
       {
-        title: 'Đã sử dụng/Giới hạn',
+        title: 'Used/Limit',
         key: 'usage'
       }
     ]
@@ -150,7 +149,7 @@ export default defineComponent({
       current: 1,
       pageSize: 10,
       showSizeChanger: true,
-      showTotal: (total) => `Tổng ${total} mã giảm giá`
+      showTotal: (total) => `Total ${total} discount codes`
     })
 
     // Methods
@@ -179,7 +178,7 @@ export default defineComponent({
         pagination.pageSize = pageSize
       } catch (error) {
         console.error('Error fetching coupons:', error)
-        message.error('Không thể tải danh sách mã giảm giá')
+        message.error('Unable to load discount code list')
       } finally {
         loading.value = false
       }
@@ -206,9 +205,9 @@ export default defineComponent({
 
     const getStatusText = (status: string) => {
       const texts = {
-        draft: 'Nháp',
-        future: 'Sắp tới',
-        publish: 'Đang hoạt động'
+        draft: 'Draft',
+        future: 'Upcoming',
+        publish: 'Active'
       }
       return texts[status as keyof typeof texts] || status
     }

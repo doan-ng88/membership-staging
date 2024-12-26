@@ -17,8 +17,17 @@
         </a-select>
       </a-form-item>
 
-      <a-form-item label="Order Point">
-        <a-input-number v-model:value="filters.orderPoint" class="w-full" />
+      <a-form-item label="Member Level">
+        <a-select v-model:value="filters.levelId" class="w-full">
+          <a-select-option value="">All Levels</a-select-option>
+          <a-select-option 
+            v-for="member in members" 
+            :key="member.levelId" 
+            :value="member.levelId"
+          >
+            {{ member.levelName }}
+          </a-select-option>
+        </a-select>
       </a-form-item>
     </div>
 
@@ -37,13 +46,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import type { CampaignMember } from '../../types/campaign.types';
 import { WEBSITE_OPTIONS } from '../../constants/campaign.constants';
 
 const props = defineProps<{
   selectedMembers: CampaignMember[];
   existingMembers: CampaignMember[];
+  members: any[];
 }>();
 
 const emit = defineEmits<{
@@ -53,7 +63,7 @@ const emit = defineEmits<{
 const filters = ref({
   joinDate: null,
   website: '',
-  orderPoint: null
+  levelId: null
 });
 
 // ... Rest of the component logic for filtering and selection

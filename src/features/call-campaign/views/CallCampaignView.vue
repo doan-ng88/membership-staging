@@ -4,12 +4,12 @@
     <div class="p-6">
       <PageHeader>
       <template #title>
-        <h2 class="text-2xl font-bold text-gray-800">Quản lý Chiến dịch Gọi điện</h2>
+        <h2 class="text-2xl font-bold text-gray-800">Call Campaign Management</h2>
       </template>
       <template #extra>
         <CampaignActions 
           :loading="loading"
-          @add="showAddModal = true"
+          @add="handleAdd"
           @refresh="fetchCampaignList"
         />
       </template>
@@ -29,11 +29,11 @@
       :pagination="pagination"
       @page-change="handlePageChange"
       @edit="handleEdit"
+      :enable-name-click="true"
     />
 
     <EditCampaignModal
       v-model:visible="showEditModal"
-
       :campaignId="selectedCampaign?.CampaignID"
       :campaign-data="selectedCampaign || {}"
       @success="fetchCampaignList"
@@ -52,13 +52,14 @@ import CampaignTable from '../components/CampaignList/CampaignTable.vue';
 import { useCampaign } from '../composables/useCampaign';
 import EditCampaignModal from '../components/CampaignForm/EditCampaignModal.vue'
 import type { Campaign } from '../types/campaign.types'
+import { useRouter } from 'vue-router';
 
-// Khai báo showAddModal
-const showAddModal = ref(false);
+const router = useRouter();
+
 const showEditModal = ref(false)
 const selectedCampaign = ref<Campaign | null>(null)
 
-// Sử dụng composable
+// Using composable
 const {
   campaigns,
   loading,
@@ -70,10 +71,14 @@ const {
   handleReset
 } = useCampaign();
 
-// Fetch data khi component được mount
+// Fetch data when component is mounted
 onMounted(() => {
   fetchCampaignList();
 });
+
+const handleAdd = () => {
+    router.push({name: 'NewCampaign'});
+  };
 
 const handleEdit = (campaign: Campaign) => {
   selectedCampaign.value = {

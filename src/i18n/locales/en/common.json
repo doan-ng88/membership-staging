@@ -1,0 +1,39 @@
+{
+  "common": {
+    "actions": {
+      "add": "Add new",
+      "edit": "Edit",
+      "delete": "Delete",
+      "save": "Save",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "search": "Search",
+      "reset": "Reset",
+      "back": "Back",
+      "next": "Next"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "pending": "Pending",
+      "completed": "Completed"
+    },
+    "messages": {
+      "success": {
+        "create": "Created successfully",
+        "update": "Updated successfully",
+        "delete": "Deleted successfully"
+      },
+      "error": {
+        "create": "Cannot create",
+        "update": "Cannot update",
+        "delete": "Cannot delete",
+        "network": "Network error",
+        "unknown": "An error occurred"
+      },
+      "confirm": {
+        "delete": "Are you sure you want to delete?"
+      }
+    }
+  }
+} 

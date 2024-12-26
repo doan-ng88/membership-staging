@@ -7,7 +7,7 @@
 
       <!-- Brand Selection -->
       <div class="mb-8 flex items-center">
-        <label for="brandSelection" class="text-gray-700 font-medium mr-4">Chọn Thương Hiệu:</label>
+        <label for="brandSelection" class="text-gray-700 font-medium mr-4">Select Brand:</label>
         <select v-model="selectedBrand" id="brandSelection" class="block w-1/3 bg-white border border-gray-300 rounded px-4 py-2">
           <option v-for="brand in brands" :key="brand.value" :value="brand.value">
             {{ brand.label }}

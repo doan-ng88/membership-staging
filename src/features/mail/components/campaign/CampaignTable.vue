@@ -89,7 +89,7 @@ const campaignsWithWebsite = computed(() => {
 
 const columns: TableColumnsType = [
   {
-    title: 'Tên chiến dịch',
+    title: 'Campaign Name',
     dataIndex: 'name',
     key: 'name',
   },
@@ -98,22 +98,22 @@ const columns: TableColumnsType = [
     key: 'website',
   },
   {
-    title: 'Thời gian bắt đầu',
+    title: 'Start Time',
     dataIndex: 'startDate',
     key: 'startDate',
   },
   {
-    title: 'Thời gian kết thúc',
+    title: 'End Time',
     dataIndex: 'endDate',
     key: 'endDate',
   },
   {
-    title: 'Trạng thái',
+    title: 'Status',
     dataIndex: 'status',
     key: 'status',
   },
   {
-    title: 'Thao tác',
+    title: 'Actions',
     key: 'action',
   }
 ];

@@ -1,11 +1,15 @@
 <template>
   <DefaultLayout>
     <div class="flex-1 p-6">
-      <h2 class="text-2xl font-bold mb-4 text-center">Benefit Settings</h2>
+      <!-- <h2 class="text-2xl font-bold mb-4 text-center">{{ t('menu.benefitSettings.title') }}</h2> -->
+      <h1 class="text-2xl font-bold text-center mb-5">
+        {{ t('benefit.settings') }}
+      </h1>
+
       <!-- Brand Selection -->
       <div class="mb-6">
         <label for="brandSelect" class="block text-sm font-medium text-gray-700">
-          <h3 class="text-lg leading-6 font-medium text-gray-900">Chọn Website</h3>
+          <h3 class="text-lg leading-6 font-medium text-gray-900">{{ t('benefit.selectBrand') }}</h3>
         </label>
         <select
           id="brandSelect"
@@ -23,13 +27,13 @@
         <!-- Header -->
         <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
           <h3 class="text-lg leading-6 font-medium text-gray-900">
-            Danh Sách Cấp Bậc Thành Viên
+            {{ t('benefit.memberLevelList') }}
           </h3>
           <button
             @click="openAddModal"
             class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 focus:outline-none"
           >
-            Thêm Cấp Bậc
+            {{ t('benefit.addLevel') }}
           </button>
         </div>
 
@@ -40,7 +44,7 @@
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <span class="ml-2">Đang tải dữ liệu...</span>
+            <span class="ml-2">{{ t('benefit.loading') }}</span>
           </div>
         </div>
 
@@ -55,7 +59,7 @@
               </div>
               <div class="ml-3">
                 <h3 class="text-sm font-medium text-red-800">
-                  Đã xảy ra lỗi
+                  {{ t('benefit.error.title') }}
                 </h3>
                 <div class="mt-2 text-sm text-red-700">
                   {{ error }}
@@ -65,7 +69,7 @@
                     @click="retryFetch"
                     class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                   >
-                    Thử lại
+                    {{ t('benefit.error.retry') }}
                   </button>
                 </div>
               </div>
@@ -117,7 +121,10 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useLanguage } from '@/composables/useLanguage'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
+import LanguageSwitcher from '@/components/Header/LanguageSwitcher.vue'
 import { storeToRefs } from 'pinia'
 import { useBenefitStore } from '@/stores/benefitSettings'
 import BenefitModal from '@/components/BenefitSettings/BenefitModal.vue'
@@ -129,12 +136,16 @@ import { useNotification } from '@/composables/useNotification'
 export default defineComponent({
   components: {
     DefaultLayout,
+    LanguageSwitcher,
     BenefitModal,
     BenefitTable,
     ConfirmationModal
   },
 
   setup() {
+    const { t } = useI18n()
+    const { currentLanguage } = useLanguage()
+
     const store = useBenefitStore()
     const { levelSettings, isLoading, error } = storeToRefs(store)
     const { showNotification } = useNotification()
@@ -247,6 +258,8 @@ export default defineComponent({
     }
 
     return {
+      t,
+      currentLanguage,
       // State
       showModal,
       showDeleteConfirm,

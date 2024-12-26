@@ -2,7 +2,7 @@
   <div class="search-wrapper">
     <a-input-search
       v-model:value="searchValue"
-      placeholder="Tìm kiếm theo tên chiến dịch"
+      placeholder="Search by campaign name"
       enter-button
       :loading="loading"
       @search="onSearch"

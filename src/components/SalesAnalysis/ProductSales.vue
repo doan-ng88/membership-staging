@@ -1,21 +1,21 @@
 <template>
   <div class="bg-white rounded-lg shadow-sm p-6">
     <div class="mb-6">
-      <h3 class="text-lg font-medium text-gray-900">Phân tích doanh số theo sản phẩm</h3>
-      <p class="text-sm text-gray-500 mt-1">Theo dõi hiệu suất của từng sản phẩm</p>
+      <h3 class="text-lg font-medium text-gray-900">Product Sales Analysis</h3>
+      <p class="text-sm text-gray-500 mt-1">Track performance of individual products</p>
     </div>
 
     <!-- Filter Section -->
     <div class="mb-6 flex flex-wrap gap-4">
       <div class="flex-1 min-w-[200px]">
         <label class="block text-sm font-medium text-gray-700 mb-2">
-          Chọn sản phẩm
+          Select Product
         </label>
         <a-select
           v-model:value="selectedProduct"
           show-search
           :options="productOptions"
-          placeholder="Chọn sản phẩm"
+          placeholder="Select product"
           class="w-full"
           :filter-option="filterOption"
         />
@@ -23,7 +23,7 @@
       
       <div class="flex-1 min-w-[200px]">
         <label class="block text-sm font-medium text-gray-700 mb-2">
-          Thời gian
+          Date Range
         </label>
         <a-range-picker
           v-model:value="dateRange"
@@ -36,25 +36,25 @@
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
       <div class="bg-blue-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-blue-700">Tổng đơn hàng</h5>
+        <h5 class="text-sm font-medium text-blue-700">Total Orders</h5>
         <p class="text-2xl font-bold text-blue-900 mt-2">
           {{ selectedProductStats?.total_orders || 0 }}
         </p>
       </div>
       <div class="bg-green-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-green-700">Đơn hoàn thành</h5>
+        <h5 class="text-sm font-medium text-green-700">Completed Orders</h5>
         <p class="text-2xl font-bold text-green-900 mt-2">
           {{ selectedProductStats?.completed_orders || 0 }}
         </p>
       </div>
       <div class="bg-yellow-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-yellow-700">Đơn đang xử lý</h5>
+        <h5 class="text-sm font-medium text-yellow-700">Processing Orders</h5>
         <p class="text-2xl font-bold text-yellow-900 mt-2">
           {{ selectedProductStats?.processing_orders || 0 }}
         </p>
       </div>
       <div class="bg-purple-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-purple-700">Tổng số lượng</h5>
+        <h5 class="text-sm font-medium text-purple-700">Total Quantity</h5>
         <p class="text-2xl font-bold text-purple-900 mt-2">
           {{ selectedProductStats?.total_quantity || 0 }}
         </p>
@@ -64,7 +64,7 @@
     <!-- Charts -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
       <div class="bg-gray-50 p-4 rounded-lg">
-        <h4 class="text-sm font-medium text-gray-700 mb-4">Trạng thái đơn hàng</h4>
+        <h4 class="text-sm font-medium text-gray-700 mb-4">Order Status</h4>
         <VueApexCharts
           type="pie"
           height="350"
@@ -74,7 +74,7 @@
       </div>
       
       <div class="bg-gray-50 p-4 rounded-lg">
-        <h4 class="text-sm font-medium text-gray-700 mb-4">Top 10 sản phẩm bán chạy</h4>
+        <h4 class="text-sm font-medium text-gray-700 mb-4">Top 10 Best-Selling Products</h4>
         <VueApexCharts
           type="bar"
           height="350"
@@ -126,7 +126,7 @@ const orderStatusSeries = computed(() => {
 })
 
 const orderStatusChartOptions = {
-  labels: ['Hoàn thành', 'Đang xử lý', 'Chờ xử lý', 'Đã hủy'],
+  labels: ['Completed', 'Processing', 'On Hold', 'Cancelled'],
   colors: ['#52c41a', '#1890ff', '#faad14', '#ff4d4f'],
   legend: {
     position: 'bottom'
@@ -134,7 +134,7 @@ const orderStatusChartOptions = {
 }
 
 const topProductsSeries = computed(() => [{
-  name: 'Số lượng bán',
+  name: 'Sales Quantity',
   data: productStats.value
     .sort((a, b) => b.total_quantity - a.total_quantity)
     .slice(0, 10)
@@ -192,7 +192,7 @@ const fetchProductStats = async () => {
     }
   } catch (error: any) {
     console.error('Error fetching product stats:', error)
-    message.error('Không thể tải dữ liệu thống kê sản phẩm')
+    message.error('Unable to load product statistics')
   } finally {
     loading.value = false
   }

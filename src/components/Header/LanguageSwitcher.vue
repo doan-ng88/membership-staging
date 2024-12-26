@@ -3,7 +3,9 @@
     <button
       @click="toggleLanguage"
       class="relative flex items-center gap-3 w-full h-full px-4"
+      :aria-label="currentLanguage.name"
     >
+      <!-- Vietnamese Language Option -->
       <div 
         class="absolute flex items-center gap-3 transition-all duration-500"
         :class="[
@@ -12,14 +14,18 @@
       >
         <div class="w-6 h-6 rounded-full overflow-hidden shadow-md">
           <img 
-            src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/4x3/vn.svg"
-            alt="Tiếng Việt"
+            :src="languages[0].flag"
+            :alt="languages[0].name"
             class="w-full h-full object-cover"
+            loading="lazy"
           />
         </div>
-        <span class="text-gray-600 dark:text-gray-300 text-base font-medium tracking-wide">VI</span>
+        <span class="text-gray-600 dark:text-gray-300 text-base font-medium tracking-wide">
+          {{ languages[0].code.toUpperCase() }}
+        </span>
       </div>
 
+      <!-- English Language Option -->
       <div 
         class="absolute flex items-center gap-3 transition-all duration-500"
         :class="[
@@ -28,12 +34,15 @@
       >
         <div class="w-6 h-6 rounded-full overflow-hidden shadow-md">
           <img 
-            src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/4x3/gb.svg"
-            alt="English"
+            :src="languages[1].flag"
+            :alt="languages[1].name"
             class="w-full h-full object-cover"
+            loading="lazy"
           />
         </div>
-        <span class="text-gray-600 dark:text-gray-300 text-base font-medium tracking-wide">EN</span>
+        <span class="text-gray-600 dark:text-gray-300 text-base font-medium tracking-wide">
+          {{ languages[1].code.toUpperCase() }}
+        </span>
       </div>
     </button>
   </div>
@@ -42,52 +51,37 @@
 <script setup lang="ts">
 import { useLanguage } from '@/composables/useLanguage'
 
-const { currentLanguage, toggleLanguage } = useLanguage()
+const { currentLanguage, toggleLanguage, languages } = useLanguage()
 </script>
 
 <style scoped>
-.language-switch-container {
-  position: relative;
-  width: 80px;
-  height: 36px;
-  /* background-color: #f3f4f6;
-  border-radius: 999px; */
-  /* overflow: hidden; */
-
-  /* background-color: rgb(226 232 240 / var(--tw-bg-opacity)); */
-  border-radius: 22px;
-  padding: 3px;
+.shadow-inner {
   box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1),
               inset -2px -2px 5px rgba(255, 255, 255, 0.8);
 }
 
-.language-button {
-  position: absolute;
-  display: flex;
-  width: 160px; /* Double the container width */
-  height: 100%;
-  transition: transform 0.3s ease;
+/* Dark mode adjustments */
+:dark .shadow-inner {
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2),
+              inset -2px -2px 5px rgba(255, 255, 255, 0.05);
 }
 
-.language-option {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 80px; /* Same as container width */
-  height: 100%;
-  padding: 0 16px;
-  justify-content: center;
+/* Smooth transition for language switch */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 500ms;
 }
 
-.slide-en {
-  transform: translateX(-80px); /* Negative container width */
+/* Accessibility improvements */
+button:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
 }
 
-:dark .language-switch-container {
-  background-color: #374151;
-}
-
-:dark .language-button:hover {
-  background-color: #4b5563;
+/* Optimize performance */
+img {
+  will-change: transform;
+  transform: translateZ(0);
 }
 </style> 

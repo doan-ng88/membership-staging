@@ -5,8 +5,8 @@
       v-for="tab in tabs" 
       :key="tab.id"
       :class="[
-        'px-4 py-2 border rounded-t-lg',
-        { 'bg-blue-600 text-white': modelValue === tab.id }
+        'px-4 py-2 border rounded-t-lg ',
+        { 'bg-black text-white': modelValue === tab.id }
       ]"
       @click="$emit('update:modelValue', tab.id)"
     >

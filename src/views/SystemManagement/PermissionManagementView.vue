@@ -1,19 +1,19 @@
 <template>
   <DefaultLayout>
     <div class="p-6">
-      <h2 class="text-2xl font-bold mb-6">Quản Lý Phân Quyền</h2>
+      <h2 class="text-2xl font-bold mb-6">Permission Management</h2>
 
-      <!-- Hiển thị cảnh báo nếu không phải admin -->
+      <!-- Display warning if not admin -->
       <div v-if="!isAdmin" class="bg-yellow-50 border border-yellow-200 p-4 rounded-lg mb-6">
         <div class="flex items-center">
           <ExclamationCircleOutlined class="text-yellow-500 mr-2" />
           <span class="text-yellow-700">
-            Bạn không có quyền truy cập trang này. Vui lòng liên hệ quản trị viên.
+            You don't have permission to access this page. Please contact an administrator.
           </span>
         </div>
       </div>
 
-      <!-- Nội dung chính chỉ hiển thị cho admin -->
+      <!-- Main content only shown to admin -->
       <div v-else class="bg-white p-6 rounded-lg shadow">
         <a-table 
           :columns="columns" 
@@ -24,7 +24,7 @@
         >
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'fullName'">
-              <span>{{ record.fullName || 'Chưa cập nhật' }}</span>
+              <span>{{ record.fullName || 'Not updated' }}</span>
             </template>
 
             <template v-if="column.key === 'role'">
@@ -45,7 +45,7 @@
 
         <div class="flex justify-end">
           <a-button type="primary" @click="handleSubmit" :loading="submitting">
-            Lưu thay đổi
+            Save Changes
           </a-button>
         </div>
       </div>
@@ -75,14 +75,14 @@ export default defineComponent({
     const users = ref([])
     const changedRoles = ref(new Map())
 
-    // Kiểm tra quyền admin
+    // Check admin permission
     const isAdmin = computed(() => true)
 
-    // Chuyển hướng nếu không phải admin
+    // Redirect if not admin
     onMounted(() => {
       if (!isAdmin.value) {
-        message.error('Bạn không có quyền truy cập trang này')
-        router.push('/') // Chuyển về trang chủ
+        message.error('You don\'t have permission to access this page')
+        router.push('/') // Redirect to home page
         return
       }
       fetchUsers()
@@ -96,7 +96,7 @@ export default defineComponent({
         width: '80px'
       },
       {
-        title: 'Họ Tên',
+        title: 'Full Name',
         dataIndex: 'fullName',
         key: 'fullName'
       },
@@ -106,7 +106,7 @@ export default defineComponent({
         key: 'email'
       },
       {
-        title: 'Phân Quyền',
+        title: 'Permission',
         dataIndex: 'role',
         key: 'role',
         width: '150px'
@@ -131,7 +131,7 @@ export default defineComponent({
         users.value = result.data
       } catch (error) {
         console.error('Error fetching users:', error)
-        message.error('Không thể tải danh sách người dùng')
+        message.error('Unable to load user list')
       } finally {
         loading.value = false
       }
@@ -144,12 +144,12 @@ export default defineComponent({
 
     const handleSubmit = async () => {
       if (!isAdmin.value) {
-        message.error('Bạn không có quyền thực hiện thao tác này')
+        message.error('You don\'t have permission to perform this action')
         return
       }
 
       if (changedRoles.value.size === 0) {
-        message.info('Không có thay đổi nào để lưu')
+        message.info('No changes to save')
         return
       }
 
@@ -174,12 +174,12 @@ export default defineComponent({
 
         if (!response.ok) throw new Error('Failed to update permissions')
 
-        message.success('Cập nhật phân quyền thành công')
+        message.success('Permissions updated successfully')
         changedRoles.value.clear()
         await fetchUsers() // Refresh data
       } catch (error) {
         console.error('Error updating permissions:', error)
-        message.error('Không thể cập nhật phân quyền')
+        message.error('Unable to update permissions')
       } finally {
         submitting.value = false
       }

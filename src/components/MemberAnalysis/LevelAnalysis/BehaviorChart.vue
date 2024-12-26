@@ -1,8 +1,8 @@
 <template>
   <div class="mb-12">
-    <h3 class="text-2xl font-semibold mb-4">Mẫu Hành Vi Theo Cấp Bậc</h3>
+    <h3 class="text-2xl font-semibold mb-4">Behavior Patterns by Level</h3>
     <div class="mb-4 flex items-center">
-      <label class="text-gray-700 font-medium mr-4">Chọn Tiêu Chí:</label>
+      <label class="text-gray-700 font-medium mr-4">Select Criteria:</label>
       <div class="flex space-x-4">
         <label 
           v-for="metric in BEHAVIOR_METRICS"
@@ -70,7 +70,7 @@ export default defineComponent({
         }
       },
       xaxis: {
-        categories: ['Bạc', 'Vàng', 'Kim Cương']
+        categories: ['Silver', 'Gold', 'Diamond']
       },
       yaxis: {
         min: 0,
@@ -78,7 +78,7 @@ export default defineComponent({
       },
       colors: ['#4FD1C5', '#9F7AEA', '#F6AD55'],
       title: {
-        text: 'Mẫu Hành Vi Theo Cấp Bậc',
+        text: 'Behavior Patterns by Level',
         align: 'center'
       },
       legend: {

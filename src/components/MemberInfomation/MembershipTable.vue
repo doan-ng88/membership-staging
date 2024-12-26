@@ -28,23 +28,22 @@
           </th>
           <th class="border border-gray-300 p-2">Platform Website</th>
           <template v-if="tab === 'date-join-member'">
-            <th class="border border-gray-300 p-2">Order Point</th>
-            <!-- <th class="border border-gray-300 p-2">Level Up Condition</th> -->
+            <th class="border border-gray-300 p-2">Member Level</th>
           </template>
           <th class="border border-gray-300 p-2">Thao tác</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="member in filteredMembers" :key="member.membershipId">
+        <tr v-for="(member, index) in members" :key="`${member.membershipId}-${member.websiteId}-${index}`">
           <td class="border border-gray-300 p-2">{{ member.fullName }}</td>
           <td class="border border-gray-300 p-2">{{ member.mainPhoneNumber }}</td>
           <td class="border border-gray-300 p-2">
             {{ formatDate(tab === 'date-join-member' ? member.registeredTime : member.birthday) }}
+          
           </td>
           <td class="border border-gray-300 p-2">{{ getWebsiteName(member.websiteId) }}</td>
           <template v-if="tab === 'date-join-member'">
-            <td class="border border-gray-300 p-2">{{ member.points }}</td>
-            <!-- <td class="border border-gray-300 p-2">{{ formatDate(member.levelUpdateTime) }}</td> -->
+            <td class="border border-gray-300 p-2">{{ member.levelName }}</td>
           </template>
           <td class="border border-gray-300 p-2">
             <div class="flex gap-2">
@@ -290,27 +289,22 @@
       </div>
     </div>
 
-    <!-- Thêm phân trang -->
+    <!-- Thay thế phần pagination cũ bằng a-pagination -->
     <div class="mt-4 flex justify-between items-center">
-      <div>
-        Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize, totalCount) }} of {{ totalCount }} entries
+      <div class="text-sm text-gray-600">
+        Total {{ totalCount }} items
       </div>
-      <div class="flex gap-2">
-        <button 
-          @click="changePage(currentPage - 1)"
-          :disabled="currentPage === 1"
-          class="px-3 py-1 border rounded-lg disabled:opacity-50"
-        >
-          Previous
-        </button>
-        <button 
-          @click="changePage(currentPage + 1)"
-          :disabled="currentPage >= totalPages"
-          class="px-3 py-1 border rounded-lg disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
+      <a-pagination
+        :current="currentPage"
+        :total="totalCount"
+        :pageSize="pageSize"
+        :defaultPageSize="10"
+        :showSizeChanger="true"
+        :pageSizeOptions="['10', '20', '50', '100']"
+        :showTotal="(total: number) => `Total ${total} items`"
+        @change="handlePageChange"
+        @showSizeChange="handleSizeChange"
+      />
     </div>
   </div>
 </template>
@@ -319,7 +313,9 @@
 import { defineComponent, ref, computed, onMounted } from 'vue'
 import type { TabType, Member, FilterParams, ModalType } from '@/types/profile'
 import { formatDate } from '@/utils/date'
+import { formatDateRange } from '@/utils/date'
 import { websites } from '@/api/types/website'
+import { membershipAPI } from '@/api/services/membershipApi'
 
 export default defineComponent({
   name: 'MembershipTable',
@@ -333,7 +329,7 @@ export default defineComponent({
     pageSize: { type: Number, required: true }
   },
 
-  emits: ['view', 'page-change'],
+  emits: ['view', 'page-change', 'size-change'],
 
   setup(props, { emit }) {
     const searchTerm = ref('')
@@ -341,6 +337,7 @@ export default defineComponent({
     const selectedMember = ref<Member | null>(null)
     const isEditing = ref(false)
     const editedMember = ref<Member | null>(null)
+    const loading = ref(false)
 
     const totalPages = computed(() => Math.ceil(props.totalCount / props.pageSize))
 
@@ -349,7 +346,7 @@ export default defineComponent({
       const dateHeader = props.tab === 'date-join-member' ? 'Date Join Member' : 'Select Month'
       const platformHeader = ['Platform Website']
       const additionalHeaders = props.tab === 'date-join-member' 
-        ? ['Order Point', 'Level Up Condition', 'Member Downgrade Month']
+        ? ['Member Level', 'Member Downgrade Month']
         : []
       
       return [...baseHeaders, dateHeader, ...platformHeader, ...additionalHeaders, 'Options']
@@ -371,6 +368,15 @@ export default defineComponent({
 
     const formatDateRange = (startDate: string, endDate: string) => {
       return `${startDate} - ${endDate}`
+    }
+
+    const formatDateJoinMember = (date: string) => {
+      if (!date) return ''
+      return new Date(date).toLocaleDateString('vi-VN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      })
     }
 
     const formatLabel = (key: string) => {
@@ -442,11 +448,41 @@ export default defineComponent({
       return website?.name || 'Unknown'
     }
 
-    const changePage = (page: number) => {
-      if (page >= 1 && page <= totalPages.value) {
-        emit('page-change', page)
+    const handlePageChange = (page: number, size: number) => {
+      emit('page-change', {
+        pageIndex: page,
+        pageSize: size || 10
+      })
+    }
+
+    const handleSizeChange = (_: number, size: number) => {
+      emit('page-change', {
+        pageIndex: 1,
+        pageSize: size || 10
+      })
+    }
+
+    const fetchMembers = async () => {
+      try {
+        loading.value = true
+        const response = await membershipAPI.getList(
+          'MembershipsWebsitesId',
+          'ASC',
+          10,
+          1,
+          []
+        )
+        console.log('Members data:', response.data)
+      } catch (error) {
+        console.error('Error fetching members:', error)
+      } finally {
+        loading.value = false
       }
     }
+
+    onMounted(() => {
+      fetchMembers()
+    })
 
     return {
       searchTerm,
@@ -459,6 +495,7 @@ export default defineComponent({
       handleView,
       handleExport,
       formatDate,
+      formatDateJoinMember,
       formatDateRange,
       formatLabel,
       isEditing,
@@ -470,8 +507,28 @@ export default defineComponent({
       handleHistory,
       getWebsiteName,
       totalPages,
-      changePage,
+      handlePageChange,
+      handleSizeChange,
+      loading
     }
   }
 })
 </script>
+
+<style scoped>
+.ant-pagination {
+  @apply flex items-center;
+}
+
+.ant-pagination-item {
+  @apply mx-1;
+}
+
+.ant-pagination-item-active {
+  @apply bg-blue-600 border-blue-600 text-white;
+}
+
+.ant-select-selector {
+  @apply h-8 min-w-[90px];
+}
+</style>

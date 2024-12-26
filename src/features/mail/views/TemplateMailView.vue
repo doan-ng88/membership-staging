@@ -3,7 +3,7 @@
     <div class="p-6">
       <PageHeader>
         <template #title>
-          <h2 class="text-2xl font-bold">Danh sách Template Email</h2>
+          <h2 class="text-2xl font-bold">Email Templates List</h2>
         </template>
         <template #extra>
           <a-space>
@@ -11,7 +11,7 @@
               <template #icon>
                 <plus-outlined />
               </template>
-              Tạo Template
+              Create Template
             </a-button>
           </a-space>
         </template>
@@ -44,12 +44,12 @@
     </div>
 
     <!-- Send Mail Modal Component -->
-    <SendMailModal
+    <!-- <SendMailModal
       v-model:visible="showSendModal"
       :template="selectedTemplate"
       @success="handleSendSuccess"
       @cancel="handleSendCancel"
-    />
+    /> -->
   </DefaultLayout>
 </template>
 
@@ -64,7 +64,7 @@ import TemplateFilters from '../components/template/TemplateFilters.vue';
 import TemplateGrid from '../components/template/TemplateGrid.vue';
 import { useMailTemplate } from '../composables/useMailTemplate';
 import type { MailTemplate } from '../types/MailTemplate';
-import SendMailModal from '../components/SendTemplateMailModal.vue';
+// import SendMailModal from '../components/SendTemplateMailModal.vue';
 
 const router = useRouter();
 const {
@@ -105,20 +105,20 @@ const handleEdit = (template: MailTemplate) => {
 const handleDuplicate = async (template: MailTemplate) => {
   try {
     await duplicateTemplate(template.mailTemplateID);
-    message.success('Đã nhân bản template thành công');
+    message.success('Template duplicated successfully');
     fetchTemplates();
   } catch (error) {
-    message.error('Có lỗi xảy ra khi nhân bản template');
+    message.error('An error occurred while duplicating the template');
   }
 };
 
 const handleDelete = async (template: MailTemplate) => {
   try {
     await deleteTemplate(template.mailTemplateID);
-    message.success('Đã xóa template thành công');
+    message.success('Template deleted successfully');
     fetchTemplates();
   } catch (error) {
-    message.error('Có lỗi xảy ra khi xóa template');
+    message.error('An error occurred while deleting the template');
   }
 };
 

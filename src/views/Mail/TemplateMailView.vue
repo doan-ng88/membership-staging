@@ -3,7 +3,7 @@
     <div class="p-6">
       <PageHeader>
         <template #title>
-          <h2 class="text-2xl font-bold">Danh sách Template Email</h2>
+          <h2 class="text-2xl font-bold">Email Template List</h2>
         </template>
         <template #extra>
           <a-space>
@@ -11,7 +11,7 @@
               <template #icon>
                 <plus-outlined />
               </template>
-              Tạo Template
+              Create Template
             </a-button>
           </a-space>
         </template>
@@ -21,24 +21,24 @@
       <div class="bg-white rounded-lg shadow p-6">
         <!-- Search & Filters -->
         <div class="mb-6 flex gap-4">
-          <a-input-search v-model:value="searchText" placeholder="Tìm kiếm template" style="width: 300px"
+          <a-input-search v-model:value="searchText" placeholder="Search template" style="width: 300px"
             @search="handleSearch" />
-          <a-select v-model:value="selectedTypes" mode="multiple" style="width: 250px" placeholder="Loại template"
+          <a-select v-model:value="selectedTypes" mode="multiple" style="width: 250px" placeholder="Template type"
             :options="templateTypes.map(type => ({
               label: type.templateTypeName,
               value: type.templateTypeID
             }))" @change="handleSearch">
             <template #maxTagPlaceholder="{ omittedValues }">
-              <span>+{{ omittedValues.length }} loại</span>
+              <span>+{{ omittedValues.length }} types</span>
             </template>
           </a-select>
-          <a-select v-model:value="selectedCategories" mode="multiple" style="width: 250px" placeholder="Danh mục"
+          <a-select v-model:value="selectedCategories" mode="multiple" style="width: 250px" placeholder="Category"
             :options="templateCategories.map(category => ({
               label: category.templateCategoryName,
               value: category.templateCategoryID
             }))" @change="handleSearch">
             <template #maxTagPlaceholder="{ omittedValues }">
-              <span>+{{ omittedValues.length }} danh mục</span>
+              <span>+{{ omittedValues.length }} categories</span>
             </template>
           </a-select>
         </div>
@@ -65,13 +65,13 @@
                   <template #overlay>
                     <a-menu>
                       <a-menu-item key="edit" @click="handleEdit(template)">
-                        <edit-outlined /> Chỉnh sửa
+                        <edit-outlined /> Edit
                       </a-menu-item>
                       <a-menu-item key="duplicate" @click="handleDuplicate(template)">
-                        <copy-outlined /> Nhân bản
+                        <copy-outlined /> Duplicate
                       </a-menu-item>
                       <a-menu-item key="delete" @click="handleDelete(template)">
-                        <delete-outlined /> Xóa
+                        <delete-outlined /> Delete
                       </a-menu-item>
                     </a-menu>
                   </template>
@@ -192,7 +192,7 @@ const fetchTemplateTypes = async () => {
     }
   } catch (error) {
     console.error('Error fetching template types:', error)
-    message.error('Không thể tải danh sách loại template')
+    message.error('Unable to load template types')
   }
 }
 
@@ -204,7 +204,7 @@ const fetchTemplateCategories = async () => {
     }
   } catch (error) {
     console.error('Error fetching template categories:', error)
-    message.error('Không thể tải danh sách danh mục')
+    message.error('Unable to load categories')
   }
 }
 
@@ -282,14 +282,14 @@ const handleDuplicate = async (template: MailTemplate) => {
   try {
     const result = await api.post(`/membership/mail/clone-template/${template.mailTemplateID}`)
     if (result.data.result === 'Success') {
-      message.success('Đã nhân bản template thành công')
-      await fetchTemplates() // Refresh lại danh sách sau khi nhân bản
+      message.success('Template duplicated successfully')
+      await fetchTemplates()
     } else {
-      message.error('Không thể nhân bản template')
+      message.error('Unable to duplicate template')
     }
   } catch (error) {
     console.error('Error cloning template:', error)
-    message.error('Có lỗi xảy ra khi nhân bản template') 
+    message.error('An error occurred while duplicating the template') 
   }
 }
 
@@ -301,14 +301,14 @@ const handleDelete = async (template: MailTemplate) => {
       }
     })
     if (result.data.result === 'Success') {
-      message.success('Đã xóa template thành công')
-      await fetchTemplates() // Refresh lại danh sách sau khi xóa
+      message.success('Template deleted successfully')
+      await fetchTemplates()
     } else {
-      message.error('Không thể xóa template')
+      message.error('Unable to delete template')
     }
   } catch (error) {
     console.error('Error deleting template:', error) 
-    message.error('Có lỗi xảy ra khi xóa template')
+    message.error('An error occurred while deleting the template')
   }
 }
 

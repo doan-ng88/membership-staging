@@ -1,165 +1,149 @@
 <template>
   <DefaultLayout>
     <div class="p-6">
-      <h2 class="text-2xl font-bold mb-6">Tạo Mã Giảm Giá Mới</h2>
+      <h2 class="text-2xl font-bold mb-6">Create New Discount Code</h2>
 
-      <a-form 
-        :model="formData"
-        @finish="handleSubmit"
-        class="bg-white p-6 rounded-lg shadow"
-      >
-        <!-- Thông tin cơ bản -->
+      <a-form :model="formData" @finish="handleSubmit" class="bg-white p-6 rounded-lg shadow">
+        <!-- Basic Information -->
         <div class="grid grid-cols-2 gap-6 mb-6">
           <a-form-item label="Website" required>
-            <a-select
-              v-model:value="formData.websiteId"
-              style="width: 100%"
-              placeholder="Chọn website"
-            >
+            <a-select v-model:value="formData.websiteId" style="width: 100%" placeholder="Select website">
               <a-select-option v-for="web in websites" :key="web.websiteId" :value="web.websiteId">
                 {{ web.name }}
               </a-select-option>
             </a-select>
           </a-form-item>
 
-          <a-form-item label="Mã giảm giá" required>
-            <a-input v-model:value="formData.CouponCode" placeholder="Nhập mã giảm giá" />
+          <a-form-item label="Discount Code" required>
+            <a-input v-model:value="formData.CouponCode" placeholder="Enter discount code" />
           </a-form-item>
 
-          <a-form-item label="Mô tả">
-            <a-input v-model:value="formData.Description" placeholder="Mô tả mã giảm giá" />
+          <a-form-item label="Description">
+            <a-textarea 
+              v-model:value="formData.Description" 
+              placeholder="Describe the discount code"
+              :auto-size="{ minRows: 2, maxRows: 6 }" 
+            />
           </a-form-item>
         </div>
 
-        <!-- Loại giảm giá -->
+        <!-- Discount Type -->
         <div class="mb-6">
-          <h3 class="text-lg font-semibold mb-4">Loại giảm giá</h3>
+          <h3 class="text-lg font-semibold mb-4">Discount Type</h3>
           <div class="grid grid-cols-2 gap-6">
-            <a-form-item label="Hình thức giảm giá" required>
+            <a-form-item label="Discount Method" required>
               <a-select v-model:value="formData.DiscountType">
-                <a-select-option value="percent">Giảm theo phần trăm</a-select-option>
-                <a-select-option value="fixed_cart">Giảm số tiền cố định trên giỏ hàng</a-select-option>
-                <a-select-option value="fixed_product">Giảm số tiền cố định trên sản phẩm</a-select-option>
+                <a-select-option value="percent">Percentage Discount</a-select-option>
+                <a-select-option value="fixed_cart">Fixed Amount Cart Discount</a-select-option>
+                <a-select-option value="fixed_product">Fixed Amount Product Discount</a-select-option>
               </a-select>
             </a-form-item>
 
-            <a-form-item label="Giá trị giảm" required>
-              <a-input-number 
-                v-model:value="formData.DiscountAmount"
-                :min="0"
+            <a-form-item label="Discount Value" required>
+              <a-input-number v-model:value="formData.DiscountAmount" :min="0"
                 :max="formData.DiscountType === 'percent' ? 100 : 999999999999"
                 :formatter="(value: number) => formData.DiscountType === 'percent' ? `${value}%` : formatCurrency(value)"
-                :parser="(value: string) => value!.replace(/\D/g, '')"
-                style="width: 100%"
-              />
+                :parser="(value: string) => value!.replace(/\D/g, '')" style="width: 100%" />
             </a-form-item>
           </div>
         </div>
 
-        <!-- Điều kiện sử dụng -->
+        <!-- Usage Conditions -->
         <div class="mb-6">
-          <h3 class="text-lg font-semibold mb-4">Điều kiện sử dụng</h3>
+          <h3 class="text-lg font-semibold mb-4">Usage Conditions</h3>
           <div class="grid grid-cols-2 gap-6">
-            <a-form-item label="Giá trị đơn hàng tối thiểu">
-              <a-input-number 
-                v-model:value="formData.MinimumAmount"
-                :formatter="(value: number) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                :parser="(value: string) => value!.replace(/\$\s?|(,*)/g, '')"
-                :min="0"
-                :max="999999999999"
-                style="width: 100%"
-              />
+            <a-form-item label="Minimum Order Value">
+              <a-input-number v-model:value="formData.MinimumAmount"
+                :formatter="(value: number) => formatCurrency(value)"
+                :parser="(value: string) => value!.replace(/\D/g, '')" :min="0" :max="999999999999"
+                style="width: 100%" />
             </a-form-item>
 
-            <a-form-item label="Giá trị đơn hàng tối đa">
-              <a-input-number 
-                v-model:value="formData.MaximumAmount"
-                :min="0"
-                :max="999999999999"
-                :formatter="(value: number) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                :parser="(value: string) => value!.replace(/\$\s?|(,*)/g, '')"
-                style="width: 100%"
-              />
+            <a-form-item label="Maximum Order Value">
+              <a-input-number v-model:value="formData.MaximumAmount" :min="0" :max="999999999999"
+                :formatter="(value: number) => formatCurrency(value)"
+                :parser="(value: string) => value!.replace(/\D/g, '')" style="width: 100%" />
             </a-form-item>
 
-            <a-form-item label="Số lần sử dụng tối đa">
-              <a-input-number 
-                v-model:value="formData.UsageLimit"
-                :min="1"
-                style="width: 100%"
-              />
+            <a-form-item label="Maximum Usage Limit">
+              <a-input-number v-model:value="formData.UsageLimit" :min="1" style="width: 100%" />
             </a-form-item>
 
-            <a-form-item label="Giới hạn mỗi khách hàng">
-              <a-input-number 
-                v-model:value="formData.UsageLimitPerUser"
-                :min="1"
-                style="width: 100%"
-              />
+            <a-form-item label="Usage Limit Per Customer">
+              <a-input-number v-model:value="formData.UsageLimitPerUser" :min="1" style="width: 100%" />
             </a-form-item>
           </div>
 
           <div class="grid grid-cols-2 gap-6">
             <a-form-item>
               <a-checkbox v-model:checked="formData.IndividualUse">
-                Không được dùng chung với mã giảm giá khác
+                Cannot be used with other discount codes
               </a-checkbox>
             </a-form-item>
 
             <a-form-item>
               <a-checkbox v-model:checked="formData.ExcludesSaleItems">
-                Không áp dụng cho sản phẩm đang giảm giá
+                Not applicable to sale items
               </a-checkbox>
             </a-form-item>
           </div>
         </div>
 
-        <!-- Thời gian hiệu lực -->
+        <!-- Validity Period -->
         <div class="mb-6">
-          <h3 class="text-lg font-semibold mb-4">Thời gian hiệu lực</h3>
-          <a-form-item label="Ngày hết hạn" required>
-            <a-date-picker 
-              v-model:value="formData.ExpiryDate"
-              :disabledDate="disabledDate"
-              format="YYYY-MM-DD"
-              style="width: 100%"
-            />
-          </a-form-item>
+          <h3 class="text-lg font-semibold mb-4">Validity Period</h3>
+          <div class="grid grid-cols-2 gap-6">
+            <a-form-item label="Start Date" required>
+              <a-date-picker v-model:value="formData.StartDate" format="YYYY-MM-DD" style="width: 100%" />
+            </a-form-item>
+            
+            <a-form-item label="Expiry Date" required>
+              <a-date-picker v-model:value="formData.ExpiryDate" :disabledDate="disabledDate" format="YYYY-MM-DD" style="width: 100%" />
+            </a-form-item>
+          </div>
         </div>
 
-        <!-- Phạm vi áp dụng -->
+        <!-- Scope of Application -->
         <div class="mb-6">
-          <h3 class="text-lg font-semibold mb-4">Phạm vi áp dụng</h3>
+          <h3 class="text-lg font-semibold mb-4">Scope of Application</h3>
           <div class="grid grid-cols-2 gap-6">
-            <a-form-item label="Sản phẩm được áp dụng">
-              <a-select
-                v-model:value="formData.ProductIds"
-                mode="multiple"
-                placeholder="Tìm và chọn sản phẩm"
-                :options="productOptions"
-                :loading="loadingProducts"
-                show-search
-                :filter-option="false"
-                @search="handleSearchProducts"
-                style="width: 100%"
-                option-label-prop="label"
-              >
+            <a-form-item label="Applicable Products">
+              <a-select v-model:value="formData.ProductIds" mode="multiple" placeholder="Search and select products"
+                :options="productOptions" :loading="loadingProducts" show-search :filter-option="false"
+                @search="handleSearchProducts" style="width: 100%" option-label-prop="label">
               </a-select>
             </a-form-item>
 
-            <a-form-item label="Danh mục được áp dụng">
-              <a-select
-                v-model:value="formData.ProductCategories"
-                mode="multiple"
-                placeholder="Tìm và chọn danh mục"
-                :options="categoryOptions"
-                :loading="loadingCategories"
-                show-search
+            <a-form-item label="Applicable Categories">
+              <a-select v-model:value="formData.ProductCategories" mode="multiple" placeholder="Search and select categories"
+                :options="categoryOptions" :loading="loadingCategories" show-search :filter-option="false"
+                @search="handleSearchCategories" style="width: 100%" option-label-prop="label">
+              </a-select>
+            </a-form-item>
+
+            <a-form-item label="Excluded Products">
+              <a-select v-model:value="formData.ExcludeProductIds" mode="multiple" 
+                placeholder="Search and select excluded products"
+                :options="productOptions" 
+                :loading="loadingProducts" 
+                show-search 
                 :filter-option="false"
-                @search="handleSearchCategories"
-                style="width: 100%"
-                option-label-prop="label"
-              >
+                @search="handleSearchProducts" 
+                style="width: 100%" 
+                option-label-prop="label">
+              </a-select>
+            </a-form-item>
+
+            <a-form-item label="Excluded Categories">
+              <a-select v-model:value="formData.ExcludeCategories" mode="multiple" 
+                placeholder="Search and select excluded categories"
+                :options="categoryOptions" 
+                :loading="loadingCategories" 
+                show-search 
+                :filter-option="false"
+                @search="handleSearchCategories" 
+                style="width: 100%" 
+                option-label-prop="label">
               </a-select>
             </a-form-item>
           </div>
@@ -167,7 +151,7 @@
 
         <div class="flex justify-end">
           <a-button type="primary" html-type="submit" :loading="loading">
-            Tạo mã giảm giá
+            Create Discount Code
           </a-button>
         </div>
       </a-form>
@@ -187,7 +171,7 @@ import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'CreateCouponView',
-  
+
   components: {
     DefaultLayout
   },
@@ -214,7 +198,9 @@ export default defineComponent({
       ProductCategories: [] as number[],
       ExcludeCategories: [] as number[],
       AllowedEmails: [] as string[],
-      ExpiryDate: null as any
+      StartDate: null as any,
+      ExpiryDate: null as any,
+      FreeProductIds: [] as number[],
     })
 
     // Mock data - Thay thế bằng API call thực tế
@@ -242,20 +228,20 @@ export default defineComponent({
     const handleSubmit = async () => {
       try {
         loading.value = true
-        
+
         // Validate
         if (!formData.websiteId) {
-          message.error('Vui lòng chọn website')
+          message.error('Please select a website')
           return
         }
 
         if (!formData.CouponCode) {
-          message.error('Vui lòng nhập mã giảm giá')
+          message.error('Please enter discount code')
           return
         }
 
         if (!formData.ExpiryDate) {
-          message.error('Vui lòng chọn ngày hết hạn')
+          message.error('Please select expiry date')
           return
         }
 
@@ -277,7 +263,7 @@ export default defineComponent({
           throw new Error('Failed to create coupon')
         }
 
-        message.success('Tạo mã giảm giá thành công')
+        message.success('Discount code created successfully')
         // Reset form
         Object.assign(formData, {
           websiteId: undefined,
@@ -296,14 +282,16 @@ export default defineComponent({
           ProductCategories: [],
           ExcludeCategories: [],
           AllowedEmails: [],
-          ExpiryDate: null
+          StartDate: null,
+          ExpiryDate: null,
+          FreeProductIds: [],
         })
       } catch (error) {
         console.error('Error creating coupon:', error)
-        message.error('Không thể tạo mã giảm giá')
+        message.error('Unable to create discount code')
       } finally {
         loading.value = false
-      router.push('/pro-coupon-voucher/usage-history')
+        router.push('/pro-coupon-voucher/usage-history')
       }
     }
 
@@ -314,7 +302,7 @@ export default defineComponent({
 
     const fetchProducts = async (search = '') => {
       if (!formData.websiteId) return
-      
+
       try {
         loadingProducts.value = true
         const response = await fetch(
@@ -337,7 +325,7 @@ export default defineComponent({
         }))
       } catch (error) {
         console.error('Error fetching products:', error)
-        message.error('Không thể tải danh sách sản phẩm')
+        message.error('Unable to load product list')
       } finally {
         loadingProducts.value = false
       }
@@ -345,7 +333,7 @@ export default defineComponent({
 
     const fetchCategories = async (search = '') => {
       if (!formData.websiteId) return
-      
+
       try {
         loadingCategories.value = true
         const response = await fetch(
@@ -362,12 +350,12 @@ export default defineComponent({
         }
         const data = await response.json()
         categoryOptions.value = data.categories.map((category: any) => ({
-          label: `${category.name} (${category.count || 0} sản phẩm)`,
+          label: `${category.name} (${category.count || 0} products)`,
           value: category.id
         }))
       } catch (error) {
         console.error('Error fetching categories:', error)
-        message.error('Không thể tải danh sách danh mục')
+        message.error('Unable to load category list')
       } finally {
         loadingCategories.value = false
       }

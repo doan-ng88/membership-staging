@@ -10,13 +10,21 @@
       showSizeChanger: true,
       showQuickJumper: true,
       pageSizeOptions: ['10', '20', '50', '100'],
-      showTotal: (total, range) => `${range[0]}-${range[1]} của ${total} chiến dịch`,
+      showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} campaigns`,
     }"
     @change="handleTableChange"
     :row-key="(record) => record.id"
   >
     <template #bodyCell="{ column, record }">
-      <template v-if="column.key === 'action'">
+      <template v-if="column.key === 'name'">
+        <template v-if="props.enableNameClick">
+          <a @click="handleNameClick(record)">{{ record.name }}</a>
+        </template>
+        <template v-else>
+          {{ record.name }}
+        </template>
+      </template>
+      <template v-else-if="column.key === 'action'">
         <a-space>
           <a-button type="link" @click="handleEdit(record)">
             <edit-outlined />
@@ -37,14 +45,16 @@
       </template>
     </template>
   </a-table>
+
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import type { TableColumnsType, TablePaginationConfig } from 'ant-design-vue';
 import type { Campaign } from '../../types/campaign.types';
 import { getWebsiteName } from '@/api/types/website';
+import { useRouter } from 'vue-router';
 
 interface Props {
   campaigns: Campaign[];
@@ -54,9 +64,12 @@ interface Props {
     pageSize: number;
     total: number;
   };
+  enableNameClick?: boolean;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  enableNameClick: false
+});
 
 const emit = defineEmits<{
   (e: 'pageChange', page: number, pageSize: number): void;
@@ -64,9 +77,13 @@ const emit = defineEmits<{
   (e: 'delete', campaign: Campaign): void;
 }>();
 
+const router = useRouter();
+
+const selectedCampaign = ref<Campaign | null>(null);
+
 const columns: TableColumnsType = [
   {
-    title: 'Tên chiến dịch',
+    title: 'Campaign Name',
     dataIndex: 'name',
     key: 'name',
     width: '25%',
@@ -78,25 +95,25 @@ const columns: TableColumnsType = [
     width: 120,
   },
   {
-    title: 'Thời gian bắt đầu',
+    title: 'Start Time',
     dataIndex: 'startDate',
     key: 'startDate',
     width: '20%',
   },
   {
-    title: 'Thời gian kết thúc',
+    title: 'End Time',
     dataIndex: 'endDate',
     key: 'endDate',
     width: '20%',
   },
   {
-    title: 'Trạng thái',
+    title: 'Status',
     dataIndex: 'status',
     key: 'status',
     width: '10%',
   },
   {
-    title: 'Thao tác',
+    title: 'Actions',
     key: 'action',
     width: '10%',
   },
@@ -126,6 +143,13 @@ const getStatusColor = (status: string) => {
   };
   return statusColors[status.toLowerCase()] || 'default';
 };
+
+const handleNameClick = (campaign: Campaign) => {
+  selectedCampaign.value = campaign;
+  router.push(`/call-campaign/${campaign.id}`);
+  
+};
+
 </script>
 
 <style scoped>
@@ -138,4 +162,13 @@ const getStatusColor = (status: string) => {
   text-align: right;
 }
 
+/* Add styles for clickable name */
+a {
+  color: #1890ff;
+  cursor: pointer;
+}
+
+a:hover {
+  text-decoration: underline;
+}
 </style>

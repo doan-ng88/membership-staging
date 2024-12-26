@@ -8,7 +8,7 @@
         <template #extra>
           <a-space>
             <a-upload accept=".docx" :showUploadList="false" :beforeUpload="handleWordUpload">
-              <a-button>
+              <a-button class="flex items-center">
                 <template #icon>
                   <upload-outlined />
                 </template>
@@ -16,20 +16,14 @@
               </a-button>
             </a-upload>
 
-            <!-- <a-button @click="captureEditorPreview">
-              <template #icon>
-                <camera-outlined />
-              </template>
-              Tải Preview
-            </a-button> -->
-            <a-button @click="handleSendMail"  :disabled="isSaving"> 
+            <a-button class="flex items-center" @click="handleSendMail" :disabled="isSaving">
               <template #icon>
                 <mail-outlined />
               </template>
-              Send Mail
+              Select Campaigns/Members to Send Mail
             </a-button>
 
-            <a-button type="primary" @click="handleCreateOrSaveTemplate" :disabled="isSaving">
+            <a-button class="flex items-center" type="primary" @click="handleCreateOrSaveTemplate" :disabled="isSaving">
               <template #icon>
                 <SaveOutlined />
               </template>
@@ -47,12 +41,12 @@
           <a-input v-model:value="templateName" placeholder="Enter template name" :rules="[{ required: true, message: 'Please input template name' }]"/>
         </a-form-item>
 
-        <a-form-item class="mb-4">
+        <!-- <a-form-item class="mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2">
             Subject
           </label>
           <a-input v-model:value="subject" placeholder="Enter email subject" :rules="[{ required: true, message: 'Please input email subject' }]"/>
-        </a-form-item>
+        </a-form-item> -->
 
         <a-form-item class="mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -85,8 +79,12 @@
         </a-form-item>
 
         <a-form-item class="mb-4">
-          <a-switch v-model:checked="saveToElasticMail" checked-children="Save to ElasticMail"
-            un-checked-children="Not save" :default-checked="false" />
+          <a-switch 
+            :checked="saveToElasticMail" 
+            checked-children="Save to ElasticMail"
+            un-checked-children="Not save" 
+            @change="handleElasticMailChange"
+          />
         </a-form-item>
 
         <div class="editor-container">
@@ -96,64 +94,85 @@
       </div>
     </div>
 
+    <!-- First Drawer: Gửi Mail Template -->
     <a-drawer
       v-model:visible="showSendMailDrawer"
-      title="Gửi Mail Template"
+      @update:visible="handleCloseSendMailDrawer"
+      title="Choose Campaign/Membership to send Mail Template"
       placement="right"
-      :width="1200"
+      width="80%"
+      :footer="true"
     >
-      <div class="space-y-6">
-        <!-- Campaign Option -->
-        <div 
-          class="border rounded-lg p-6 cursor-pointer hover:shadow-lg transition-shadow"
-          @click="handleSendOption('campaign')"
-        >
-          <div class="flex items-center space-x-4">
-            <team-outlined class="text-2xl text-blue-500" />
-            <div>
-              <h3 class="text-lg font-medium mb-1">Send by Campaign</h3>
-              <p class="text-gray-500">Select a campaign to send mail to members</p>
-            </div>
-          </div>
+      <div class="flex items-center justify-between border-gray-200 mb-4">
+        <div class="flex-1">
+          <a-tabs v-model:activeKey="activeTab">
+            <a-tab-pane key="campaign" tab="Send by Campaign" />
+            <a-tab-pane key="membership" tab="Send by Membership" />
+          </a-tabs>
         </div>
 
-        <!-- Membership Option -->
-        <div 
-          class="border rounded-lg p-6 cursor-pointer hover:shadow-lg transition-shadow"
-          @click="handleSendOption('membership')"
-        >
-          <div class="flex items-center space-x-4">
-            <user-outlined class="text-2xl text-green-500" />
-            <div>
-              <h3 class="text-lg font-medium mb-1">Send by Membership</h3>
-              <p class="text-gray-500">Select members from membership list</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Excel Option -->
-        <div 
-          class="border rounded-lg p-6 cursor-pointer hover:shadow-lg transition-shadow"
-          @click="handleSendOption('excel')"
-        >
-          <div class="flex items-center space-x-4">
-            <file-excel-outlined class="text-2xl text-green-600" />
-            <div>
-              <h3 class="text-lg font-medium mb-1">Upload Excel</h3>
-                <p class="text-gray-500">Upload Excel file containing email list</p>
-            </div>
-          </div>
+        <div class="flex gap-2 pr-4">
+          <a-upload
+            accept=".xlsx,.xls"
+            :showUploadList="false"
+            :beforeUpload="handleExcelUpload"
+          >
+            <a-button class="flex items-center">
+              <FileExcelOutlined class="flex-shrink-0" />
+              <span class="ml-2">Upload Excel</span>
+            </a-button>
+          </a-upload>
         </div>
       </div>
+
+      <div class="px-4">
+        <div v-if="activeTab === 'campaign'">
+          <CampaignTab 
+            ref="campaignTabRef"
+            @select="handleCampaignSelect"
+            @send="handleShowSendMailModal"
+            @cancel="handleCloseSendMailDrawer"
+          />
+        </div>
+        <div v-if="activeTab === 'membership'">
+          <MembershipTab 
+            ref="membershipTabRef"
+            @select="handleMembershipSelect"
+            @send="handleShowSendMailModal"
+            @cancel="handleCloseSendMailDrawer"
+          />
+        </div>
+      </div>
+
+      <!-- <template #footer>
+        <div class="flex justify-end gap-2">
+          <a-button @click="() => showSendMailDrawer = false">Cancel</a-button>
+          <a-button type="primary" @click="handleShowSecondModal">Send Mail</a-button>
+        </div>
+      </template> -->
     </a-drawer>
+
+    <!-- Second Modal: Send Mail Template by Campaign/Membership -->
+    <SendTemplateMailModal
+      v-if="showSendMailModal && templateData"
+      v-model:visible="showSendMailModal"
+      :template="templateData"
+      :selected-campaigns="selectedCampaign"
+      :selected-members="selectedMembers"
+      :mode="activeTab === 'campaign' ? 'campaign' : 'membership'"
+      @success="handleSendMailSuccess"
+      @cancel="handleSendMailCancel"
+      @removeCampaign="handleRemoveCampaign"
+      @removeMember="handleRemoveMember" 
+    />
   </DefaultLayout>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch, nextTick, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
-import { SaveOutlined, UploadOutlined, MailOutlined, TeamOutlined, UserOutlined, FileExcelOutlined } from '@ant-design/icons-vue'
+import { SaveOutlined, UploadOutlined, MailOutlined, TeamOutlined, UserOutlined, FileExcelOutlined, PlusOutlined } from '@ant-design/icons-vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import PageHeader from '@/shared/components/PageHeader.vue'
 import { QuillEditor } from '@vueup/vue-quill'
@@ -164,6 +183,11 @@ import { useAuthStore } from '@/stores/auth'
 import html2canvas from 'html2canvas'
 import type { MailTemplate } from '@/services/mailTemplateService'
 import axios from 'axios'
+import CampaignTab from '../components/SendMail/CampaignTab.vue'
+import MembershipTab from '../components/SendMail/MembershipTab.vue'
+import SendTemplateMailModal from '../components/SendTemplateMailModal.vue'
+import SendMailModal from '../components/SendMailModal.vue'
+import type { Campaign } from '@/types/campaign'  // Import interface
 
 const route = useRoute()
 const router = useRouter()
@@ -178,7 +202,16 @@ const isSaving = ref(false)
 const isEdit = ref(false)
 const templateId = ref<number | null>(null)
 
+// Modal states
 const showSendMailDrawer = ref(false)
+const showSendMailModal = ref(false)
+const activeTab = ref('campaign')
+const selectedCampaign = ref<Campaign[]>([])
+const selectedMembers = ref<any[]>([])
+const templateFields = ref<string[]>([])
+const campaignTabRef = ref() // Add ref to access CampaignTab methods
+const membershipTabRef = ref()
+
 // Xử lý id từ route params để xác định chế độ edit
 watch(
   () => route.params.id,
@@ -279,6 +312,10 @@ const fetchTemplateById = async (id: number) => {
       templateCategory.value = mailTemplate.templateCategoryID
       saveToElasticMail.value = mailTemplate.enabled
       editorData.value = await fetchTemplateData(mailTemplate.body)
+      
+      // Extract and store merge fields
+      templateFields.value = extractMergeFields(mailTemplate.body)
+      console.log('Extracted merge fields:', templateFields.value)
     } else {
       throw new Error('Failed to get template details')
     }
@@ -298,6 +335,7 @@ onMounted(async () => {
   if (templateIdParam) {
     await fetchTemplateById(Number(templateIdParam))
   }
+  saveToElasticMail.value = false
 })
 
 // Thêm ref để lưu trữ files
@@ -463,6 +501,7 @@ const handleSave = async () => {
     const formData = new FormData()
 
     // Thêm file HTML đã xử lý
+    //Từ file HTML này phải đọc được merge field merge data
     const htmlFile = new File([processedHtml], 'template.html', {
       type: 'text/html'
     })
@@ -664,7 +703,7 @@ const processHtmlContent = async (html: string): Promise<string> => {
   return tempDiv.innerHTML
 }
 
-// Thêm watcher để tự động xử lý khi nội dung thay đổi
+// Thêm watcher để tự động xử lý khi nội dung thay đ���i
 watch(editorData, async (newContent) => {
   if (newContent) {
     const processedContent = await processHtmlContent(newContent)
@@ -784,47 +823,202 @@ const fetchTemplateData = async (bodyPath: string): Promise<string> => {
   }
 }
 
-
-
-
+// Initial send mail handler - shows first drawer
 const handleSendMail = async () => {
   try {
-    if (!templateName.value?.trim() || !subject.value?.trim() || !editorData.value?.trim()) {
-      return message.error('Please fill in all template information')
+    if (!editorData.value) {
+      return message.error('No template content')
     }
-    console.log('templateName.value', templateName.value)
-    // Lưu template trước khi gửi
-    // await handleSave()
+
+    // Extract fields from editor content
+    const matches = editorData.value.match(/\{([^}]+)\}/g) || []
+    templateFields.value = matches.map(match => ({
+      key: match.replace(/[{}]/g, ''),
+      value: ''
+    }))
     
-    // Mở drawer
+    if (templateFields.value.length === 0) {
+      return message.warning('No merge fields found in template')
+    }
+
+    // Show first drawer
     showSendMailDrawer.value = true
   } catch (error) {
-    console.error('Error:', error)
-    message.error('An error occurred while processing template')
+    console.error('Error preparing send mail:', error)
+    message.error('Failed to prepare send mail form')
   }
 }
 
-const handleSendOption = async (type: 'campaign' | 'membership' | 'excel') => {
-  try {
-    // Xử lý tùy theo loại gửi mail được chọn
-    switch (type) {
-      case 'campaign':
-        // TODO: Thêm logic gửi theo campaign
-          message.info('Feature is under development')
-        break
-      case 'membership':
-        // TODO: Thêm logic gửi theo membership
-        message.info('Feature is under development')
-        break
-      case 'excel':
-        // TODO: Thêm logic upload excel
-        message.info('Feature is under development')
-        break
-    }
-  } catch (error) {
-    console.error('Error handling send option:', error)
-    message.error('An error occurred, please try again')
+// Handler to show second modal
+// const handleShowSecondModal = () => {
+//   // Validate if campaign/members are selected based on activeTab
+//   if (activeTab.value === 'campaign' && !selectedCampaign.value.length) {
+//     return message.error('Please select a campaign')
+//   }
+//   if (activeTab.value === 'membership' && !selectedMembers.value.length) {
+//     return message.error('Please select at least one member')
+//   }
+
+//   showSendMailDrawer.value = false // Close first drawer
+//   showSendMailModal.value = true // Show second modal
+// }
+
+// Campaign/Member selection handlers
+const handleCampaignSelect = (campaigns: any[]) => {
+  selectedCampaign.value = campaigns
+}
+
+const handleMembershipSelect = (members: any[]) => {
+  selectedMembers.value = members
+}
+
+// Second modal handlers
+const handleSendMailSuccess = () => {
+  showSendMailModal.value = false
+  message.success('Mail sent successfully')
+}
+
+const handleSendMailCancel = () => {
+  showSendMailModal.value = false
+}
+
+// Mapping options helper
+const getMappingOptions = (fieldKey: string) => {
+  const key = fieldKey.toLowerCase()
+  
+  const commonOptions = [
+    { label: 'Customer Name', value: 'fullName' },
+    { label: 'Email', value: 'email' },
+    { label: 'Phone', value: 'phoneNumber' },
+    { label: 'Address', value: 'address' }
+  ]
+
+  const campaignOptions = [
+    { label: 'Campaign Name', value: 'name' },
+    { label: 'Start Date', value: 'startDate' },
+    { label: 'End Date', value: 'endDate' }
+  ]
+
+  return activeTab.value === 'campaign' 
+    ? [...commonOptions, ...campaignOptions]
+    : commonOptions
+}
+
+// Thêm hàm xử lý sự kiện change
+const handleElasticMailChange = (checked: boolean) => {
+  saveToElasticMail.value = checked
+}
+
+// Interfaces
+interface TemplateField {
+  original: string
+  key: string
+  value?: string
+}
+
+// Extract merge fields from HTML content
+const extractTemplateFields = (content: string): TemplateField[] => {
+  // Extract content inside body tag first
+  const bodyRegex = /<body\b[\s\S]*<\/body>/i
+  const bodyMatch = content.match(bodyRegex)
+  const bodyContent = bodyMatch ? bodyMatch[0] : content
+
+  // Extract merge fields with pattern {field}
+  const mergeFieldsRegex = /\{([^\n{}]+)\}/g
+  const matches = bodyContent.match(mergeFieldsRegex) || []
+  
+  // Clean up and remove duplicates
+  const uniqueFields = Array.from(new Set(
+    matches.map(match => ({
+      original: match,
+      key: match.replace(/[{}]/g, '').trim(),
+      value: ''
+    }))
+  ))
+  
+  console.log('Extracted fields:', uniqueFields)
+  return uniqueFields
+}
+
+const handleCloseSendMailDrawer = () => {
+  showSendMailDrawer.value = false
+  selectedCampaign.value = []
+}
+
+// Khai báo interface cho template data
+interface TemplateData {
+  id: number
+  content: string
+  name: string
+}
+
+const templateData = ref<TemplateData | null>(null)
+
+// Sửa lại hàm handleShowSendMailModal có sẵn
+const handleShowSendMailModal = (campaigns: Campaign[]) => {
+  console.log('handleShowSendMailModal called with campaigns:', campaigns)
+  
+  selectedCampaign.value = campaigns
+  
+  templateData.value = {
+    id: Number(route.params.id),
+    content: editorData.value,
+    name: templateName.value
   }
+  
+  console.log('Template Data:', templateData.value)
+  console.log('showSendMailModal before:', showSendMailModal.value)
+  
+  showSendMailModal.value = true
+  
+  console.log('showSendMailModal after:', showSendMailModal.value)
+}
+
+// Thêm watch để debug templateData trong SendTemplateMailModal
+watch(() => templateData.value?.content, (newContent) => {
+  if (newContent) {
+    const mergeFields = extractMergeFields(newContent)
+    console.log('Merge fields extracted:', mergeFields)
+  }
+}, { immediate: true })
+
+// Handle when a campaign is removed from modal
+const handleRemoveCampaign = (campaign: any) => {
+  selectedCampaign.value = selectedCampaign.value.filter(
+    (c: any) => c.id !== campaign.id
+  )
+  // Call updateSelection method in CampaignTab
+  campaignTabRef.value?.updateSelection(selectedCampaign.value)
+}
+
+const handleRemoveMember = (member: any) => {
+  // 1. Cập nhật selectedMembers
+  selectedMembers.value = selectedMembers.value.filter(
+    (m: any) => m.membershipWebsiteId !== member.membershipWebsiteId
+  )
+
+  // 2. Gọi method updateSelection trong MembershipTab để cập nhật table
+  membershipTabRef.value?.updateSelection(selectedMembers.value.map(m => m.membershipWebsiteId))
+}
+
+
+// Add function to extract merge fields
+const extractMergeFields = (content: string) => {
+  const matches = content.match(/\{([^}]+)\}/g) || []
+  return Array.from(new Set(
+    matches.map(match => match.replace(/\{|\}/g, '').trim())
+  ))
+}
+
+// Thêm hàm xử lý cho membership
+const handleShowSendMailModalByMembership = (members: any[]) => {
+  selectedMembers.value = members
+  templateData.value = {
+    id: Number(route.params.id),
+    content: editorData.value,
+    name: templateName.value
+  }
+  showSendMailModal.value = true
 }
 </script>
 <style scoped>
@@ -851,6 +1045,23 @@ const handleSendOption = async (type: 'campaign' | 'membership' | 'excel') => {
 
 .transition-shadow {
   transition: box-shadow 0.3s ease;
+}
+
+/* Override switch styles */
+:deep(:where(.css-dev-only-do-not-override-1p3hq3p).ant-switch) {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+:deep(:where(.css-dev-only-do-not-override-1p3hq3p).ant-switch.ant-switch-checked) {
+  background: #1890ff;
+}
+
+:deep(:where(.css-dev-only-do-not-override-1p3hq3p).ant-switch:hover:not(.ant-switch-disabled)) {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+:deep(:where(.css-dev-only-do-not-override-1p3hq3p).ant-switch.ant-switch-checked:hover:not(.ant-switch-disabled)) {
+  background: #1890ff;
 }
 
 </style>

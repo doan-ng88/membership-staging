@@ -4,7 +4,7 @@
     <div class="flex gap-4">
       <a-input-search
         v-model:value="searchText"
-        placeholder="Tìm kiếm theo tên chiến dịch"
+        placeholder="Search by campaign name"
         style="width: 300px"
         allow-clear
         @search="handleSearch"
@@ -80,12 +80,12 @@ const handleSearchChange = (e: Event) => {
   clearTimeout(searchTimeout);
   
   if (!value) {
-    // Nếu xóa hết text thì trigger search ngay
+    // If text is cleared, trigger search immediately
     handleSearch();
     return;
   }
 
-  // Debounce search khi đang nhập
+  // Debounce search while typing
   searchTimeout = setTimeout(() => {
     handleSearch();
   }, 500);

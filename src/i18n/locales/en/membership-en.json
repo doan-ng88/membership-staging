@@ -1,0 +1,34 @@
+{
+  "membership": {
+    "campaign": {
+      "title": "Campaign Management",
+      "form": {
+        "name": "Campaign Name",
+        "description": "Description",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "status": "Status",
+        "priority": "Priority Level",
+        "type": "Campaign Type"
+      },
+      "table": {
+        "columns": {
+          "name": "Campaign Name",
+          "startDate": "Start Date",
+          "endDate": "End Date",
+          "status": "Status",
+          "actions": "Actions"
+        }
+      },
+      "validation": {
+        "name": {
+          "required": "Please enter campaign name"
+        },
+        "dates": {
+          "required": "Please select date",
+          "startBeforeEnd": "Start date must be before end date"
+        }
+      }
+    }
+  }
+} 

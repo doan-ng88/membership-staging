@@ -1,6 +1,6 @@
 <template>
   <div class="mb-12 bg-white p-6 rounded shadow">
-    <h3 class="text-2xl font-semibold mb-4">Phân tích chu kỳ mua hàng</h3>
+    <h3 class="text-2xl font-semibold mb-4">Purchase Cycle Analysis</h3>
     <div class="mb-4 flex items-center gap-4">
       <div class="flex items-center">
         <label for="websiteSelect" class="text-gray-700 font-medium mr-4">Website:</label>
@@ -15,7 +15,7 @@
         </a-select>
       </div>
       <div class="flex items-center">
-        <label for="cycleTimeRange" class="text-gray-700 font-medium mr-4">Chọn khoảng thời gian:</label>
+        <label for="cycleTimeRange" class="text-gray-700 font-medium mr-4">Select Time Range:</label>
         <a-range-picker
           v-model:value="dateRange"
           class="w-1/3"
@@ -25,22 +25,22 @@
       </div>
     </div>
     
-    <!-- Thống kê tổng quan -->
+    <!-- Overview Statistics -->
     <div class="grid grid-cols-3 gap-4 mb-6">
       <div class="bg-blue-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-blue-700">Tổng số đơn hàng</h5>
+        <h5 class="text-sm font-medium text-blue-700">Total Orders</h5>
         <p class="text-2xl font-bold text-blue-900 mt-2">
           {{ totalOrders }}
         </p>
       </div>
       <div class="bg-green-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-green-700">Số lượng sản phẩm</h5>
+        <h5 class="text-sm font-medium text-green-700">Total Products</h5>
         <p class="text-2xl font-bold text-green-900 mt-2">
           {{ totalQuantity }}
         </p>
       </div>
       <div class="bg-purple-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-purple-700">Trung bình đơn hàng/tháng</h5>
+        <h5 class="text-sm font-medium text-purple-700">Average Orders/Month</h5>
         <p class="text-2xl font-bold text-purple-900 mt-2">
           {{ avgOrdersPerMonth }}
         </p>
@@ -115,7 +115,7 @@ export default defineComponent({
     })
 
     const series = computed(() => [{
-      name: 'Số đơn hàng',
+      name: 'Number of Orders',
       data: Array.from(monthlyStats.value.values()).map(stat => stat.orders)
     }])
 
@@ -139,19 +139,19 @@ export default defineComponent({
       xaxis: {
         categories: Array.from(monthlyStats.value.keys())
           .sort((a, b) => a - b)
-          .map(month => `Tháng ${month}`),
+          .map(month => `Month ${month}`),
         title: {
-          text: 'Tháng'
+          text: 'Month'
         }
       },
       yaxis: {
         title: {
-          text: 'Số lượng đơn hàng'
+          text: 'Number of Orders'
         }
       },
       colors: ['#4299E1'],
       title: {
-        text: 'Phân tích chu kỳ mua hàng theo tháng',
+        text: 'Monthly Purchase Cycle Analysis',
         align: 'center'
       },
       tooltip: {
@@ -209,7 +209,7 @@ export default defineComponent({
         purchaseData.value = response.data
       } catch (error) {
         console.error('Error fetching purchase data:', error)
-        message.error('Không thể tải dữ liệu chu kỳ mua hàng')
+        message.error('Unable to load purchase cycle data')
       } finally {
         loading.value = false
       }

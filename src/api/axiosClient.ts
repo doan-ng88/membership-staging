@@ -2,9 +2,11 @@
 import axios from 'axios'
 
 const axiosClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://lxwvj138-8081.asse.devtunnels.ms/api',
+  // baseURL: import.meta.env.VITE_API_BASE_URL || '{{base_url}}',
+  baseURL: '/api',
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
   }
 })
 
@@ -25,17 +27,10 @@ axiosClient.interceptors.request.use(
 // Xử lý response
 axiosClient.interceptors.response.use(
   (response) => {
-    if (response.data) {
-      return response.data
-    } else {
-      return response
-    }
+    return response.data
   },
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token')
-      window.location.href = '/login'
-    }
+    // Xử lý lỗi chung ở đây (401, 403, etc.)
     return Promise.reject(error)
   }
 )

@@ -6,7 +6,7 @@
       <!-- Brand Selection -->
       <div class="mb-6">
         <label for="brandAdjustment" class="block text-gray-700 font-medium mb-2">
-          Chọn Thương Hiệu:
+          Select Brand:
         </label>
         <select v-model="selectedBrand" 
                 id="brandAdjustment" 
@@ -24,10 +24,10 @@
         <div class="flex justify-between items-center mb-6">
           <div class="flex items-center gap-6">
             <h3 class="text-xl font-semibold text-gray-800">
-              Cài Đặt Tự Động Điều Chỉnh Hạng
+              Automatic Level Adjustment Settings
             </h3>
             <div class="flex items-center gap-2">
-              <label class="text-gray-600">Số Ngày:</label>
+              <label class="text-gray-600">Number of Days:</label>
               <input 
                 type="number" 
                 v-model="daysBeforeAdjustment"
@@ -46,7 +46,7 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              Đang lưu...
+              Saving...
             </span>
             <span v-else>Save Settings</span>
           </button>
@@ -62,8 +62,8 @@
     <!-- Success Popup -->
     <SuccessPopup
       :show="showSuccessPopup"
-      title="Cập nhật thành công"
-      message="Các cài đặt đã được lưu thành công!"
+      title="Update Successful"
+      message="Settings have been saved successfully!"
       @close="showSuccessPopup = false"
     />
   </DefaultLayout>

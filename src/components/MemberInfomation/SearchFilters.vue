@@ -4,63 +4,32 @@
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
       <!-- Date Range Picker for Date Join Member -->
       <template v-if="tab === 'date-join-member'">
-        <div class="relative">
-          <label class="block text-gray-700">Date Range</label>
-          <div 
-            @click="showDatePicker = !showDatePicker"
-            class="w-full p-2 border rounded-lg cursor-pointer flex justify-between items-center"
-          >
-            <span>{{ formatDateRange }}</span>
-            <i class="fas fa-calendar"></i>
-          </div>
-          
-          <!-- Custom Date Picker Dropdown -->
-          <div v-if="showDatePicker" class="absolute z-50 mt-1 bg-white rounded-lg shadow-lg border p-4">
-            <div class="flex gap-4 mb-4">
-              <div>
-                <label class="block text-sm mb-1">Start Date</label>
-                <input 
-                  type="date" 
-                  v-model="filters.startDate"
-                  class="p-2 border rounded-lg"
-                >
-              </div>
-              <div>
-                <label class="block text-sm mb-1">End Date</label>
-                <input 
-                  type="date" 
-                  v-model="filters.endDate"
-                  class="p-2 border rounded-lg"
-                >
-              </div>
-            </div>
-            <div class="flex justify-end gap-2">
-              <button 
-                @click="cancelDateSelection"
-                class="px-3 py-1 text-sm bg-gray-200 rounded-lg"
-              >
-                Cancel
-              </button>
-              <button 
-                @click="confirmDateSelection"
-                class="px-3 py-1 text-sm bg-purple-500 text-white rounded-lg"
-              >
-                Done
-              </button>
-            </div>
-          </div>
+        <div>
+          <label class="block text-gray-700">Date Join Member</label>
+          <a-form-item
+          :rules="[{ required: true, message: 'Vui lòng chọn thời gian tham gia' }]"
+          class="flex-1"
+        >
+          <a-range-picker
+            v-model:value="dateRange"
+            format="YYYY-MM-DD"
+            :placeholder="['Start date', 'End date']"
+            style="width: 100%; height: 40px;"
+            :disabled-date="disabledDate"
+            @change="onDateRangeChange"
+          />
+        </a-form-item>
         </div>
       </template>
 
       <!-- Month Selection for Date of Birth -->
       <template v-if="tab === 'date-of-birth'">
         <div>
-          <label class="block text-gray-700">Select Month</label>
+          <label class="block text-gray-700">Select Birthday Month</label>
           <select 
             v-model="filters.birthMonth"
             class="w-full p-2 border rounded-lg"
           >
-            <option value="">Select month</option>
             <option v-for="month in months" :key="month.value" :value="month.value">
               {{ month.label }}
             </option>
@@ -68,40 +37,50 @@
         </div>
       </template>
       
-      <!-- Platform Website Filter (common for both tabs) -->
+      <!-- Platform Website Filter -->
       <div>
-        <label class="block text-gray-700">Platform Website</label>
-        <select 
-          v-model="filters.platformWebsite"
-          class="w-full p-2 border rounded-lg"
+        <label class="block text-gray-700 mb-2">Platform Website</label>
+        <a-select
+          v-model:value="filters.websiteId"
+          style="width: 100%"
+          placeholder="Select Platform"
+          allow-clear
+          @change="handleWebsiteChange"
         >
-          <option value="All">All</option>
-          <option v-for="platform in platforms" :key="platform" :value="platform">
-            {{ platform }}
-          </option>
-        </select>
+          <a-select-option value="">All Platforms</a-select-option>
+          <a-select-option 
+            v-for="website in websites" 
+            :key="website.websiteId" 
+            :value="website.websiteId"
+          >
+            {{ website.name }}
+          </a-select-option>
+        </a-select>
       </div>
+
+      <!-- Member Level Filter -->
+      <template v-if="tab === 'date-join-member'">
+        <div>
+          <label class="block text-gray-700">Member Level</label>
+          <select 
+            v-model="filters.levelId"
+            class="w-full p-2 border rounded-lg"
+            @change="handleFilter"
+          >
+            <option value="">All Levels</option>
+            <option 
+              v-for="level in memberLevels" 
+              :key="level.levelId" 
+              :value="level.levelId"
+            >
+              {{ level.Name }}
+            </option>
+          </select>
+        </div>
+      </template>
 
       <!-- Additional filters only for Date Join Member tab -->
       <template v-if="tab === 'date-join-member'">
-        <div>
-          <label class="block text-gray-700">Order Point</label>
-          <input 
-            type="number" 
-            v-model="filters.orderPoint"
-            class="w-full p-2 border rounded-lg" 
-            placeholder="Enter points"
-          >
-        </div>
-        <div>
-          <label class="block text-gray-700">Level Up Condition</label>
-          <input 
-            type="text" 
-            v-model="filters.levelUpCondition"
-            class="w-full p-2 border rounded-lg"
-            placeholder="Enter condition"
-          >
-        </div>
         <div>
           <label class="block text-gray-700">Member Downgrade Month</label>
           <select 
@@ -134,75 +113,156 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, reactive, ref } from 'vue'
-import type { TabType, FilterParams, PlatformWebsite } from '@/types/profile'
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { websites, type Website } from '@/api/types/website'
+import type { TabType } from '@/types/profile'
+import { membershipAPI } from '@/api/services/membershipApi'
+import dayjs from 'dayjs'
 
-export default defineComponent({
-  name: 'SearchFilters',
+// Props & Emits
+defineProps<{
+  tab: TabType
+}>()
 
-  props: {
-    tab: {
-      type: String as () => TabType,
-      required: true
-    }
-  },
+const emit = defineEmits<{
+  (e: 'filter', params: any): void
+  (e: 'reset'): void
+}>()
 
-  emits: ['filter', 'reset'],
+// State
+const dateRange = ref<[dayjs.Dayjs, dayjs.Dayjs] | null>(null)
+const memberLevels = ref<any[]>([])
+const filters = ref({
+  websiteId: '',
+  levelId: '',
+  memberDowngradeMonth: undefined,
+  birthMonth: undefined
+})
+const loading = ref(false)
 
-  setup(props, { emit }) {
-    const filters = reactive<FilterParams>({})
-    const showDatePicker = ref(false)
-    const tempDates = reactive({
-      startDate: '',
-      endDate: ''
+// Define months array
+const months = ref(Array.from({ length: 12 }, (_, i) => ({
+  value: i + 1,
+  label: new Date(2000, i, 1).toLocaleString('default', { month: 'long' })
+})))
+
+// Methods
+const handleWebsiteChange = (websiteId: number | '') => {
+  // Reset levelId và cập nhật websiteId
+  filters.value.levelId = ''
+  filters.value.websiteId = websiteId
+
+  handleFilter() // Gọi handleFilter để xử lý tất cả các filters
+}
+
+const handleFilter = () => {
+  const searchParams = []
+  
+  // Xử lý filter website - Đảm bảo gửi đúng websiteId
+  if (filters.value.websiteId !== '') {
+    searchParams.push({
+      key: 'websiteId',
+      value: filters.value.websiteId.toString()
     })
-    
-    const platforms: PlatformWebsite[] = ['hince', 'BBIA', 'mixsoon', 'sky007']
-    
-    const months = Array.from({ length: 12 }, (_, i) => ({
-      value: i + 1,
-      label: new Date(2000, i, 1).toLocaleString('default', { month: 'long' })
-    }))
+  }
 
-    const formatDateRange = computed(() => {
-      if (!filters.startDate && !filters.endDate) return 'Select Date Range'
-      
-      const start = filters.startDate ? new Date(filters.startDate).toLocaleDateString() : ''
-      const end = filters.endDate ? new Date(filters.endDate).toLocaleDateString() : ''
-      return `${start} - ${end}`
-    })
-
-    const cancelDateSelection = () => {
-      showDatePicker.value = false
-    }
-
-    const confirmDateSelection = () => {
-      showDatePicker.value = false
-    }
-
-    const handleFilter = () => {
-      emit('filter', { ...filters })
-    }
-
-    const handleReset = () => {
-      Object.keys(filters).forEach(key => {
-        filters[key as keyof FilterParams] = undefined
-      })
-      emit('reset')
-    }
-
-    return {
-      filters,
-      platforms,
-      months,
-      showDatePicker,
-      formatDateRange,
-      cancelDateSelection,
-      confirmDateSelection,
-      handleFilter,
-      handleReset
+  // Xử lý date range
+  if (dateRange.value) {
+    const [startDate, endDate] = dateRange.value
+    if (startDate && endDate) {
+      searchParams.push(
+        {
+          key: 'registeredTimeFrom',
+          value: startDate.format('YYYY-MM-DD')
+        },
+        {
+          key: 'registeredTimeTo',
+          value: endDate.format('YYYY-MM-DD')
+        }
+      )
     }
   }
+
+  // Xử lý các filter khác
+  if (filters.value.levelId) {
+    searchParams.push({
+      key: 'levelId',
+      value: filters.value.levelId.toString()
+    })
+  }
+
+  if (filters.value.memberDowngradeMonth) {
+    searchParams.push({
+      key: 'memberDowngradeMonth',
+      value: filters.value.memberDowngradeMonth.toString()
+    })
+  }
+
+  // Log để debug
+  console.log('Filter params:', searchParams)
+  console.log('Selected websiteId:', filters.value.websiteId)
+
+  // Emit với đầy đủ thông tin
+  emit('filter', {
+    sortField: 'MembershipsWebsitesId',
+    sortType: 'ASC',
+    pageSize: 10,
+    pageIndex: 1,
+    searchParams
+  })
+}
+
+// Reset function
+const handleReset = () => {
+  filters.value = {
+    websiteId: '',
+    levelId: '',
+    memberDowngradeMonth: undefined,
+    birthMonth: undefined
+  }
+  dateRange.value = null
+  emit('reset')
+}
+
+// Lifecycle hooks
+onMounted(async () => {
+  try {
+    const response = await membershipAPI.getLevelInfo()
+    if (response?.code === 200 && response?.data) {
+      memberLevels.value = response.data
+    }
+  } catch (error) {
+    console.error('Error fetching member levels:', error)
+  }
+})
+
+// Return all methods and refs that are used in template
+const disabledDate = (current: dayjs.Dayjs) => {
+  return current && current > dayjs().endOf('day')
+}
+
+const onDateRangeChange = (dates: [dayjs.Dayjs, dayjs.Dayjs] | null) => {
+  if (dates) {
+    const [startDate, endDate] = dates
+    emit('filter', {
+      registeredTimeFrom: startDate.format('YYYY-MM-DD'),
+      registeredTimeTo: endDate.format('YYYY-MM-DD')
+    })
+  }
+}
+
+// Export all necessary methods and refs
+defineExpose({
+  dateRange,
+  filters,
+  websites,
+  memberLevels,
+  months,
+  handleWebsiteChange,
+  handleFilter,
+  handleReset,
+  disabledDate,
+  onDateRangeChange
 })
 </script> 

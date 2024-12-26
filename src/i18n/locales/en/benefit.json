@@ -1,0 +1,64 @@
+{
+  "benefit": {
+    "settings": "Benefit Settings",
+    "title": "Benefit",
+    "description": "Description",
+    "status": "Status",
+    "action": "Action",
+    "active": "Active",
+    "inactive": "Inactive",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "addLevel": "Add Level",
+    "search": "Search",
+    "filterStatus": "Filter by status",
+    "selectBrand": "Select Brand",
+    "memberLevelList": "Member Level List",
+    "editLevel": "Edit Level",
+    "deleteLevel": "Delete Level",
+    "loading": "Loading...",
+    "error": {
+      "title": "An error occurred",
+      "retry": "Retry"
+    },
+    "noData": {
+      "title": "No data available",
+      "description": "Start by adding a new level"
+    },
+    "notification": {
+      "deleteSuccess": "Level deleted successfully",
+      "deleteError": "Error occurred while deleting level"
+    },
+    "table": {
+      "rank": "Level",
+      "minAmount": "Minimum Accumulated Amount (VND)",
+      "rewardRate": "Point Earning Rate (%)",
+      "redeemRate": "Point Redemption Rate (%)",
+      "duration": "Validity Period (Months)",
+      "discount": "Discount (%)",
+      "unlimited": "Unlimited"
+    }
+  },
+  "menu": {
+    "benefitSettings": {
+      "title": "Benefit Settings",
+      "list": {
+        "header": "Benefit List",
+        "columns": {
+          "name": "Benefit Name",
+          "code": "Benefit Code",
+          "description": "Description",
+          "status": "Status",
+          "actions": "Actions"
+        }
+      }
+    }
+  },
+  "common": {
+    "actions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete"
+  }
+} 

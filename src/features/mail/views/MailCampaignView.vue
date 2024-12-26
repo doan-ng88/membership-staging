@@ -4,12 +4,12 @@
       <div class="p-6">
         <PageHeader>
         <template #title>
-          <h2 class="text-2xl font-bold text-gray-800">Quản lý Chiến dịch Email</h2>
+          <h2 class="text-2xl font-bold text-gray-800">Email Campaign Management</h2>
         </template>
         <template #extra>
           <CampaignActions 
             :loading="loading"
-            @add="showAddModal = true"
+            @add="handleAdd"
             @refresh="fetchCampaignList"
           />
         </template>
@@ -39,18 +39,13 @@
         />
       </div>
   
-      <CampaignFormModal
-        v-model:visible="showAddModal"
-        :campaign="selectedCampaign"
-        @save="handleSave"
-        @cancel="handleCancel"
-      />
       </div>
     </DefaultLayout>
   </template>
   
   <script setup lang="ts">
   import { ref, computed, onMounted } from 'vue';
+  import { useRouter } from 'vue-router';
   import DefaultLayout from '@/layouts/DefaultLayout.vue';
   import { message } from 'ant-design-vue';
   import { mailCampaignService } from '@/services/mailCampaignService';
@@ -60,16 +55,17 @@
   import CampaignActions from '@/features/call-campaign/components/CampaignList/CampaignActions.vue';
   import CampaignFilters from '@/features/call-campaign/components/CampaignList/CampaignFilters.vue';
   import CampaignTable from '@/features/call-campaign/components/CampaignList/CampaignTable.vue';
-  import CampaignFormModal from '@/features/call-campaign/components/CampaignForm/CampaignFormModal.vue';
   import { useMailCampaign } from '../composables/useMailCampaign';
   import type { CampaignFilters as CampaignFiltersType } from '../../call-campaign/types/campaign.types';
+import axios from 'axios';
+import { useAuthStore } from '@/stores/auth';
   
+  const router = useRouter();
+
   // Reactive state
   const loading = ref(false);
   const campaigns = ref([]);
   const filters = ref<CampaignFiltersType>({});
-  const showAddModal = ref(false);
-  const selectedCampaign = ref(null);
   const pagination = ref({
     current: 1,
     pageSize: 10,
@@ -115,6 +111,11 @@
       })
     }
 
+      params.searchParams.push({
+        key: 'isServiceEmail',
+        value: 'true'
+      })
+
       const result = await mailCampaignService.getCampaignList(params);
       console.log('API Response:', result);
       
@@ -130,7 +131,7 @@
       console.log('Updated pagination:', pagination.value);
     } catch (error) {
       console.error('Error fetching campaigns:', error);
-      message.error('Không thể tải danh sách chiến dịch');
+      message.error('Unable to load campaign list');
     } finally {
       loading.value = false;
     }
@@ -168,32 +169,16 @@
   const handleDelete = async (campaign) => {
     try {
       // TODO: Implement delete API
-      message.success('Xóa chiến dịch thành công');
+      message.success('Campaign deleted successfully');
       await fetchCampaignList();
     } catch (error) {
       console.error('Error deleting campaign:', error);
-      message.error('Xóa chiến dịch thất bại');
+      message.error('Failed to delete campaign');
     }
   };
 
-  const handleSave = async (data) => {
-    try {
-      // TODO: Implement save API
-      message.success(selectedCampaign.value 
-        ? 'Cập nhật chiến dịch thành công'
-        : 'Tạo chiến dịch thành công'
-      );
-      showAddModal.value = false;
-      await fetchCampaignList();
-    } catch (error) {
-      console.error('Error saving campaign:', error);
-      message.error('Lưu chiến dịch thất bại');
-    }
-  };
-
-  const handleCancel = () => {
-    selectedCampaign.value = null;
-    showAddModal.value = false;
+  const handleAdd = () => {
+    router.push({name: 'NewCampaign'});
   };
 
   // Lifecycle

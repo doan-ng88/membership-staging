@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white rounded-lg shadow-sm p-6">
-    <h3 class="text-lg font-medium text-gray-900 mb-4">Phân tích chuyển đổi cấp độ</h3>
+    <h3 class="text-lg font-medium text-gray-900 mb-4">Level Transition Analysis</h3>
 
     <!-- Filter Section -->
     <div class="mb-6">
@@ -14,19 +14,19 @@
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       <div class="bg-green-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-green-700">Nâng cấp</h5>
+        <h5 class="text-sm font-medium text-green-700">Upgrades</h5>
         <p class="text-2xl font-bold text-green-900 mt-2">
           {{ totalUpgrades }}
         </p>
       </div>
       <div class="bg-yellow-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-yellow-700">Gia hạn</h5>
+        <h5 class="text-sm font-medium text-yellow-700">Extensions</h5>
         <p class="text-2xl font-bold text-yellow-900 mt-2">
           {{ totalExtends }}
         </p>
       </div>
       <div class="bg-red-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-red-700">Hạ cấp</h5>
+        <h5 class="text-sm font-medium text-red-700">Downgrades</h5>
         <p class="text-2xl font-bold text-red-900 mt-2">
           {{ totalDowngrades }}
         </p>
@@ -39,7 +39,7 @@
     </div>
     <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div class="bg-gray-50 p-4 rounded-lg">
-        <h4 class="text-sm font-medium text-gray-700 mb-4">Chi tiết chuyển đổi</h4>
+        <h4 class="text-sm font-medium text-gray-700 mb-4">Transition Details</h4>
         <VueApexCharts
           type="bar"
           height="350"
@@ -49,7 +49,7 @@
       </div>
 
       <div class="bg-gray-50 p-4 rounded-lg">
-        <h4 class="text-sm font-medium text-gray-700 mb-4">Chi tiết gia hạn</h4>
+        <h4 class="text-sm font-medium text-gray-700 mb-4">Extension Details</h4>
         <VueApexCharts
           type="bar"
           height="350"
@@ -159,7 +159,7 @@ const totalDowngrades = computed((): number => {
 const downgradeSeries = computed(() => {
   const downData = websiteData.value.find(d => d.action === 'down')?.details || []
   return [{
-    name: 'Số lượng hạ cấp',
+    name: 'Number of Downgrades',
     data: downData.map(d => d.count)
   }]
 })
@@ -204,7 +204,7 @@ const downgradeChartOptions = computed(() => ({
 const extendSeries = computed(() => {
   const extendData = websiteData.value.find(d => d.action === 'extend')?.details || []
   return [{
-    name: 'Số lượng gia hạn',
+    name: 'Number of Extensions',
     data: extendData.map(d => d.count)
   }]
 })
@@ -234,7 +234,7 @@ const distributionSeries = computed(() => [
 ])
 
 const distributionChartOptions = {
-  labels: ['Nâng cấp', 'Hạ cấp', 'Gia hạn'],
+  labels: ['Upgrades', 'Downgrades', 'Extensions'],
   colors: ['#52c41a', '#ff4d4f', '#faad14'],
   legend: {
     position: 'bottom'
@@ -268,7 +268,7 @@ const fetchLevelData = async (): Promise<void> => {
     console.log('Level data:', levelData.value)
   } catch (error) {
     console.error('Error fetching level data:', error)
-    message.error('Không thể tải dữ liệu chuyển đổi cấp độ')
+    message.error('Unable to load level transition data')
   } finally {
     loading.value = false
   }

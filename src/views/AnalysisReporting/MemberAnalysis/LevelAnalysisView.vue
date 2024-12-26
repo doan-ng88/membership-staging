@@ -5,7 +5,7 @@
       <h2 class="text-3xl font-bold mb-6">Level Analysis</h2>
 
       <div class="mb-8 flex items-center">
-        <label class="text-gray-700 font-medium mr-4">Chọn Thương Hiệu:</label>
+        <label class="text-gray-700 font-medium mr-4">Select Brand:</label>
         <select 
           v-model="selectedBrand"
           class="block w-1/3 bg-white border border-gray-300 rounded px-4 py-2"
@@ -37,7 +37,8 @@ import BehaviorChart from '@/components/MemberAnalysis/LevelAnalysis/BehaviorCha
 import { levelService as rankService } from '@/api/services/levelService'
 import { message } from 'ant-design-vue'
 import dayjs, { type Dayjs } from 'dayjs'
-// Định nghĩa interface và constant cho websites
+
+// Define interface and constant for websites
 interface Website {
   WebsiteId: string;
   Name: string;
@@ -79,7 +80,7 @@ export default defineComponent({
   },
 
   setup() {
-    // Khởi tạo selectedBrand với giá trị mặc định là website đầu tiên
+    // Initialize selectedBrand with the first website as default value
     const selectedBrand = ref(WEBSITES[0].WebsiteId)
     const memberStats = ref({
       'Diamond': 0,
@@ -97,14 +98,14 @@ export default defineComponent({
           endDate: endDate.format('YYYY-MM-DD')
         })
 
-        // Reset về 0
+        // Reset to 0
         memberStats.value = {
           'Diamond': 0,
           'Gold': 0, 
           'Silver': 0
         }
 
-        // Cập nhật giá trị từ API
+        // Update values from API
         if (response && Array.isArray(response)) {
           response.forEach(item => {
             if (item.level_name === 'Diamond') {
@@ -113,13 +114,12 @@ export default defineComponent({
               memberStats.value.Silver = item.total_members
             } else
               memberStats.value.Gold = item.total_members
-
           })
         }
 
       } catch (error) {
         console.error('Error fetching rank statistics:', error)
-        message.error('Không thể tải dữ liệu thống kê hạng thành viên')
+        message.error('Unable to load member rank statistics')
       } finally {
         loading.value = false
       }

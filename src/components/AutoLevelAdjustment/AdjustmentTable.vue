@@ -4,9 +4,9 @@
       <table class="min-w-full bg-gray-50 shadow rounded">
         <thead>
           <tr>
-            <th class="py-3 px-4 border-b text-left text-gray-600 w-1/4">Cách thông báo</th>
-            <th class="py-3 px-4 border-b text-left text-gray-600 w-2/4">Mô tả</th>
-            <th class="py-3 px-4 border-b text-left text-gray-600 w-1/4">Hành động</th>
+            <th class="py-3 px-4 border-b text-left text-gray-600 w-1/4">Notification Method</th>
+            <th class="py-3 px-4 border-b text-left text-gray-600 w-2/4">Description</th>
+            <th class="py-3 px-4 border-b text-left text-gray-600 w-1/4">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -19,7 +19,7 @@
               </div>
             </td>
             <td class="py-3 px-4 border-b">
-              Gửi SMS thông báo khi thành viên sắp xuống hạng
+              Send SMS notification when member is about to be downgraded
             </td>
             <td class="py-3 px-4 border-b">
               <div class="flex items-center">
@@ -41,7 +41,7 @@
               </div>
             </td>
             <td class="py-3 px-4 border-b">
-              Gửi SMS thông báo sau khi thành viên đã xuống hạng
+              Send SMS notification after member has been downgraded
             </td>
             <td class="py-3 px-4 border-b">
               <div class="flex items-center">
@@ -66,7 +66,7 @@
               </div>
             </td>
             <td class="py-3 px-4 border-b">
-              Gửi email thông báo khi thành viên sắp xuống hạng
+              Send email notification when member is about to be downgraded
             </td>
             <td class="py-3 px-4 border-b">
               <div class="flex items-center">
@@ -91,7 +91,7 @@
               </div>
             </td>
             <td class="py-3 px-4 border-b">
-              Gửi email thông báo sau khi thành viên đã xuống hạng
+              Send email notification after member has been downgraded
             </td>
             <td class="py-3 px-4 border-b">
               <div class="flex items-center">

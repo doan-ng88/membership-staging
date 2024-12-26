@@ -1,14 +1,14 @@
 <template>
   <div class="bg-white rounded-lg shadow-sm p-6">
     <div class="mb-6">
-      <h3 class="text-xl font-semibold text-gray-600">Hiệu Suất SMS Marketing</h3>
-      <p class="text-sm text-gray-600 mt-1">Phân tích hiệu quả chiến dịch SMS marketing</p>
+      <h3 class="text-xl font-semibold text-gray-600">SMS Marketing Performance</h3>
+      <p class="text-sm text-gray-600 mt-1">Analysis of SMS marketing campaign effectiveness</p>
     </div>
 
     <!-- Campaign Selection -->
     <div class="mb-6">
       <label for="smsCampaignSelection" class="block text-sm font-medium text-gray-700 mb-2">
-        Chọn Chiến Dịch SMS
+        Select SMS Campaign
       </label>
       <div class="relative">
         <select 
@@ -29,8 +29,8 @@
       <div class="bg-gray-50 rounded-lg p-4">
         <div class="flex justify-between items-start mb-4">
           <div>
-            <h4 class="text-sm font-medium text-gray-700">Tỷ Lệ Gửi SMS Thành Công</h4>
-            <p class="text-xs text-gray-500 mt-1">Tổng số SMS gửi thành công</p>
+            <h4 class="text-sm font-medium text-gray-700">SMS Delivery Success Rate</h4>
+            <p class="text-xs text-gray-500 mt-1">Total SMS successfully delivered</p>
           </div>
           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
             +3.2%
@@ -46,7 +46,7 @@
           />
           <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
             <div class="text-2xl font-bold text-gray-800">{{ deliveryRateData[0] }}%</div>
-            <div class="text-xs text-gray-500">Tỷ lệ gửi</div>
+            <div class="text-xs text-gray-500">Delivery rate</div>
           </div>
         </div>
       </div>
@@ -55,8 +55,8 @@
       <div class="bg-gray-50 rounded-lg p-4">
         <div class="flex justify-between items-start mb-4">
           <div>
-            <h4 class="text-sm font-medium text-gray-700">Tỷ Lệ Phản Hồi SMS</h4>
-            <p class="text-xs text-gray-500 mt-1">Tổng số phản hồi từ SMS</p>
+            <h4 class="text-sm font-medium text-gray-700">SMS Response Rate</h4>
+            <p class="text-xs text-gray-500 mt-1">Total responses from SMS</p>
           </div>
           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
             +1.8%
@@ -72,7 +72,7 @@
           />
           <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
             <div class="text-2xl font-bold text-gray-800">{{ responseRateData[0] }}%</div>
-            <div class="text-xs text-gray-500">Tỷ lệ phản hồi</div>
+            <div class="text-xs text-gray-500">Response rate</div>
           </div>
         </div>
       </div>
@@ -93,9 +93,9 @@ const emit = defineEmits(['update:campaign'])
 
 const selectedCampaign = ref('smsCampaign1')
 const campaigns = [
-  { value: 'smsCampaign1', label: 'Chiến Dịch SMS 1' },
-  { value: 'smsCampaign2', label: 'Chiến Dịch SMS 2' },
-  { value: 'smsCampaign3', label: 'Chiến Dịch SMS 3' }
+  { value: 'smsCampaign1', label: 'SMS Campaign 1' },
+  { value: 'smsCampaign2', label: 'SMS Campaign 2' },
+  { value: 'smsCampaign3', label: 'SMS Campaign 3' }
 ]
 
 // Chart Data

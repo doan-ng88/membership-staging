@@ -1,6 +1,6 @@
 <template>
   <div class="mb-12 bg-white p-6 rounded shadow">
-    <h3 class="text-2xl font-semibold mb-4">Phân tích sở thích sản phẩm</h3>
+    <h3 class="text-2xl font-semibold mb-4">Product Preference Analysis</h3>
     <div class="mb-4 flex items-center gap-4">
       <!-- Website Selection -->
       <div class="flex items-center">
@@ -18,7 +18,7 @@
 
       <!-- Date Range -->
       <div class="flex items-center">
-        <label for="dateRange" class="text-gray-700 font-medium mr-4">Thời gian:</label>
+        <label for="dateRange" class="text-gray-700 font-medium mr-4">Date Range:</label>
         <a-range-picker
           v-model:value="dateRange"
           class="w-2/3"
@@ -28,22 +28,22 @@
       </div>
     </div>
 
-    <!-- Thống kê tổng quan -->
+    <!-- Overview Statistics -->
     <div class="grid grid-cols-3 gap-4 mb-6">
       <div class="bg-blue-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-blue-700">Tổng số sản phẩm</h5>
+        <h5 class="text-sm font-medium text-blue-700">Total Products</h5>
         <p class="text-2xl font-bold text-blue-900 mt-2">
           {{ totalProducts }}
         </p>
       </div>
       <div class="bg-green-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-green-700">Tổng đơn hàng</h5>
+        <h5 class="text-sm font-medium text-green-700">Total Orders</h5>
         <p class="text-2xl font-bold text-green-900 mt-2">
           {{ totalOrders }}
         </p>
       </div>
       <div class="bg-purple-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-purple-700">Trung bình số lượng/đơn</h5>
+        <h5 class="text-sm font-medium text-purple-700">Average Quantity/Order</h5>
         <p class="text-2xl font-bold text-purple-900 mt-2">
           {{ avgQuantityPerOrder }}
         </p>
@@ -108,7 +108,7 @@ export default defineComponent({
     })
 
     const series = computed(() => [{
-      name: 'Số lượng bán',
+      name: 'Sales Quantity',
       data: productData.value.map(item => item.total_quantity)
     }])
 
@@ -132,27 +132,27 @@ export default defineComponent({
       xaxis: {
         categories: productData.value.map(item => item.product_name),
         title: {
-          text: 'Sản phẩm'
+          text: 'Products'
         }
       },
       yaxis: {
         title: {
-          text: 'Số lượng bán'
+          text: 'Sales Quantity'
         }
       },
       colors: ['#4299E1'],
       title: {
-        text: 'Top 10 sản phẩm bán chạy',
+        text: 'Top 10 Best-Selling Products',
         align: 'center'
       },
       tooltip: {
         y: {
           formatter: function(value: number, { dataPointIndex }: any) {
             const item = productData.value[dataPointIndex]
-            return `Số lượng: ${value}
-Đơn hàng: ${item.total_orders}
-TB/đơn: ${item.avg_quantity}
-Tỷ lệ: ${item.percentage}%`
+            return `Quantity: ${value}
+Orders: ${item.total_orders}
+Avg/Order: ${item.avg_quantity}
+Percentage: ${item.percentage}%`
           }
         }
       }
@@ -179,7 +179,7 @@ Tỷ lệ: ${item.percentage}%`
         productData.value = response.data
       } catch (error) {
         console.error('Error fetching product preference:', error)
-        message.error('Không thể tải dữ liệu sở thích sản phẩm')
+        message.error('Unable to load product preference data')
       } finally {
         loading.value = false
       }

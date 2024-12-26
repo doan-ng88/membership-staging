@@ -10,7 +10,7 @@
       showSizeChanger: true,
       showQuickJumper: true,
       pageSizeOptions: ['10', '20', '50', '100'],
-      showTotal: (total, range) => `${range[0]}-${range[1]} của ${total} chiến dịch`
+      showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} campaigns`
     }"
     @change="handleTableChange"
   >
@@ -20,7 +20,7 @@
 
     <template #action="{ record }">
       <a-space>
-        <a-tooltip title="Gửi mail">
+        <a-tooltip title="Send Email">
           <a-button 
             type="primary"
             size="small"
@@ -32,7 +32,7 @@
           </a-button>
         </a-tooltip>
 
-        <a-tooltip title="Sửa">
+        <a-tooltip title="Edit">
           <a-button 
             type="link" 
             size="small"
@@ -42,9 +42,9 @@
           </a-button>
         </a-tooltip>
 
-        <a-tooltip title="Xóa">
+        <a-tooltip title="Delete">
           <a-popconfirm
-            title="Bạn có chắc chắn muốn xóa?"
+            title="Are you sure you want to delete?"
             @confirm="$emit('delete', record)"
           >
             <a-button 
@@ -94,7 +94,7 @@ const columns: TableColumnsType = [
     width: 80,
   },
   {
-    title: 'Tên chiến dịch',
+    title: 'Campaign Name',
     dataIndex: 'name',
     width: 200,
   },
@@ -106,32 +106,32 @@ const columns: TableColumnsType = [
     width: 120,
   },
   {
-    title: 'Trạng thái',
+    title: 'Status',
     dataIndex: 'status',
     width: 120,
   },
   {
-    title: 'Ngày bắt đầu',
+    title: 'Start Date',
     dataIndex: 'startDate',
     width: 120,
   },
   {
-    title: 'Ngày kết thúc',
+    title: 'End Date',
     dataIndex: 'endDate',
     width: 120,
   },
   {
-    title: 'Tổng số',
+    title: 'Total',
     dataIndex: 'total',
     width: 100,
   },
   {
-    title: 'Còn lại',
+    title: 'Remaining',
     dataIndex: 'remaining',
     width: 100,
   },
   {
-    title: 'Thao tác',
+    title: 'Actions',
     key: 'action',
     fixed: 'right',
     width: 150,

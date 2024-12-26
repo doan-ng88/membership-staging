@@ -8,25 +8,25 @@
             Cấp Bậc
           </th> -->
           <th scope="col" class="py-2 px-4 border-b text-left text-gray-600">
-            Cấp Bậc
+            {{ t('benefit.table.rank') }}
           </th>
           <th scope="col" class="py-2 px-4 border-b text-left text-gray-600">
-            Số tiền tích lũy tối thiểu (VNĐ)
+            {{ t('benefit.table.minAmount') }}
           </th>
           <th scope="col" class="py-2 px-4 border-b text-left text-gray-600">
-            Tỷ Lệ Tích Điểm (%)
+            {{ t('benefit.table.rewardRate') }}
           </th>
           <th scope="col" class="py-2 px-4 border-b text-left text-gray-600">
-            Tỷ Lệ Đổi Điểm (%)
+            {{ t('benefit.table.redeemRate') }}
           </th>
           <th scope="col" class="py-2 px-4 border-b text-left text-gray-600">
-            Thời Hạn Hiệu Lực (Tháng)
+            {{ t('benefit.table.duration') }}
           </th>
           <th scope="col" class="py-2 px-4 border-b text-left text-gray-600">
-            Giảm Giá (%)
+            {{ t('benefit.table.discount') }}
           </th>
           <th scope="col" class="py-2 px-4 border-b text-left text-gray-600">
-            Actions
+            {{ t('common.actions') }}
           </th>
           <!-- <th scope="col" class="relative px-6 py-3">
             <span class="sr-only">Actions</span>
@@ -51,7 +51,7 @@
             {{ benefit.redeemRate }}%
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            {{ benefit.durationExpired || 'Không giới hạn' }}
+            {{ benefit.durationExpired || t('benefit.table.unlimited') }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
             {{ benefit.discountPerOrder }}%
@@ -76,7 +76,7 @@
                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                   />
                 </svg>
-                Sửa
+                {{ t('common.edit') }}
               </button>
 
               <!-- Delete Button -->
@@ -97,7 +97,7 @@
                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                   />
                 </svg>
-                Xóa
+                {{ t('common.delete') }}
               </button>
             </div>
           </td>
@@ -123,14 +123,15 @@
           d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
         />
       </svg>
-      <h3 class="mt-2 text-sm font-medium text-gray-900">Không có dữ liệu</h3>
-      <p class="mt-1 text-sm text-gray-500">Bắt đầu bằng cách thêm cấp bậc mới.</p>
+      <h3 class="mt-2 text-sm font-medium text-gray-900">{{ t('benefit.noData.title') }}</h3>
+      <p class="mt-1 text-sm text-gray-500">{{ t('benefit.noData.description') }}</p>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, type PropType } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { LevelSetting } from '@/data/benefits'
 
 export default defineComponent({
@@ -146,6 +147,8 @@ export default defineComponent({
   emits: ['edit', 'delete'],
 
   setup(props, { emit }) {
+    const { t } = useI18n()
+
     const handleEdit = (benefit: LevelSetting) => {
       emit('edit', benefit)
     }
@@ -156,7 +159,8 @@ export default defineComponent({
 
     return {
       handleEdit,
-      handleDelete
+      handleDelete,
+      t
     }
   }
 })

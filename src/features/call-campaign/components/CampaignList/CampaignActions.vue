@@ -8,7 +8,7 @@
       <template #icon>
         <PlusOutlined />
       </template>
-      Thêm chiến dịch
+      Add campaign
     </a-button>
 
     <a-button
@@ -18,7 +18,7 @@
       <template #icon>
         <ReloadOutlined />
       </template>
-      Làm mới
+      Refresh
     </a-button>
 
     <a-button
@@ -29,7 +29,7 @@
       <template #icon>
         <DownloadOutlined />
       </template>
-      Xuất Excel
+      Export Excel
     </a-button>
   </div>
 </template>
@@ -58,11 +58,11 @@ const exporting = ref(false);
 const handleExport = async () => {
   try {
     exporting.value = true;
-    // Thực hiện xuất file
+    // Perform file export
     emit('export');
-    message.success('Xuất file thành công');
+    message.success('File exported successfully');
   } catch (error) {
-    message.error('Xuất file thất bại');
+    message.error('Failed to export file');
   } finally {
     exporting.value = false;
   }
