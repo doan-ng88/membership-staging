@@ -34,13 +34,15 @@ export default defineComponent({
 
     onMounted(async () => {
       try {
-        // Kiểm tra và refresh token khi reload trang
         if (localStorage.getItem('token')) {
-          await authStore.checkAuth();
+          await authStore.checkAuth()
         }
       } catch (error) {
-        console.error('Auth check failed:', error);
-        router.push('/login');
+        console.error('Auth check failed:', error)
+        // Chỉ redirect khi route yêu cầu auth
+        if (router.currentRoute.value.meta.requiresAuth) {
+          router.push('/login')
+        }
       }
     });
 
