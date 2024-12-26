@@ -3,7 +3,7 @@
     <!-- Background Image -->
     <div 
       class="absolute inset-0 bg-cover bg-center bg-no-repeat blur-sm"
-      style="background-image: url('/src/assets/images/login-bg.png')"
+      style="background-image: url('@/assets/images/login-bg.png')"
     ></div>
     
     <!-- Content -->
