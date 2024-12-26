@@ -13,6 +13,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@components': path.resolve(__dirname, './src/components'),
+      '@features': path.resolve(__dirname, './src/features'),
+      '@views': path.resolve(__dirname, './src/views'),
     },
   },
   server: {
@@ -32,9 +35,6 @@ export default defineConfig({
       input: {
         main: path.resolve(__dirname, 'index.html'),
       },
-    },
-    assetsDir: 'assets',
-    rollupOptions: {
       output: {
         assetFileNames: (assetInfo) => {
           const info = assetInfo.name.split('.')
@@ -46,7 +46,8 @@ export default defineConfig({
         },
         chunkFileNames: 'js/[name]-[hash].js',
         entryFileNames: 'js/[name]-[hash].js',
-      },
+      }
     },
+    assetsDir: 'assets',
   },
 })

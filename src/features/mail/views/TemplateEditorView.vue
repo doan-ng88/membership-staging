@@ -186,7 +186,7 @@ import axios from 'axios'
 import CampaignTab from '../components/SendMail/CampaignTab.vue'
 import MembershipTab from '../components/SendMail/MembershipTab.vue'
 import SendTemplateMailModal from '../components/SendTemplateMailModal.vue'
-import SendMailModal from '../components/SendMailModal.vue'
+// import SendMailModal from '@/features/mail/components/SendMailModal.vue'
 import type { Campaign } from '@/types/campaign'  // Import interface
 
 const route = useRoute()
@@ -368,7 +368,7 @@ const handlePaste = async (e: ClipboardEvent) => {
           // Lưu file gốc vào Map
           imageFiles.value.set(key, file)
 
-          // Convert sang base64 để hiển thị
+          // Convert sang base64 để hi���n thị
           const base64 = await convertImageToBase64(file)
 
           const imageHtml = `<img 
@@ -501,7 +501,7 @@ const handleSave = async () => {
     const formData = new FormData()
 
     // Thêm file HTML đã xử lý
-    //Từ file HTML này phải đọc được merge field merge data
+    //Từ file HTML này phải đọc đ��ợc merge field merge data
     const htmlFile = new File([processedHtml], 'template.html', {
       type: 'text/html'
     })
@@ -703,7 +703,7 @@ const processHtmlContent = async (html: string): Promise<string> => {
   return tempDiv.innerHTML
 }
 
-// Thêm watcher để tự động xử lý khi nội dung thay đ���i
+// Thêm watcher để tự động xử lý khi nội dung thay đổi
 watch(editorData, async (newContent) => {
   if (newContent) {
     const processedContent = await processHtmlContent(newContent)
