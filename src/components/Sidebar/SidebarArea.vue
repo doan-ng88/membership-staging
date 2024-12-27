@@ -223,7 +223,8 @@ const menuGroups = ref([
         label: 'App Push',
         route: '#',
         children: [
-          { label: 'Push Message Management', route: '/app-push/push-message-management/' }
+          { label: 'Templates Zalo OA', route: '/app-push/templates-zalo-oa' },
+          { label: 'Campaigns Zalo OA', route: '/app-push/campaigns-zalo-oa' }
         ]
       }
     ]

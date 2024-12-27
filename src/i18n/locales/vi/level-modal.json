@@ -1,0 +1,66 @@
+{
+  "levelModal": {
+    "title": {
+      "edit": "Chỉnh Sửa Cấp Bậc",
+      "add": "Thêm Cấp Bậc Mới"
+    },
+    "fields": {
+      "name": {
+        "label": "Tên Cấp Bậc",
+        "placeholder": "Nhập tên cấp bậc"
+      },
+      "rank": {
+        "label": "Thứ Hạng",
+        "placeholder": "Nhập thứ hạng"
+      },
+      "threshold": {
+        "label": "Số Tiền Ngưỡng",
+        "placeholder": "Nhập số tiền ngưỡng"
+      },
+      "duration": {
+        "label": "Thời Hạn (Tháng)",
+        "placeholder": "Nhập thời hạn"
+      }
+    },
+    "validation": {
+      "name": {
+        "required": "Vui lòng nhập tên cấp bậc",
+        "maxLength": "Tên cấp bậc không được quá 50 ký tự",
+        "exists": "Tên cấp bậc \"{name}\" đã tồn tại",
+        "error": "Có lỗi xảy ra khi kiểm tra tên"
+      },
+      "rank": {
+        "required": "Vui lòng nhập thứ hạng",
+        "min": "Thứ hạng phải lớn hơn hoặc bằng 0",
+        "exists": "Thứ hạng {rank} đã tồn tại",
+        "error": "Có lỗi xảy ra khi kiểm tra thứ hạng"
+      },
+      "threshold": {
+        "required": "Vui lòng nhập số tiền ngưỡng",
+        "min": "Số tiền ngưỡng không được âm"
+      },
+      "duration": {
+        "required": "Vui lòng nhập thời hạn",
+        "range": "Thời hạn phải từ 1-12 tháng"
+      }
+    },
+    "buttons": {
+      "cancel": "Hủy",
+      "update": "Cập Nhật",
+      "add": "Thêm Mới",
+      "confirm": {
+        "title": "Xác nhận cập nhật",
+        "content": "Bạn có chắc chắn muốn cập nhật cấp bậc này?"
+      }
+    },
+    "messages": {
+      "updateSuccess": "Cập nhật cấp bậc thành công",
+      "addSuccess": "Thêm cấp bậc mới thành công",
+      "error": {
+        "update": "Có lỗi xảy ra khi cập nhật cấp bậc",
+        "add": "Có lỗi xảy ra khi thêm cấp bậc mới",
+        "general": "Có lỗi xảy ra khi xử lý"
+      }
+    }
+  }
+} 

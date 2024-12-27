@@ -1,0 +1,73 @@
+{
+  "benefitModal": {
+    "title": {
+      "edit": "Edit Level",
+      "add": "Add Level"
+    },
+    "fields": {
+      "level": {
+        "label": "Level:",
+        "placeholder": "Enter level name"
+      },
+      "rank": {
+        "label": "Rank:",
+        "placeholder": "Enter rank"
+      },
+      "thresholdAmount": {
+        "label": "Minimum Accumulated Amount:",
+        "placeholder": "Enter minimum amount"
+      },
+      "rewardRate": {
+        "label": "Point Earning Rate (%):",
+        "placeholder": "Enter earning rate"
+      },
+      "redeemRate": {
+        "label": "Point Redemption Rate:",
+        "placeholder": "Enter redemption rate"
+      },
+      "duration": {
+        "label": "Validity Period (months):",
+        "placeholder": "Enter validity period"
+      },
+      "discount": {
+        "label": "Discount Per Order (%):",
+        "placeholder": "Enter discount percentage"
+      }
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "update": "Update",
+      "add": "Add"
+    },
+    "validation": {
+      "level": {
+        "required": "Level name is required",
+        "minLength": "Level name must be at least 3 characters",
+        "maxLength": "Level name cannot exceed 50 characters",
+        "exists": "Level name \"{name}\" already exists for this website",
+        "specialChars": "Level name cannot contain special characters"
+      },
+      "rank": {
+        "required": "Rank is required",
+        "negative": "Rank cannot be negative",
+        "exists": "Rank {rank} already exists for this website"
+      },
+      "thresholdAmount": {
+        "negative": "Accumulated amount cannot be negative"
+      },
+      "rewardRate": {
+        "range": "Earning rate must be between 0-100%"
+      },
+      "redeemRate": {
+        "negative": "Redemption rate cannot be negative"
+      },
+      "duration": {
+        "minimum": "Validity period must be greater than 0 months"
+      },
+      "discount": {
+        "range": "Discount must be between 0-100%"
+      }
+    }
+  }
+} 

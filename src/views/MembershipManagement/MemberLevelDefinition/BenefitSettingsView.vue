@@ -121,7 +121,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { useI18nGlobal } from '@/i18n'
 import { useLanguage } from '@/composables/useLanguage'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import LanguageSwitcher from '@/components/Header/LanguageSwitcher.vue'
@@ -134,6 +134,8 @@ import type { LevelSetting } from '@/data/benefits'
 import { useNotification } from '@/composables/useNotification'
 
 export default defineComponent({
+  name: 'BenefitSettingsView',
+
   components: {
     DefaultLayout,
     LanguageSwitcher,
@@ -143,9 +145,9 @@ export default defineComponent({
   },
 
   setup() {
-    const { t } = useI18n()
-    const { currentLanguage } = useLanguage()
-
+    // Composables
+    const { t } = useI18nGlobal()
+    // const { currentLanguage } = useLanguage()
     const store = useBenefitStore()
     const { levelSettings, isLoading, error } = storeToRefs(store)
     const { showNotification } = useNotification()
@@ -259,7 +261,7 @@ export default defineComponent({
 
     return {
       t,
-      currentLanguage,
+      // currentLanguage,
       // State
       showModal,
       showDeleteConfirm,

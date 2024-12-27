@@ -1,0 +1,43 @@
+{
+  "automaticAdjustment": {
+    "title": "Automatic Level Adjustment",
+    "brandSelection": {
+      "label": "Select Brand",
+      "options": {
+        "sky007": "Sky007",
+        "bbia": "Bbia",
+        "hince": "Hince",
+        "mixsoon": "Mixsoon"
+      }
+    },
+    "settings": {
+      "title": "Automatic Level Adjustment Settings",
+      "daysLabel": "Number of Days",
+      "saveButton": "Save Settings",
+      "saving": "Saving..."
+    },
+    "table": {
+      "headers": {
+        "notificationType": "Notification Type",
+        "beforeAdjustment": "Before Adjustment",
+        "afterAdjustment": "After Adjustment"
+      },
+      "rows": {
+        "zaloSms-before": "Zalo/SMS Before",
+        "zaloSms-after": "Zalo/SMS After",
+        "email-before": "Email Before",
+        "email-after": "Email After",
+        "description-sms-downgrade": "Send SMS notification when member is about to be downgraded",
+        "description-sms-upgrade": "Send SMS notification when member is about to be upgraded",
+        "description-email-downgrade": "Send email notification when member is about to be downgraded",
+        "description-email-upgrade": "Send email notification when member is about to be upgraded"
+      }
+    },
+    "popup": {
+      "success": {
+        "title": "Update Successful",
+        "message": "Settings have been saved successfully!"
+      }
+    }
+  }
+} 

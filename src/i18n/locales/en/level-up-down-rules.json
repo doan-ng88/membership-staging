@@ -1,0 +1,27 @@
+{
+  "level": {
+    "management": "Level Management",
+    "selectWebsite": "Select Website",
+    "addLevel": "Add Level",
+    "columns": {
+      "levelName": "Level Name",
+      "rank": "Rank",
+      "thresholdAmount": "Threshold Amount",
+      "duration": "Duration (Months)",
+      "actions": "Actions"
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "messages": {
+      "deleteSuccess": "Level deleted successfully",
+      "updateSuccess": "Updated successfully",
+      "error": {
+        "loading": "An error occurred while loading data",
+        "deleting": "An error occurred while deleting the level",
+        "updating": "An error occurred while updating"
+      }
+    }
+  }
+} 

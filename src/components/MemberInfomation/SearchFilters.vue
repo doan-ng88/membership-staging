@@ -80,7 +80,7 @@
       </template>
 
       <!-- Additional filters only for Date Join Member tab -->
-      <template v-if="tab === 'date-join-member'">
+      <!-- <template v-if="tab === 'date-join-member'">
         <div>
           <label class="block text-gray-700">Member Downgrade Month</label>
           <select 
@@ -93,7 +93,7 @@
             </option>
           </select>
         </div>
-      </template>
+      </template> -->
     </div>
 
     <div class="flex justify-end gap-4 mt-4">
@@ -136,7 +136,7 @@ const memberLevels = ref<any[]>([])
 const filters = ref({
   websiteId: '',
   levelId: '',
-  memberDowngradeMonth: undefined,
+  // memberDowngradeMonth: undefined,
   birthMonth: undefined
 })
 const loading = ref(false)
@@ -149,24 +149,19 @@ const months = ref(Array.from({ length: 12 }, (_, i) => ({
 
 // Methods
 const handleWebsiteChange = (websiteId: number | '') => {
-  // Reset levelId và cập nhật websiteId
+  // Chỉ cập nhật state, không gọi handleFilter nữa
   filters.value.levelId = ''
   filters.value.websiteId = websiteId
+}
 
-  handleFilter() // Gọi handleFilter để xử lý tất cả các filters
+const onDateRangeChange = (dates: [dayjs.Dayjs, dayjs.Dayjs] | null) => {
+  // Chỉ cập nhật dateRange, không emit filter
+  dateRange.value = dates
 }
 
 const handleFilter = () => {
   const searchParams = []
   
-  // Xử lý filter website - Đảm bảo gửi đúng websiteId
-  if (filters.value.websiteId !== '') {
-    searchParams.push({
-      key: 'websiteId',
-      value: filters.value.websiteId.toString()
-    })
-  }
-
   // Xử lý date range
   if (dateRange.value) {
     const [startDate, endDate] = dateRange.value
@@ -184,33 +179,40 @@ const handleFilter = () => {
     }
   }
 
-  // Xử lý các filter khác
+  // Xử lý website
+  if (filters.value.websiteId) {
+    searchParams.push({
+      key: 'websiteId',
+      value: filters.value.websiteId
+    })
+  }
+
+  // Xử lý level
   if (filters.value.levelId) {
     searchParams.push({
       key: 'levelId',
-      value: filters.value.levelId.toString()
+      value: filters.value.levelId
     })
   }
 
-  if (filters.value.memberDowngradeMonth) {
+  // Xử lý birth month
+  if (filters.value.birthMonth) {
     searchParams.push({
-      key: 'memberDowngradeMonth',
-      value: filters.value.memberDowngradeMonth.toString()
+      key: 'birthMonth',
+      value: filters.value.birthMonth
     })
   }
 
-  // Log để debug
-  console.log('Filter params:', searchParams)
-  console.log('Selected websiteId:', filters.value.websiteId)
+  // Xử lý member downgrade month
+  // if (filters.value.memberDowngradeMonth) {
+  //   searchParams.push({
+  //     key: 'memberDowngradeMonth',
+  //     value: filters.value.memberDowngradeMonth
+  //   })
+  // }
 
-  // Emit với đầy đủ thông tin
-  emit('filter', {
-    sortField: 'MembershipsWebsitesId',
-    sortType: 'ASC',
-    pageSize: 10,
-    pageIndex: 1,
-    searchParams
-  })
+  // Chỉ emit khi nhấn nút Filter
+  emit('filter', searchParams)
 }
 
 // Reset function
@@ -218,7 +220,7 @@ const handleReset = () => {
   filters.value = {
     websiteId: '',
     levelId: '',
-    memberDowngradeMonth: undefined,
+    // memberDowngradeMonth: undefined,
     birthMonth: undefined
   }
   dateRange.value = null
@@ -240,16 +242,6 @@ onMounted(async () => {
 // Return all methods and refs that are used in template
 const disabledDate = (current: dayjs.Dayjs) => {
   return current && current > dayjs().endOf('day')
-}
-
-const onDateRangeChange = (dates: [dayjs.Dayjs, dayjs.Dayjs] | null) => {
-  if (dates) {
-    const [startDate, endDate] = dates
-    emit('filter', {
-      registeredTimeFrom: startDate.format('YYYY-MM-DD'),
-      registeredTimeTo: endDate.format('YYYY-MM-DD')
-    })
-  }
 }
 
 // Export all necessary methods and refs

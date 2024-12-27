@@ -1,0 +1,54 @@
+{
+  "profileManagement": {
+    "title": "Profile Management",
+    "form": {
+      "personalInfo": {
+        "title": "Personal Information",
+        "fullName": "Full Name",
+        "email": "Email",
+        "phone": "Phone Number",
+        "address": "Address",
+        "birthday": "Birthday",
+        "gender": {
+          "label": "Gender",
+          "male": "Male",
+          "female": "Female",
+          "other": "Other"
+        }
+      },
+      "accountInfo": {
+        "title": "Account Information",
+        "username": "Username",
+        "currentPassword": "Current Password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm Password"
+      },
+      "buttons": {
+        "save": "Save Changes",
+        "cancel": "Cancel",
+        "changePassword": "Change Password"
+      }
+    },
+    "notifications": {
+      "success": {
+        "update": "Profile updated successfully",
+        "password": "Password changed successfully"
+      },
+      "error": {
+        "update": "Failed to update profile",
+        "password": "Failed to change password",
+        "passwordMismatch": "Passwords do not match",
+        "currentPassword": "Current password is incorrect"
+      }
+    },
+    "validation": {
+      "required": "This field is required",
+      "email": "Please enter a valid email",
+      "phone": "Please enter a valid phone number",
+      "password": {
+        "length": "Password must be at least 8 characters",
+        "match": "Passwords must match"
+      }
+    }
+  }
+} 

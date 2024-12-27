@@ -3,48 +3,34 @@
     <div class="p-6">
       <PageHeader>
         <template #title>
-          <h2 class="text-2xl font-bold">Campaign Details</h2>
+          <h2 class="text-3xl font-bold text-gray-800">Campaign Details</h2>
         </template>
         <template #extra>
-          <a-button @click="router.back()">
+          <a-button type="primary" @click="router.back()">
             Back
           </a-button>
         </template>
       </PageHeader>
 
       <!-- Campaign Info Card -->
-      <a-card class="mb-6">
-        <a-descriptions title="Campaign Information" bordered>
-          <a-descriptions-item label="Campaign Name">
-            {{ campaign.campaignName }}
-          </a-descriptions-item>
-          <a-descriptions-item label="Description">
-            {{ campaign.description }}
-          </a-descriptions-item>
-          <a-descriptions-item label="Status">
-            <a-tag :color="getStatusColor(campaign.status)">
-              {{ campaign.status }}
-            </a-tag>
-          </a-descriptions-item>
-          <a-descriptions-item label="Start Date">
-            {{ formatDate(campaign.startDate) }}
-          </a-descriptions-item>
-          <a-descriptions-item label="End Date">
-            {{ formatDate(campaign.dueDate) }}
-          </a-descriptions-item>
-          <a-descriptions-item label="Priority Level">
-            {{ campaign.priorityLevel }}
-          </a-descriptions-item>
-        </a-descriptions>
-      </a-card>
+      <a-card class="mb-6 shadow-lg">
+        <div class="flex items-center justify-between">
+          <h2 class="text-2xl font-bold text-blue-600">{{ campaign.campaignName }}</h2>
+          <a-tag color="blue">{{ campaign.status }}</a-tag>
+        </div>
+        <p class="text-lg font-semibold text-gray-700 mt-2">{{ campaign.description }}</p>
+        <div class="text-gray-600 mt-1">{{ `${formatDate(campaign.startDate)} - ${formatDate(campaign.dueDate)}` }}</div>
 
-      <!-- Members Table -->
-      <a-card title="Member List" class="mb-6">
+        <!-- Members Table Title -->
+        <div class="text-base font-semibold mt-8 mb-2">Members List</div>
+        <!-- Members Table -->
         <a-table
           :columns="memberColumns"
           :data-source="campaign.memberships"
-          :pagination="{ pageSize: 10 }"
+          :pagination="membersTableConfig.pagination"
           :row-key="record => record.userId"
+          :loading="loading"
+          bordered
         >
           <template #bodyCell="{ column, text, record }">
             <template v-if="column.key === 'birthday'">
@@ -54,8 +40,8 @@
               {{ text.Name || 'N/A' }}
             </template>
             <template v-if="column.key === 'callStatus'">
-              <a-tag :color="getCallStatusColor(record.membershipCallHistory?.status || 'Not Called')">
-                {{ record.membershipCallHistory?.status || 'Not Called' }}
+              <a-tag :color="getCallStatusColor(record.membershipCallStatus)">
+                {{ getStatus(record.membershipCallStatus) }}
               </a-tag>
             </template>
             <template v-if="column.key === 'actions'">
@@ -69,28 +55,41 @@
         </a-table>
       </a-card>
 
+      <!-- Coupons Table -->
+      <a-card title="Coupons List" class="mb-6 shadow-lg">
+        <a-table
+          :columns="couponColumns"
+          :data-source="campaign.coupons"
+          :pagination="couponsTableConfig.pagination"
+          :row-key="record => record.id"
+          :loading="loading"
+          bordered
+        />
+      </a-card>
+
+
       <!-- Change Status Modal -->
       <a-modal
         v-model:visible="isChangeStatusModalVisible"
         title="Change Status"
         @ok="handleStatusChange"
         @cancel="handleCancel"
+        ok-text="Confirm"
+        cancel-text="Cancel"
       >
-        <a-form :model="{ status: selectedStatus, description: statusDescription }">
-          <a-form-item label="Status">
-            <a-select v-model="selectedStatus" style="width: 100%" placeholder="Select status">
-              <a-select-option value="not_call" :disabled="selectedStatus === 'not_call'">Not Call</a-select-option>
-              <a-select-option value="need_recall" :disabled="selectedStatus === 'need_recall'">Need Recall</a-select-option>
-              <a-select-option value="no_answer" :disabled="selectedStatus === 'no_answer'">No Answer</a-select-option>
-              <a-select-option value="completed" :disabled="selectedStatus === 'completed'">Completed</a-select-option>
-              <a-select-option value="pending" :disabled="selectedStatus === 'pending'">Pending</a-select-option>
+        <a-form :model="formState" :rules="formRules" ref="formRef">
+          <a-form-item label="Status" name="selectedStatus" :rules="[{ required: true, message: 'Please select a status' }]">
+            <a-select v-model:value="formState.selectedStatus" style="width: 100%" placeholder="Select status">
+              <a-select-option v-for="status in statusOptions.filter(status => status !== formState.selectedMember?.membershipCallStatus)" :key="status" :value="status">
+                {{ getStatus(status) }}
+              </a-select-option>
             </a-select>
           </a-form-item>
-          <a-form-item label="Description">
+          <a-form-item label="Description" name="statusDescription">
             <a-textarea
-              v-model="statusDescription"
+              v-model:value="formState.statusDescription"
               placeholder="Enter note"
-              rows="4"
+              :rows="4"
               style="margin-top: 16px; width: 100%;"
             />
           </a-form-item>
@@ -101,23 +100,48 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, reactive, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import PageHeader from '@/shared/components/PageHeader.vue';
 import dayjs from 'dayjs';
 import type { TableColumnsType } from 'ant-design-vue';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
-import { message, Modal } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
+import axios from 'axios';
+import { useAuthStore } from '@/stores/auth';
+
+enum CallStatus {
+  NOT_CALL = 'not_call',
+  NEED_RECALL = 'need_recall',
+  NO_ANSWER = 'no_answer',
+  COMPLETED = 'completed',
+  PENDING = 'pending',
+}
 
 const route = useRoute();
 const router = useRouter();
 const campaign = ref<any>({});
+const coupons = ref<any[]>([]);
 const isChangeStatusModalVisible = ref(false);
-const selectedMember = ref<any>(null);
-const selectedStatus = ref('not_call');
-const statusDescription = ref('');
 
+const formState = reactive({
+  selectedMember: null,
+  selectedStatus: null,
+  statusDescription: ''
+});
+
+const formRef = ref();
+
+const formRules = {
+  selectedStatus: [
+    { required: true, message: 'Please select a status' }
+  ],
+  statusDescription: [
+    { required: true, message: 'Please enter a description' }
+  ]
+};
+
+const campaignId = route.params.id; // Get the campaign ID from the route
 const memberColumns: TableColumnsType = [
   {
     title: 'Full Name',
@@ -161,188 +185,150 @@ const memberColumns: TableColumnsType = [
   }
 ];
 
+const couponColumns: TableColumnsType = [
+  {
+    title: 'Code',
+    dataIndex: 'code',
+    key: 'code',
+  },
+  {
+    title: 'Total used',
+    dataIndex: 'total_used',
+    key: 'total_used',
+  },
+  {
+    title: 'Coupon amount',
+    dataIndex: 'coupon_amount',
+    key: 'coupon_amount',
+  },
+];
+
+const membersPagination = reactive({
+  current: 1,
+  pageSize: 5,
+  total: 0
+});
+
+const membersTableConfig = computed(() => ({
+  pagination: {
+    ...membersPagination,
+    showSizeChanger: true,
+    showTotal: (total: number) => `Total ${campaign.value.memberships.length} items`,
+    pageSizeOptions: ['5', '10', '20'],
+    onChange: (page: number, pageSize: number) => {
+      membersPagination.current = page;
+      membersPagination.pageSize = pageSize;
+    },
+  }
+}));
+
+const couponsPagination = reactive({
+  current: 1,
+  pageSize: 5,
+  total: 0
+});
+
+const couponsTableConfig = computed(() => ({
+  pagination: {
+    ...couponsPagination,
+    showSizeChanger: true,
+    showTotal: (total: number) => `Total ${campaign.value.memberships.length} items`,
+    pageSizeOptions: ['5', '10', '20'],
+    onChange: (page: number, pageSize: number) => {
+      couponsPagination.current = page;
+      couponsPagination.pageSize = pageSize;
+    },
+  }
+}));
+
 const formatDate = (date: string) => {
   return dayjs(date).format('DD/MM/YYYY');
 };
 
-const getStatusColor = (status: string) => {
+const getStatusColor = (status: CallStatus) => {
   const statusColors: Record<string, string> = {
-    'Created': 'blue',
-    'In Progress': 'processing',
-    'Completed': 'success',
-    'Cancelled': 'error',
+    [CallStatus.COMPLETED]: 'success',
+    [CallStatus.PENDING]: 'processing',
+    [CallStatus.NO_ANSWER]: 'error',
+    [CallStatus.NOT_CALL]: 'default',
+    [CallStatus.NEED_RECALL]: 'warning',
   };
   return statusColors[status] || 'default';
 };
 
-const getCallStatusColor = (status: string) => {
-  const statusColors: Record<string, string> = {
-    'Completed': 'success',
-    'In Progress': 'processing',
-    'Failed': 'error',
-    'Not Called': 'default',
-    'Scheduled': 'warning',
+const getStatus = (status: CallStatus) => {
+  const statuses: Record<string, string> = {
+    [CallStatus.COMPLETED]: 'Completed',
+    [CallStatus.PENDING]: 'Pending',
+    [CallStatus.NO_ANSWER]: 'No answer',
+    [CallStatus.NOT_CALL]: 'Not call',
+    [CallStatus.NEED_RECALL]: 'Need recall',
   };
-  return statusColors[status] || 'default';
+  return statuses[status] || 'Not call';
 };
+
+const getCallStatusColor = (status: CallStatus) => {
+  return getStatusColor(status);
+};
+
+const statusOptions = Object.values(CallStatus).slice(1);
+
+const loading = ref(true);
 
 // Fetch campaign data
 const fetchCampaignData = async () => {
+  loading.value = true;
   try {
-    // TODO: Remove this after implementing API
-    campaign.value = {
-        "campaignId": 87,
-        "campaignName": "Test_kvd123",
-        "description": "Test",
-        "startDate": "2024-12-25",
-        "dueDate": "2024-12-26",
-        "isPrivated": false,
-        "total": 0,
-        "remaining": 0,
-        "createdAt": "2024-12-19T16:04:51+07:00",
-        "updatedAt": "2024-12-19T16:04:51+07:00",
-        "isServiceCall": false,
-        "isAppPush": false,
-        "isServiceEmail": false,
-        "issue": "",
-        "createdBy": 3,
-        "priorityLevel": "Not Set",
-        "websiteId": 1,
-        "status": "Created",
-        "memberships": [
-            {
-                "userId": 46,
-                "websiteId": 2,
-                "fullName": "khai",
-                "phoneNumber": "0912345678",
-                "address": "",
-                "birthday": "2024-05-01T00:00:00+07:00",
-                "points": 0,
-                "level": {
-                    "levelId": 8,
-                    "Name": "Gold",
-                    "thresholdAmount": 3500000,
-                    "durationExpried": 6
-                },
-                "expirationDate": "2024-11-18T00:00:00+07:00",
-                "isJoinSky007": true,
-                "email": "khaidang.actsone@gmail.com",
-                "membershipCallHistory": []
-            },
-            {
-                "userId": 48,
-                "websiteId": 4,
-                "fullName": "khai",
-                "phoneNumber": "0912345678",
-                "address": "",
-                "birthday": "2024-05-02T00:00:00+07:00",
-                "points": 0,
-                "level": {
-                    "levelId": 2,
-                    "Name": "Gold",
-                    "thresholdAmount": 1500000,
-                    "durationExpried": 6
-                },
-                "expirationDate": "2024-12-30T00:00:00+07:00",
-                "isJoinSky007": true,
-                "email": "khaidang.actsone@gmail.com",
-                "membershipCallHistory": []
-            }
-        ],
-        "employees": [
-            {
-                "campaignID": 87,
-                "employeeID": 1,
-                "assignedAt": "2024-12-19T16:04:51+07:00",
-                "deletedAt": null,
-                "permissionLevel": "edit",
-                "campaign": null,
-                "employee": null
-            },
-            {
-                "campaignID": 87,
-                "employeeID": 2,
-                "assignedAt": "2024-12-19T16:04:51+07:00",
-                "deletedAt": null,
-                "permissionLevel": "edit",
-                "campaign": null,
-                "employee": null
-            },
-            {
-                "campaignID": 87,
-                "employeeID": 3,
-                "assignedAt": "2024-12-19T16:04:51+07:00",
-                "deletedAt": null,
-                "permissionLevel": "full_permission",
-                "campaign": null,
-                "employee": null
-            },
-            {
-                "campaignID": 87,
-                "employeeID": 4,
-                "assignedAt": "2024-12-19T16:04:51+07:00",
-                "deletedAt": null,
-                "permissionLevel": "edit",
-                "campaign": null,
-                "employee": null
-            },
-            {
-                "campaignID": 87,
-                "employeeID": 5,
-                "assignedAt": "2024-12-19T16:04:51+07:00",
-                "deletedAt": null,
-                "permissionLevel": "edit",
-                "campaign": null,
-                "employee": null
-            },
-            {
-                "campaignID": 87,
-                "employeeID": 6,
-                "assignedAt": "2024-12-19T16:04:51+07:00",
-                "deletedAt": null,
-                "permissionLevel": "edit",
-                "campaign": null,
-                "employee": null
-            },
-            {
-                "campaignID": 87,
-                "employeeID": 7,
-                "assignedAt": "2024-12-19T16:04:51+07:00",
-                "deletedAt": null,
-                "permissionLevel": "edit",
-                "campaign": null,
-                "employee": null
-            },
-            {
-                "campaignID": 87,
-                "employeeID": 8,
-                "assignedAt": "2024-12-19T16:04:51+07:00",
-                "deletedAt": null,
-                "permissionLevel": "edit",
-                "campaign": null,
-                "employee": null
-            }
-        ],
-        "coupons": []
-    };
+    const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/membership/get/get-campaign/${campaignId}`, {
+      headers: {
+        'Authorization': `Bearer ${useAuthStore().token}`
+      }
+    });
+    campaign.value = response.data.campaign; 
   } catch (error) {
-    console.error('Error fetching campaign:', error);
-    message.error('Unable to load campaign information');
+    console.error('Error fetching campaign data:', error);
+    message.error('Unable to load campaign data');
+  } finally {
+    loading.value = false;
   }
 };
+
 
 onMounted(() => {
   fetchCampaignData();
 });
 
 const showChangeStatusModal = (record: any) => {
-  selectedMember.value = record;
+  formState.selectedMember = record;
   isChangeStatusModalVisible.value = true;
 };
 
-const handleStatusChange = () => {
-  // Implement logic to change the status of the selected member
-  console.log('Change status for member:', selectedMember.value);
+const handleStatusChange = async () => {
+  try {
+    await formRef.value.validateFields();
+  } catch (error) {
+    console.error('Error validating form:', error);
+    return;
+  }
+
+  try {
+    const payload = {
+      serviceCallCampaignID: Number(campaignId),
+      customerID: formState.selectedMember.userId,
+      callStatus: formState.selectedStatus,
+      note: formState.statusDescription
+    };
+
+    await axios.post(`${import.meta.env.VITE_API_BASE_URL}/membership/update/update-call-customer`, payload, {
+      headers: {
+        'Authorization': `Bearer ${useAuthStore().token}`
+      }
+    });
+    fetchCampaignData();
+  } catch (error) {
+    console.error('Error fetching campaign data:', error);
+    message.error('Unable to load campaign data');
+  }
   isChangeStatusModalVisible.value = false;
 };
 

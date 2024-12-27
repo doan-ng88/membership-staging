@@ -28,7 +28,7 @@ export class LevelUpDownRulesApi {
 
   async checkNameExists(websiteId: number, name: string, excludeLevelId?: number): Promise<boolean> {
     try {
-      const response = await axiosInstance.get('/api/membership/get/get-level-setting');
+      const response = await axiosInstance.get('/membership/get/get-level-setting');
       const levels = response.data.data;
       return levels.some((level: LevelSetting) => 
         level.websiteId === websiteId && 
@@ -43,7 +43,7 @@ export class LevelUpDownRulesApi {
 
   async checkRankExists(websiteId: number, rank: number, excludeLevelId?: number): Promise<boolean> {
     try {
-      const response = await axiosInstance.get('/api/membership/get/get-level-setting');
+      const response = await axiosInstance.get('/membership/get/get-level-setting');
       const levels = response.data.data;
       return levels.some((level: LevelSetting) => 
         level.websiteId === websiteId && 
@@ -71,7 +71,7 @@ export class LevelUpDownRulesApi {
         throw new ApiError(400, `Thứ hạng ${data.rank} đã tồn tại`);
       }
 
-      const response = await axiosInstance.post('/api/membership/update/level-setting-update-level', {
+      const response = await axiosInstance.post('/membership/update/level-setting-update-level', {
         LevelId: data.levelId,
         name: data.Name,
         websiteId: data.websiteId,
@@ -99,9 +99,7 @@ export class LevelUpDownRulesApi {
 
   async deleteLevel(levelId: number): Promise<ApiResponse<void>> {
     try {
-      const response = await axiosInstance.delete('/api/membership/update/level-setting-delete-level', {
-        data: { levelId }
-      });
+      const response = await axiosInstance.delete(`/membership/update/level-setting-delete-level/${levelId}`);
       return response.data;
     } catch (error: any) {
       throw new ApiError(
@@ -126,7 +124,7 @@ export class LevelUpDownRulesApi {
         throw new ApiError(400, `Thứ hạng ${data.rank} đã tồn tại`);
       }
 
-      const response = await axiosInstance.post('/api/membership/update/level-setting-add-level', {
+      const response = await axiosInstance.post('/membership/update/level-setting-add-level', {
         name: data.Name,
         websiteId: data.websiteId,
         thresholdAmount: data.thresholdAmount,

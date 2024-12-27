@@ -4,9 +4,15 @@
       <table class="min-w-full bg-gray-50 shadow rounded">
         <thead>
           <tr>
-            <th class="py-3 px-4 border-b text-left text-gray-600 w-1/4">Notification Method</th>
-            <th class="py-3 px-4 border-b text-left text-gray-600 w-2/4">Description</th>
-            <th class="py-3 px-4 border-b text-left text-gray-600 w-1/4">Action</th>
+            <th class="py-3 px-4 border-b text-left text-gray-600 w-1/4">
+              {{ t('automaticAdjustment.table.headers.notificationType') }}
+            </th>
+            <th class="py-3 px-4 border-b text-left text-gray-600 w-2/4">
+              {{ t('automaticAdjustment.table.headers.beforeAdjustment') }}
+            </th>
+            <th class="py-3 px-4 border-b text-left text-gray-600 w-1/4">
+              {{ t('automaticAdjustment.table.headers.afterAdjustment') }}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -15,11 +21,13 @@
             <td class="py-3 px-4 border-b">
               <div class="flex items-center">
                 <img src="../../../src/assets/images/brand/brand-07.png" alt="Zalo" class="w-5 h-5 mr-2" />
-                <span class="font-medium">Zalo SMS Before</span>
+                <span class="font-medium">
+                  {{ t('automaticAdjustment.table.rows.zaloSms-before') }}
+                </span>
               </div>
             </td>
             <td class="py-3 px-4 border-b">
-              Send SMS notification when member is about to be downgraded
+              {{ t('automaticAdjustment.table.rows.description-sms-downgrade') }}
             </td>
             <td class="py-3 px-4 border-b">
               <div class="flex items-center">
@@ -37,11 +45,13 @@
             <td class="py-3 px-4 border-b">
               <div class="flex items-center">
                 <img src="../../../src/assets/images/brand/brand-07.png" alt="Zalo" class="w-5 h-5 mr-2" />
-                <span class="font-medium">Zalo SMS After</span>
+                <span class="font-medium">
+                  {{ t('automaticAdjustment.table.rows.zaloSms-after') }}
+                </span>
               </div>
             </td>
             <td class="py-3 px-4 border-b">
-              Send SMS notification after member has been downgraded
+              {{ t('automaticAdjustment.table.rows.description-sms-upgrade') }}
             </td>
             <td class="py-3 px-4 border-b">
               <div class="flex items-center">
@@ -62,11 +72,13 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                         d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
-                <span class="font-medium">Email Before</span>
+                <span class="font-medium">
+                  {{ t('automaticAdjustment.table.rows.email-before') }}
+                </span>
               </div>
             </td>
             <td class="py-3 px-4 border-b">
-              Send email notification when member is about to be downgraded
+              {{ t('automaticAdjustment.table.rows.description-email-downgrade') }}
             </td>
             <td class="py-3 px-4 border-b">
               <div class="flex items-center">
@@ -87,11 +99,13 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                         d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
-                <span class="font-medium">Email After</span>
+                <span class="font-medium">
+                  {{ t('automaticAdjustment.table.rows.email-after') }}
+                </span>
               </div>
             </td>
             <td class="py-3 px-4 border-b">
-              Send email notification after member has been downgraded
+              {{ t('automaticAdjustment.table.rows.description-email-upgrade') }}
             </td>
             <td class="py-3 px-4 border-b">
               <div class="flex items-center">
@@ -110,6 +124,9 @@
   
   <script setup lang="ts">
   import { ref, watch } from 'vue'
+  import { useI18nGlobal } from '@/i18n'
+
+  const { t } = useI18nGlobal()
 
   const notifications = ref({
     zaloSmsBefore: false,

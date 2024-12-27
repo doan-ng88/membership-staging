@@ -34,7 +34,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(member, index) in members" :key="`${member.membershipId}-${member.websiteId}-${index}`">
+        <tr v-for="member in members" :key="member.membershipId">
           <td class="border border-gray-300 p-2">{{ member.fullName }}</td>
           <td class="border border-gray-300 p-2">{{ member.mainPhoneNumber }}</td>
           <td class="border border-gray-300 p-2">
@@ -323,7 +323,8 @@ export default defineComponent({
   props: {
     tab: { type: String as () => TabType, required: true },
     members: { type: Array as () => Member[], required: true },
-    filters: { type: Object as () => FilterParams, default: () => ({}) },
+    // filters: { type: Object as () => FilterParams, default: () => ({}) },
+    filters: { type: Array, default: () => [] },
     currentPage: { type: Number, required: true },
     totalCount: { type: Number, required: true },
     pageSize: { type: Number, required: true }
@@ -346,7 +347,7 @@ export default defineComponent({
       const dateHeader = props.tab === 'date-join-member' ? 'Date Join Member' : 'Select Month'
       const platformHeader = ['Platform Website']
       const additionalHeaders = props.tab === 'date-join-member' 
-        ? ['Member Level', 'Member Downgrade Month']
+        ? ['Member Level']
         : []
       
       return [...baseHeaders, dateHeader, ...platformHeader, ...additionalHeaders, 'Options']

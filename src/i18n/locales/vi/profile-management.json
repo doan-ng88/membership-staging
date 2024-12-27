@@ -1,0 +1,54 @@
+{
+  "profileManagement": {
+    "title": "Quản Lý Hồ Sơ",
+    "form": {
+      "personalInfo": {
+        "title": "Thông Tin Cá Nhân",
+        "fullName": "Họ và Tên",
+        "email": "Email",
+        "phone": "Số Điện Thoại",
+        "address": "Địa Chỉ",
+        "birthday": "Ngày Sinh",
+        "gender": {
+          "label": "Giới Tính",
+          "male": "Nam",
+          "female": "Nữ",
+          "other": "Khác"
+        }
+      },
+      "accountInfo": {
+        "title": "Thông Tin Tài Khoản",
+        "username": "Tên Đăng Nhập",
+        "currentPassword": "Mật Khẩu Hiện Tại",
+        "newPassword": "Mật Khẩu Mới",
+        "confirmPassword": "Xác Nhận Mật Khẩu"
+      },
+      "buttons": {
+        "save": "Lưu Thay Đổi",
+        "cancel": "Hủy",
+        "changePassword": "Đổi Mật Khẩu"
+      }
+    },
+    "notifications": {
+      "success": {
+        "update": "Cập nhật hồ sơ thành công",
+        "password": "Đổi mật khẩu thành công"
+      },
+      "error": {
+        "update": "Không thể cập nhật hồ sơ",
+        "password": "Không thể đổi mật khẩu",
+        "passwordMismatch": "Mật khẩu không khớp",
+        "currentPassword": "Mật khẩu hiện tại không đúng"
+      }
+    },
+    "validation": {
+      "required": "Trường này là bắt buộc",
+      "email": "Vui lòng nhập email hợp lệ",
+      "phone": "Vui lòng nhập số điện thoại hợp lệ",
+      "password": {
+        "length": "Mật khẩu phải có ít nhất 8 ký tự",
+        "match": "Mật khẩu phải khớp nhau"
+      }
+    }
+  }
+} 

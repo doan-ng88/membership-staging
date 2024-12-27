@@ -1,0 +1,66 @@
+{
+  "levelModal": {
+    "title": {
+      "edit": "Edit Level",
+      "add": "Add New Level"
+    },
+    "fields": {
+      "name": {
+        "label": "Level Name",
+        "placeholder": "Enter level name"
+      },
+      "rank": {
+        "label": "Rank",
+        "placeholder": "Enter rank"
+      },
+      "threshold": {
+        "label": "Threshold Amount",
+        "placeholder": "Enter threshold amount"
+      },
+      "duration": {
+        "label": "Duration (Months)",
+        "placeholder": "Enter duration"
+      }
+    },
+    "validation": {
+      "name": {
+        "required": "Please enter level name",
+        "maxLength": "Level name cannot exceed 50 characters",
+        "exists": "Level name \"{name}\" already exists",
+        "error": "An error occurred while checking name"
+      },
+      "rank": {
+        "required": "Please enter rank",
+        "min": "Rank must be greater than or equal to 0",
+        "exists": "Rank {rank} already exists",
+        "error": "An error occurred while checking rank"
+      },
+      "threshold": {
+        "required": "Please enter threshold amount",
+        "min": "Threshold amount cannot be negative"
+      },
+      "duration": {
+        "required": "Please enter duration",
+        "range": "Duration must be between 1-12 months"
+      }
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "update": "Update",
+      "add": "Add",
+      "confirm": {
+        "title": "Confirm Update",
+        "content": "Are you sure you want to update this level?"
+      }
+    },
+    "messages": {
+      "updateSuccess": "Level updated successfully",
+      "addSuccess": "New level added successfully",
+      "error": {
+        "update": "An error occurred while updating the level",
+        "add": "An error occurred while adding new level",
+        "general": "An error occurred while processing"
+      }
+    }
+  }
+} 

@@ -266,7 +266,7 @@ const fetchCampaignFields = async () => {
     console.log('Campaign Data:', campaignData.value)
 
     // Tạo danh sách các field có thể mapping từ campaign data
-    const fields = []
+    const fields: { label: string, value: string }[] = []
 
     if (campaignData.value?.memberships?.[0]) {
       console.log('Membership Data:', campaignData.value.memberships[0])

@@ -1,20 +1,26 @@
 <template>
   <DefaultLayout>
     <div class="flex-1 p-6">
-      <h2 class="text-2xl font-bold mb-4">Automatic Level Adjustment</h2>
+      <h2 class="text-2xl font-bold mb-4">
+        {{ t('automaticAdjustment.title') }}
+      </h2>
 
       <!-- Brand Selection -->
       <div class="mb-6">
         <label for="brandAdjustment" class="block text-gray-700 font-medium mb-2">
-          Select Brand:
+          {{ t('automaticAdjustment.brandSelection.label') }}:
         </label>
-        <select v-model="selectedBrand" 
-                id="brandAdjustment" 
-                class="block w-1/3 bg-white border border-gray-300 rounded px-4 py-2">
-          <option v-for="option in BRAND_OPTIONS" 
-                  :key="option.value" 
-                  :value="option.value">
-            {{ option.label }}
+        <select 
+          v-model="selectedBrand" 
+          id="brandAdjustment" 
+          class="block w-1/3 bg-white border border-gray-300 rounded px-4 py-2"
+        >
+          <option 
+            v-for="option in BRAND_OPTIONS" 
+            :key="option.value" 
+            :value="option.value"
+          >
+            {{ t(`automaticAdjustment.brandSelection.options.${option.value}`) }}
           </option>
         </select>
       </div>
@@ -24,10 +30,12 @@
         <div class="flex justify-between items-center mb-6">
           <div class="flex items-center gap-6">
             <h3 class="text-xl font-semibold text-gray-800">
-              Automatic Level Adjustment Settings
+              {{ t('automaticAdjustment.settings.title') }}
             </h3>
             <div class="flex items-center gap-2">
-              <label class="text-gray-600">Number of Days:</label>
+              <label class="text-gray-600">
+                {{ t('automaticAdjustment.settings.daysLabel') }}:
+              </label>
               <input 
                 type="number" 
                 v-model="daysBeforeAdjustment"
@@ -46,9 +54,9 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              Saving...
+              {{ t('automaticAdjustment.settings.saving') }}
             </span>
-            <span v-else>Save Settings</span>
+            <span v-else>{{ t('automaticAdjustment.settings.saveButton') }}</span>
           </button>
         </div>
 
@@ -62,8 +70,8 @@
     <!-- Success Popup -->
     <SuccessPopup
       :show="showSuccessPopup"
-      title="Update Successful"
-      message="Settings have been saved successfully!"
+      :title="t('automaticAdjustment.popup.success.title')"
+      :message="t('automaticAdjustment.popup.success.message')"
       @close="showSuccessPopup = false"
     />
   </DefaultLayout>
@@ -71,13 +79,16 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18nGlobal } from '@/i18n'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import AdjustmentTable from '@/components/AutoLevelAdjustment/AdjustmentTable.vue'
 import SuccessPopup from '@/components/common/SuccessPopup.vue'
 import { systemConfigApi } from '@/api/services/systemConfigApi'
 import type { SystemConfig } from '@/types/automaticAdjustment'
 
-// Định nghĩa BRAND_OPTIONS
+const { t } = useI18nGlobal()
+
+// Brand options - giữ nguyên value nhưng label sẽ được translate
 const BRAND_OPTIONS = [
   { value: 'sky007', label: 'Sky007' },
   { value: 'bbia', label: 'Bbia' },

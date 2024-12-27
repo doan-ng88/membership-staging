@@ -1,0 +1,43 @@
+{
+    "automaticAdjustment": {
+      "title": "Điều Chỉnh Cấp Bậc Tự Động",
+      "brandSelection": {
+        "label": "Chọn Thương Hiệu",
+        "options": {
+          "sky007": "Sky007",
+          "bbia": "Bbia",
+          "hince": "Hince",
+          "mixsoon": "Mixsoon"
+        }
+      },
+      "settings": {
+        "title": "Cài Đặt Điều Chỉnh Cấp Bậc Tự Động",
+        "daysLabel": "Số Ngày",
+        "saveButton": "Lưu Cài Đặt",
+        "saving": "Đang lưu..."
+      },
+      "table": {
+        "headers": {
+          "notificationType": "Loại Thông Báo",
+          "beforeAdjustment": "Trước Khi Điều Chỉnh",
+          "afterAdjustment": "Sau Khi Điều Chỉnh"
+        },
+        "rows": {
+          "zaloSms-before": "Zalo/SMS Trước",
+          "zaloSms-after": "Zalo/SMS Sau",
+          "email-before": "Email Trước",
+          "email-after": "Email Sau",
+          "description-sms-downgrade": "Gửi thông báo SMS khi thành viên sắp bị điều chỉnh xuống cấp",
+          "description-sms-upgrade": "Gửi thông báo SMS khi thành viên sắp bị điều chỉnh lên cấp",
+          "description-email-downgrade": "Gửi thông báo email khi thành viên sắp bị điều chỉnh xuống cấp",
+          "description-email-upgrade": "Gửi thông báo email khi thành viên sắp bị điều chỉnh lên cấp"
+        }
+      },
+      "popup": {
+        "success": {
+          "title": "Cập Nhật Thành Công",
+          "message": "Cài đặt đã được lưu thành công!"
+        }
+      }
+    }
+  }

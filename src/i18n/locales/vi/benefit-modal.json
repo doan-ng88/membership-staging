@@ -1,0 +1,73 @@
+{
+  "benefitModal": {
+    "title": {
+      "edit": "Chỉnh Sửa Cấp Bậc",
+      "add": "Thêm Cấp Bậc"
+    },
+    "fields": {
+      "level": {
+        "label": "Cấp bậc:",
+        "placeholder": "Nhập tên cấp bậc"
+      },
+      "rank": {
+        "label": "Rank:",
+        "placeholder": "Nhập rank"
+      },
+      "thresholdAmount": {
+        "label": "Số tiền tích lũy tối thiểu:",
+        "placeholder": "Nhập số tiền tối thiểu"
+      },
+      "rewardRate": {
+        "label": "Tỷ lệ tích điểm (%):",
+        "placeholder": "Nhập tỷ lệ tích điểm"
+      },
+      "redeemRate": {
+        "label": "Tỷ lệ đổi điểm:",
+        "placeholder": "Nhập tỷ lệ đổi điểm"
+      },
+      "duration": {
+        "label": "Thời hạn hiệu lực (tháng):",
+        "placeholder": "Nhập thời hạn"
+      },
+      "discount": {
+        "label": "Giảm giá trên mỗi đơn (%):",
+        "placeholder": "Nhập phần trăm giảm giá"
+      }
+    },
+    "buttons": {
+      "cancel": "Hủy",
+      "saving": "Đang lưu...",
+      "update": "Cập nhật",
+      "add": "Thêm mới"
+    },
+    "validation": {
+      "level": {
+        "required": "Tên cấp bậc là bắt buộc",
+        "minLength": "Tên cấp bậc phải có ít nhất 3 ký tự",
+        "maxLength": "Tên cấp bậc không được vượt quá 50 ký tự",
+        "exists": "Tên cấp bậc \"{name}\" đã tồn tại cho website này",
+        "specialChars": "Tên cấp bậc không được chứa ký tự đặc biệt"
+      },
+      "rank": {
+        "required": "Rank là bắt buộc",
+        "negative": "Rank không được âm",
+        "exists": "Rank {rank} đã tồn tại cho website này"
+      },
+      "thresholdAmount": {
+        "negative": "Số tiền tích lũy không được âm"
+      },
+      "rewardRate": {
+        "range": "Tỷ lệ tích điểm phải từ 0-100%"
+      },
+      "redeemRate": {
+        "negative": "Tỷ lệ đổi điểm không được âm"
+      },
+      "duration": {
+        "minimum": "Thời hạn hiệu lực phải lớn hơn 0 tháng"
+      },
+      "discount": {
+        "range": "Giảm giá phải từ 0-100%"
+      }
+    }
+  }
+} 

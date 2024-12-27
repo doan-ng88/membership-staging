@@ -1,20 +1,21 @@
 <template>
   <DefaultLayout>
     <div class="p-4">
+      <h1 class="text-2xl font-bold text-center mb-5">
+        {{ t('level.management') }}
+      </h1>
       <div class="flex justify-between items-center mb-4">
         <div class="flex items-center gap-4">
-              <h1 class="text-2xl font-bold">Level Management</h1>
-
           <!-- Brand Selection -->
           <div class="mb-6">
             <label for="brandSelect" class="block text-sm font-medium text-gray-700">
-              <h3 class="text-lg leading-6 font-medium text-gray-900">Select Website</h3>
+              <h3 class="text-lg leading-6 font-medium text-gray-900">{{ t('level.selectWebsite') }}</h3>
             </label>
             <select
               id="brandSelect"
               v-model="selectedWebsiteId"
               style="width: 200px"
-              placeholder="Select Website"
+              :placeholder="t('level.selectWebsite')"
               class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
             >
               <option v-for="web in websites" :key="web.websiteId" :value="web.websiteId">
@@ -22,18 +23,8 @@
               </option>
             </select>
           </div>
-
-          <!-- <a-select
-            v-model:value="selectedWebsiteId"
-            style="width: 200px"
-            placeholder="Chọn Website"
-          >
-            <a-select-option v-for="web in websites" :key="web.id" :value="web.id">
-              {{ web.name }}
-            </a-select-option>
-          </a-select> -->
         </div>
-        <Button type="primary" @click="handleAdd">Add Level</Button>
+        <Button type="primary" @click="handleAdd">{{ t('level.addLevel') }}</Button>
       </div>
 
       <Table
@@ -47,15 +38,15 @@
           <template v-if="column.key === 'action'">
             <div class="flex gap-2">
               <Button type="primary" @click="handleEdit(record)">
-                <EditOutlined /> Edit
+                <EditOutlined /> {{ t('level.actions.edit') }}
               </Button>
               <Button type="primary" danger @click="handleDelete(record)">
-                <DeleteOutlined /> Delete
+                <DeleteOutlined /> {{ t('level.actions.delete') }}
               </Button>
             </div>
           </template>
           <template v-else-if="column.key === 'thresholdAmount'">
-            {{ new Intl.NumberFormat('vi-VN').format(record.thresholdAmount) }}
+            {{ new Intl.NumberFormat(currentLocale).format(record.thresholdAmount) }}
           </template>
         </template>
       </Table>
@@ -81,13 +72,15 @@ import UpDownRulesModal from '@/components/LevelUpDownRules/upDownRulesModal.vue
 import { useLevelSettingStore } from '@/stores/levelUpDownRules';
 import type { LevelSetting } from '@/api/types/levelUpDownRules';
 import { websites } from '@/api/types/website';
+import { useI18nGlobal } from '@/i18n';
 
+const { t, locale: currentLocale } = useI18nGlobal();
 const levelSettingStore = useLevelSettingStore();
 const loading = ref(false);
 const showModal = ref(false);
 const isEdit = ref(false);
 const selectedLevel = ref<LevelSetting | undefined>();
-const selectedWebsiteId = ref(1); // Default website
+const selectedWebsiteId = ref(1);
 
 // Computed properties
 const levelSettings = computed(() => levelSettingStore.levelSettings);
@@ -95,55 +88,53 @@ const filteredLevelSettings = computed(() =>
   levelSettings.value.filter(level => level.websiteId === selectedWebsiteId.value)
 );
 
-// Columns definition
-const columns = [
+// Columns definition with i18n
+const columns = computed(() => [
   {
-    title: 'Level Name',
+    title: t('level.columns.levelName'),
     dataIndex: 'Name',
     key: 'Name',
   },
   {
-    title: 'Rank',
+    title: t('level.columns.rank'),
     dataIndex: 'rank',
     key: 'rank',
     sorter: (a: LevelSetting, b: LevelSetting) => a.rank - b.rank,
   },
   {
-    title: 'Threshold Amount',
+    title: t('level.columns.thresholdAmount'),
     dataIndex: 'thresholdAmount',
     key: 'thresholdAmount',
     customRender: ({ text }: { text: number }) => {
-      return new Intl.NumberFormat('vi-VN').format(text);
+      return new Intl.NumberFormat(currentLocale.value).format(text);
     },
   },
   {
-    title: 'Duration (Months)',
+    title: t('level.columns.duration'),
     dataIndex: 'durationExpired',
     key: 'durationExpired',
   },
   {
-    title: 'Actions',
+    title: t('level.columns.actions'),
     key: 'action',
     fixed: 'right',
     width: 200,
   },
-];
+]);
 
 // Methods
 const fetchData = async () => {
   try {
     loading.value = true;
     await levelSettingStore.fetchLevelSettings();
-    console.log('Data loaded:', filteredLevelSettings.value);
   } catch (error) {
     console.error('Error fetching data:', error);
-    message.error('An error occurred while loading data');
+    message.error(t('level.messages.error.loading'));
   } finally {
     loading.value = false;
   }
 };
 
-// Event handlers
 const handleAdd = () => {
   isEdit.value = false;
   selectedLevel.value = undefined;
@@ -152,36 +143,34 @@ const handleAdd = () => {
 
 const handleEdit = (record: LevelSetting) => {
   isEdit.value = true;
-  selectedLevel.value = { ...record }; // Clone để tránh mutate trực tiếp
+  selectedLevel.value = { ...record };
   showModal.value = true;
 };
 
 const handleDelete = async (record: LevelSetting) => {
   try {
     await levelSettingStore.deleteLevel(record.levelId);
-    message.success('Level deleted successfully');
+    message.success(t('level.messages.deleteSuccess'));
     await fetchData();
   } catch (error) {
     console.error('Error deleting level:', error);
-    message.error('An error occurred while deleting the level');
+    message.error(t('level.messages.error.deleting'));
   }
 };
 
 const handleSubmit = async (data: LevelSetting) => {
   try {
     await levelSettingStore.updateLevel(data);
-    message.success('Updated successfully');
+    message.success(t('level.messages.updateSuccess'));
     showModal.value = false;
-    // Refresh data
     await levelSettingStore.fetchLevelSettings();
   } catch (error) {
-    message.error('An error occurred while updating');
+    message.error(t('level.messages.error.updating'));
   }
 };
 
 const handleSuccess = async () => {
   showModal.value = false;
-  // Refresh data
   await levelSettingStore.fetchLevelSettings();
 };
 

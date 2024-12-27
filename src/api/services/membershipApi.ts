@@ -72,8 +72,9 @@ export const membershipAPI = {
   },
 
   getMemberDetail(userId: number) {
-    return axiosClient.get(`/api/membership/get/member-information-detail?user_id=${userId}`);
+    return axiosClient.get(`/membership/get/member-information-detail?user_id=${userId}`);
   },
+
   getCoupons(websiteId:number,pageIndex?: number,pageSize?: number,search?: string,from?: string,to?: string) {
     return axiosClient.get(`/membership/get/coupons/${websiteId}`, {
       params: {
@@ -92,11 +93,11 @@ export const membershipAPI = {
 
 
   updateMembership(data: any) {
-    return axiosClient.post('/api/membership/update/membership', data);
+    return axiosClient.post('/membership/update/membership', data);
   },
 
   updateAddress(data: any) {
-    return axiosClient.post('/api/membership/update/address', data);
+    return axiosClient.post('/membership/update/address', data);
   },
 
   getLevelInfo: async () => {

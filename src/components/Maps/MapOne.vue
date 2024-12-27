@@ -4,41 +4,41 @@
 // import '@/assets/js/us-aea-en'
 import { onMounted } from 'vue'
 
-// onMounted(() => {
-//   new jsVectorMap({
-//     map: 'us_aea_en',
-//     selector: '#mapOne',
-//     zoomButtons: true,
+onMounted(() => {
+  // new jsVectorMap({
+  //   map: 'us_aea_en',
+  //   selector: '#mapOne',
+  //   zoomButtons: true,
 
-//     regionStyle: {
-//       initial: {
-//         fill: '#C8D0D8'
-//       },
-//       hover: {
-//         fillOpacity: 1,
-//         fill: '#3056D3'
-//       }
-//     },
-//     regionLabelStyle: {
-//       initial: {
-//         fontFamily: 'Satoshi',
-//         fontWeight: 'semibold',
-//         fill: '#fff'
-//       },
-//       hover: {
-//         cursor: 'pointer'
-//       }
-//     },
+  //   regionStyle: {
+  //     initial: {
+  //       fill: '#C8D0D8'
+  //     },
+  //     hover: {
+  //       fillOpacity: 1,
+  //       fill: '#3056D3'
+  //     }
+  //   },
+  //   regionLabelStyle: {
+  //     initial: {
+  //       fontFamily: 'Satoshi',
+  //       fontWeight: 'semibold',
+  //       fill: '#fff'
+  //     },
+  //     hover: {
+  //       cursor: 'pointer'
+  //     }
+  //   },
 
-//     labels: {
-//       regions: {
-//         render(code: any) {
-//           return code.split('-')[1]
-//         }
-//       }
-//     }
-//   })
-// })
+  //   labels: {
+  //     regions: {
+  //       render(code: any) {
+  //         return code.split('-')[1]
+  //       }
+  //     }
+  //   }
+  // })
+})
 </script>
 
 <template>

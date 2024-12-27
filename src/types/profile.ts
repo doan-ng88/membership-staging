@@ -80,3 +80,10 @@ export interface PurchaseOrder {
   amount: number
   status: 'Shipped' | 'Pending' | 'Not Shipped'
 }
+
+export interface PurchaseHistory {
+  orderIdWebsite: number
+  createTime: string
+  orderStatus: string
+  ProductList: any[]
+}

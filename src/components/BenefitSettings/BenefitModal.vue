@@ -3,7 +3,7 @@
     <div class="bg-white rounded-lg shadow-lg w-[500px] p-6">
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-medium text-gray-900">
-          {{ isEditing ? 'Chỉnh Sửa Cấp Bậc' : 'Thêm Cấp Bậc' }}
+          {{ isEditing ? t('benefitModal.title.edit') : t('benefitModal.title.add') }}
         </h3>
         <button @click="$emit('close')" class="text-gray-600 hover:text-gray-800 focus:outline-none">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -15,7 +15,7 @@
       <form @submit.prevent="handleSubmit">
         <!-- Tên cấp bậc -->
         <div class="mb-4">
-          <label class="block text-gray-700 required">Cấp bậc:</label>
+          <label class="block text-gray-700 required">{{ t('benefitModal.fields.level.label') }}</label>
           <input 
             type="text" 
             v-model="formData.Name" 
@@ -23,16 +23,16 @@
             required
             @input="validateName"
             :class="{'border-red-500': errors.Name}"
-            placeholder="Nhập tên cấp bậc"
+            :placeholder="t('benefitModal.fields.level.placeholder')"
           >
           <span v-if="errors.Name" class="text-red-500 text-sm">
             {{ errors.Name }}
           </span>
         </div>
 
-        <!-- Thêm input Rank -->
+        <!-- Rank -->
         <div class="mb-4">
-          <label class="block text-gray-700 required">Rank:</label>
+          <label class="block text-gray-700 required">{{ t('benefitModal.fields.rank.label') }}</label>
           <input 
             type="number" 
             v-model.number="formData.rank" 
@@ -44,7 +44,7 @@
               'border-red-500': errors.rank,
               'border-green-500': formData.rank !== null && !errors.rank
             }"
-            placeholder="Nhập rank"
+            :placeholder="t('benefitModal.fields.rank.placeholder')"
           >
           <span v-if="errors.rank" class="text-red-500 text-sm mt-1 block">
             {{ errors.rank }}
@@ -53,7 +53,7 @@
 
         <!-- Điểm tích lũy tối thiểu -->
         <div class="mb-4">
-          <label class="block text-gray-700 required">Số tiền tích lũy tối thiểu:</label>
+          <label class="block text-gray-700 required">{{ t('benefitModal.fields.thresholdAmount.label') }}</label>
           <input 
             type="number" 
             v-model.number="formData.thresholdAmount" 
@@ -61,6 +61,7 @@
             required
             min="0"
             :class="{'border-red-500': errors.thresholdAmount}"
+            :placeholder="t('benefitModal.fields.thresholdAmount.placeholder')"
           >
           <span v-if="errors.thresholdAmount" class="text-red-500 text-sm">
             {{ errors.thresholdAmount }}
@@ -69,7 +70,7 @@
 
         <!-- Tỷ lệ tích điểm -->
         <div class="mb-4">
-          <label class="block text-gray-700 required">Tỷ lệ tích điểm (%):</label>
+          <label class="block text-gray-700 required">{{ t('benefitModal.fields.rewardRate.label') }}</label>
           <input 
             type="number" 
             v-model.number="formData.rewardRate" 
@@ -78,15 +79,16 @@
             min="0"
             max="100"
             :class="{'border-red-500': errors.rewardRate}"
+            :placeholder="t('benefitModal.fields.rewardRate.placeholder')"
           >
           <span v-if="errors.rewardRate" class="text-red-500 text-sm">
-            {{ errors.rewardRate }}
+            {{ t('benefitModal.validation.rewardRate.range') }}
           </span>
         </div>
 
         <!-- Tỷ lệ đổi điểm -->
         <div class="mb-4">
-          <label class="block text-gray-700 required">Tỷ lệ đổi điểm:</label>
+          <label class="block text-gray-700 required">{{ t('benefitModal.fields.redeemRate.label') }}</label>
           <input 
             type="number" 
             v-model.number="formData.redeemRate" 
@@ -94,15 +96,16 @@
             required
             min="0"
             :class="{'border-red-500': errors.redeemRate}"
+            :placeholder="t('benefitModal.fields.redeemRate.placeholder')"
           >
           <span v-if="errors.redeemRate" class="text-red-500 text-sm">
-            {{ errors.redeemRate }}
+            {{ t('benefitModal.validation.redeemRate.negative') }}
           </span>
         </div>
 
         <!-- Thời hạn hiệu lực -->
         <div class="mb-4">
-          <label class="block text-gray-700 required">Thời hạn hiệu lực (tháng):</label>
+          <label class="block text-gray-700 required">{{ t('benefitModal.fields.duration.label') }}</label>
           <input 
             type="number" 
             v-model.number="formData.durationExpired" 
@@ -110,15 +113,16 @@
             required
             min="1"
             :class="{'border-red-500': errors.durationExpired}"
+            :placeholder="t('benefitModal.fields.duration.placeholder')"
           >
           <span v-if="errors.durationExpired" class="text-red-500 text-sm">
-            {{ errors.durationExpired }}
+            {{ t('benefitModal.validation.duration.minimum') }}
           </span>
         </div>
 
         <!-- Giảm giá trên mỗi đơn -->
         <div class="mb-4">
-          <label class="block text-gray-700 required">Giảm giá trên mỗi đơn (%):</label>
+          <label class="block text-gray-700 required">{{ t('benefitModal.fields.discount.label') }}</label>
           <input 
             type="number" 
             v-model.number="formData.discountPerOrder" 
@@ -127,9 +131,10 @@
             min="0"
             max="100"
             :class="{'border-red-500': errors.discountPerOrder}"
+            :placeholder="t('benefitModal.fields.discount.placeholder')"
           >
           <span v-if="errors.discountPerOrder" class="text-red-500 text-sm">
-            {{ errors.discountPerOrder }}
+            {{ t('benefitModal.validation.discount.range') }}
           </span>
         </div>
 
@@ -139,14 +144,17 @@
             @click="$emit('close')"
             class="px-4 py-2 text-gray-700 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none"
           >
-            Hủy
+            {{ t('benefitModal.buttons.cancel') }}
           </button>
           <button 
             type="submit" 
             class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 focus:outline-none"
             :disabled="!isFormValid || isSubmitting"
           >
-            {{ isSubmitting ? 'Đang lưu...' : (isEditing ? 'Cập nhật' : 'Thêm mới') }}
+            {{ isSubmitting 
+              ? t('benefitModal.buttons.saving') 
+              : (isEditing ? t('benefitModal.buttons.update') : t('benefitModal.buttons.add')) 
+            }}
           </button>
         </div>
       </form>
@@ -154,301 +162,206 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, reactive, ref, computed, watch, type PropType } from 'vue'
+<script setup lang="ts">
+import { reactive, ref, computed, watch } from 'vue'
 import { useBenefitStore } from '@/stores/benefitSettings'
 import type { LevelSetting } from '@/data/benefits'
+import { useI18nGlobal } from '@/i18n'
 
-export default defineComponent({
-  name: 'BenefitModal',
+const { t } = useI18nGlobal()
 
-  props: {
-    show: {
-      type: Boolean,
-      required: true
-    },
-    benefit: {
-      type: Object as PropType<LevelSetting | null>,
-      default: null
-    },
-    isEditing: {
-      type: Boolean,
-      default: false
-    }
-  },
+const props = defineProps<{
+  show: boolean
+  benefit: LevelSetting | null
+  isEditing: boolean
+}>()
 
-  emits: ['update:show', 'save', 'close'],
+const emit = defineEmits<{
+  (e: 'close'): void
+  (e: 'save', data: LevelSetting): void
+}>()
 
-  setup(props, { emit }) {
-    const store = useBenefitStore()
-    const formData = reactive<LevelSetting>({
-      levelId: 0,
-      Name: '',
-      websiteId: 1,
-      thresholdAmount: 0,
-      rewardRate: 0,
-      redeemRate: 0,
-      levelIdWebsite: 0,
-      durationExpired: 6,
-      rank: 0,
-      discountPerOrder: 0,
-      membershipWebsites: null
-    })
-    // Log props khi component được tạo
-    // console.log('Initial props:', props)
+const store = useBenefitStore()
+const isSubmitting = ref(false)
 
-    const errors = reactive({
-      Name: '',
-      thresholdAmount: '',
-      rewardRate: '',
-      redeemRate: '',
-      durationExpired: '',
-      discountPerOrder: '',
-      rank: ''
-    })
-
-    const isSubmitting = ref(false)
-
-    // Cập nhật form khi prop benefit thay đổi
-    watch(
-    //   () => props.benefit, 
-    //   (newBenefit) => {
-    //   if (newBenefit) {
-    //     Object.assign(formData, newBenefit)
-    //   }
-    // }, { deep: true, immediate: true }
-      () => props.benefit,
-      (newBenefit) => {
-        if (newBenefit) {
-          // console.log('Updating form data with:', newBenefit) // Debug
-          Object.assign(formData, {
-            levelId: newBenefit.levelId,
-            Name: newBenefit.Name,
-            websiteId: newBenefit.websiteId,
-            thresholdAmount: newBenefit.thresholdAmount,
-            rewardRate: newBenefit.rewardRate,
-            redeemRate: newBenefit.redeemRate,
-            levelIdWebsite: newBenefit.levelIdWebsite,
-            durationExpired: newBenefit.durationExpired,
-            rank: newBenefit.rank,
-            discountPerOrder: newBenefit.discountPerOrder,
-            membershipWebsites: newBenefit.membershipWebsites
-          })
-        } else {
-          // Reset form khi không có dữ liệu
-          Object.assign(formData, {
-            levelId: 0,
-            Name: '',
-            websiteId: 1,
-            thresholdAmount: 0,
-            rewardRate: 0,
-            redeemRate: 0,
-            levelIdWebsite: 0,
-            durationExpired: 6,
-            rank: 0,
-            discountPerOrder: 0,
-            membershipWebsites: null
-          })
-        }
-      },
-      { immediate: true, deep: true }
-    )
-
-    watch(() => props.benefit, (newValue) => {
-      console.log('Benefit prop changed:', newValue)
-    })
-
-    // Thêm validate rank
-    const validateRank = async () => {
-      errors.rank = ''
-
-      // Required validation
-      if (formData.rank === null || formData.rank === undefined) {
-        errors.rank = 'Rank là bắt buộc'
-        return false
-      }
-
-      // Non-negative validation
-      if (formData.rank < 0) {
-        errors.rank = 'Rank không được âm'
-        return false
-      }
-
-      // Unique validation
-      const existingLevels = store.levelSettings
-      const rankExists = existingLevels.some(level => 
-        level.websiteId === formData.websiteId && 
-        level.rank === formData.rank &&
-        (!props.isEditing || level.levelId !== formData.levelId) // Skip current level when editing
-      )
-
-      if (rankExists) {
-        errors.rank = `Rank ${formData.rank} đã tồn tại cho website này`
-        return false
-      }
-
-      return true
-    }
-
-    // Thêm validate name
-    const validateName = async () => {
-      errors.Name = ''
-
-      // Kiểm tra độ dài tối thiểu
-      if (formData.Name.trim().length < 2) {
-        errors.Name = 'Tên cấp bậc phải có ít nhất 3 ký tự'
-        return false
-      }
-
-      // Kiểm tra độ dài tối đa
-      if (formData.Name.trim().length > 50) {
-        errors.Name = 'Tên cấp bậc không được vượt quá 50 ký tự'
-        return false
-      }
-
-      // Kiểm tra tên đã tồn tại cho website
-      const existingLevels = store.levelSettings
-      const nameExists = existingLevels.some(level => 
-        level.websiteId === formData.websiteId && 
-        level.Name.toLowerCase() === formData.Name.toLowerCase() &&
-        (!props.isEditing || level.levelId !== formData.levelId)
-      )
-
-      if (nameExists) {
-        errors.Name = `Tên cấp bậc "${formData.Name}" đã tồn tại cho website này`
-        return false
-      }
-
-      // Kiểm tra ký tự đặc biệt
-      const specialChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/
-      if (specialChars.test(formData.Name)) {
-        errors.Name = 'Tên cấp bậc không được chứa ký tự đặc biệt'
-        return false
-      }
-
-      return true
-    }
-
-    // Cập nhật validateForm
-    const validateForm = () => {
-      let isValid = true
-      
-      // Validate name
-      if (!validateName()) {
-        isValid = false
-      }
-
-      // Validate rank
-      if (!validateRank()) {
-        isValid = false
-      }
-
-      if (formData.thresholdAmount < 0) {
-        errors.thresholdAmount = 'Số tiền tích lũy không được âm'
-        isValid = false
-      }
-
-      if (formData.rewardRate < 0 || formData.rewardRate > 100) {
-        errors.rewardRate = 'Tỷ lệ tích điểm phải từ 0-100%'
-        isValid = false
-      }
-
-      if (formData.redeemRate < 0) {
-        errors.redeemRate = 'Tỷ lệ đổi điểm không được âm'
-        isValid = false
-      }
-
-      if (formData.durationExpired < 1) {
-        errors.durationExpired = 'Thời hạn hiệu lực phải lớn hơn 0 tháng'
-        isValid = false
-      }
-
-      if (formData.discountPerOrder < 0 || formData.discountPerOrder > 100) {
-        errors.discountPerOrder = 'Giảm giá phải từ 0-100%'
-        isValid = false
-      }
-
-      return isValid
-    }
-
-    // Cập nhật isFormValid
-    const isFormValid = computed(() => {
-      return formData.Name.trim().length >= 2 && 
-             formData.Name.trim().length <= 50 &&
-             !errors.Name &&
-             formData.rank >= 0 &&
-             !errors.rank &&
-             formData.thresholdAmount >= 0 && 
-             formData.rewardRate >= 0 && 
-             formData.rewardRate <= 100 &&
-             formData.redeemRate >= 0 && 
-             formData.durationExpired >= 1 &&
-             formData.discountPerOrder >= 0 &&
-             formData.discountPerOrder <= 100
-    })
-
-    // Watch for websiteId changes
-    watch(() => formData.websiteId, () => {
-      validateName()
-      validateRank()
-    })
-
-    // Watch for name changes
-    watch(() => formData.Name, () => {
-      validateName()
-    }, { debounce: 300 }) // Thêm debounce để tránh validate quá nhiều
-
-    // Watch for rank changes
-    watch(() => formData.rank, () => {
-      validateRank()
-    })
-
-    const handleSubmit = async () => {
-      if (!validateForm()) return
-      
-      try {
-        isSubmitting.value = true
-        // console.log('Submitting form data:', formData)
-        await emit('save', {...formData})
-      } catch (error) {
-        // console.error('Error submitting form:', error)
-      } finally {
-        isSubmitting.value = false
-      }
-    }
-
-    // Reset form
-    const resetForm = () => {
-      Object.assign(formData, {
-        levelId: 0,
-        Name: '',
-        websiteId: 1,
-        thresholdAmount: 0,
-        rewardRate: 0,
-        redeemRate: 0,
-        levelIdWebsite: 0,
-        durationExpired: 6,
-        rank: 0,
-        discountPerOrder: 0,
-        membershipWebsites: null
-      })
-      Object.keys(errors).forEach(key => {
-        errors[key as keyof typeof errors] = ''
-      })
-    }
-
-    return {
-      formData,
-      errors,
-      isSubmitting,
-      isFormValid,
-      handleSubmit,
-      validateName,
-      validateRank,
-      resetForm
-    }
-  }
+// Form data
+const formData = reactive<LevelSetting>({
+  levelId: 0,
+  Name: '',
+  websiteId: 1,
+  thresholdAmount: 0,
+  rewardRate: 0,
+  redeemRate: 0,
+  levelIdWebsite: 0,
+  durationExpired: 6,
+  rank: 0,
+  discountPerOrder: 0,
+  membershipWebsites: null
 })
+
+// Errors object
+const errors = reactive({
+  Name: '',
+  rank: '',
+  thresholdAmount: '',
+  rewardRate: '',
+  redeemRate: '',
+  durationExpired: '',
+  discountPerOrder: ''
+})
+
+// Initialize form if editing
+if (props.benefit) {
+  Object.assign(formData, props.benefit)
+}
+
+// Validation methods
+const validateName = async () => {
+  if (!formData.Name.trim()) {
+    errors.Name = t('benefitModal.validation.level.required')
+    return false
+  }
+
+  if (formData.Name.length < 3) {
+    errors.Name = t('benefitModal.validation.level.minLength')
+    return false
+  }
+
+  if (formData.Name.length > 50) {
+    errors.Name = t('benefitModal.validation.level.maxLength')
+    return false
+  }
+
+  // Check for special characters
+  const specialCharsRegex = /[!@#$%^&*(),.?":{}|<>]/
+  if (specialCharsRegex.test(formData.Name)) {
+    errors.Name = t('benefitModal.validation.level.specialChars')
+    return false
+  }
+
+  // Check for duplicate name
+  const existingLevel = await store.checkDuplicateName(formData.Name, formData.websiteId, formData.levelId)
+  if (existingLevel) {
+    errors.Name = t('benefitModal.validation.level.exists', { name: formData.Name })
+    return false
+  }
+
+  errors.Name = ''
+  return true
+}
+
+const validateRank = async () => {
+  if (formData.rank < 0) {
+    errors.rank = t('benefitModal.validation.rank.negative')
+    return false
+  }
+
+  // Check for duplicate rank
+  const existingRank = await store.checkDuplicateRank(formData.rank, formData.websiteId, formData.levelId)
+  if (existingRank) {
+    errors.rank = t('benefitModal.validation.rank.exists', { rank: formData.rank })
+    return false
+  }
+
+  errors.rank = ''
+  return true
+}
+
+const validateForm = () => {
+  let isValid = true
+
+  // Validate all fields
+  if (formData.thresholdAmount < 0) {
+    errors.thresholdAmount = t('benefitModal.validation.thresholdAmount.negative')
+    isValid = false
+  }
+
+  if (formData.rewardRate < 0 || formData.rewardRate > 100) {
+    errors.rewardRate = t('benefitModal.validation.rewardRate.range')
+    isValid = false
+  }
+
+  if (formData.redeemRate < 0) {
+    errors.redeemRate = t('benefitModal.validation.redeemRate.negative')
+    isValid = false
+  }
+
+  if (formData.durationExpired < 1) {
+    errors.durationExpired = t('benefitModal.validation.duration.minimum')
+    isValid = false
+  }
+
+  if (formData.discountPerOrder < 0 || formData.discountPerOrder > 100) {
+    errors.discountPerOrder = t('benefitModal.validation.discount.range')
+    isValid = false
+  }
+
+  return isValid
+}
+
+// Computed
+const isFormValid = computed(() => {
+  return formData.Name.trim().length >= 2 && 
+         formData.Name.trim().length <= 50 &&
+         !errors.Name &&
+         formData.rank >= 0 &&
+         !errors.rank &&
+         formData.thresholdAmount >= 0 && 
+         formData.rewardRate >= 0 && 
+         formData.rewardRate <= 100 &&
+         formData.redeemRate >= 0 && 
+         formData.durationExpired >= 1 &&
+         formData.discountPerOrder >= 0 &&
+         formData.discountPerOrder <= 100
+})
+
+// Watchers
+watch(() => formData.websiteId, () => {
+  validateName()
+  validateRank()
+})
+
+watch(() => formData.Name, () => {
+  validateName()
+}, { debounce: 300 })
+
+watch(() => formData.rank, () => {
+  validateRank()
+})
+
+// Methods
+const handleSubmit = async () => {
+  if (!validateForm()) return
+  
+  try {
+    isSubmitting.value = true
+    await emit('save', {...formData})
+  } catch (error) {
+    console.error('Error submitting form:', error)
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
+// Reset form
+const resetForm = () => {
+  Object.assign(formData, {
+    levelId: 0,
+    Name: '',
+    websiteId: 1,
+    thresholdAmount: 0,
+    rewardRate: 0,
+    redeemRate: 0,
+    levelIdWebsite: 0,
+    durationExpired: 6,
+    rank: 0,
+    discountPerOrder: 0,
+    membershipWebsites: null
+  })
+  Object.keys(errors).forEach(key => {
+    errors[key as keyof typeof errors] = ''
+  })
+}
 </script>
 
 <style scoped>

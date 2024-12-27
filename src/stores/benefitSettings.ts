@@ -14,6 +14,10 @@ export const useBenefitStore = defineStore('benefit', {
       return state.levelSettings
         .filter(level => level.websiteId === websiteId)
         .map(level => level.rank)
+    },
+
+    getLevelsByWebsite: (state) => (websiteId: number) => {
+      return state.levelSettings.filter(level => level.websiteId === websiteId)
     }
   },
 
@@ -30,14 +34,50 @@ export const useBenefitStore = defineStore('benefit', {
       }
     },
 
+    async checkDuplicateName(name: string, websiteId: number, levelId?: number) {
+      try {
+        const existingLevel = this.levelSettings.find(level => 
+          level.websiteId === websiteId && 
+          level.levelId !== levelId &&
+          level.Name.toLowerCase() === name.toLowerCase()
+        )
+        return !!existingLevel
+      } catch (error) {
+        console.error('Error checking duplicate name:', error)
+        throw error
+      }
+    },
+
+    async checkDuplicateRank(rank: number, websiteId: number, levelId?: number) {
+      try {
+        const existingLevel = this.levelSettings.find(level => 
+          level.websiteId === websiteId && 
+          level.levelId !== levelId &&
+          level.rank === rank
+        )
+        return !!existingLevel
+      } catch (error) {
+        console.error('Error checking duplicate rank:', error)
+        throw error
+      }
+    },
+
     async addLevel(levelData: Omit<LevelSetting, 'levelId'>) {
       this.isLoading = true
       this.error = null
 
       try {
-        // Kiểm tra rank đã tồn tại
-        const existingRanks = this.getRanksByWebsite(levelData.websiteId)
-        if (existingRanks.includes(levelData.rank)) {
+        const [isDuplicateName, isDuplicateRank] = await Promise.all([
+          this.checkDuplicateName(levelData.Name, levelData.websiteId),
+          this.checkDuplicateRank(levelData.rank, levelData.websiteId)
+        ])
+
+        if (isDuplicateName) {
+          this.error = `Tên cấp bậc "${levelData.Name}" đã tồn tại cho website này`
+          return false
+        }
+
+        if (isDuplicateRank) {
           this.error = `Rank ${levelData.rank} đã tồn tại cho website này`
           return false
         }
@@ -58,7 +98,22 @@ export const useBenefitStore = defineStore('benefit', {
       this.error = null
       
       try {
-        const response = await levelService.updateLevel(levelData)
+        const [isDuplicateName, isDuplicateRank] = await Promise.all([
+          this.checkDuplicateName(levelData.Name, levelData.websiteId, levelData.levelId),
+          this.checkDuplicateRank(levelData.rank, levelData.websiteId, levelData.levelId)
+        ])
+
+        if (isDuplicateName) {
+          this.error = `Tên cấp bậc "${levelData.Name}" đã tồn tại cho website này`
+          return false
+        }
+
+        if (isDuplicateRank) {
+          this.error = `Rank ${levelData.rank} đã tồn tại cho website này`
+          return false
+        }
+
+        await levelService.updateLevel(levelData)
         await this.fetchLevelSettings()
         return true
       } catch (error) {
@@ -81,10 +136,8 @@ export const useBenefitStore = defineStore('benefit', {
         console.log('Store: Deleting level', levelId)
         await levelService.deleteLevel(levelId)
         
-        // Cập nhật state sau khi xóa thành công
         this.levelSettings = this.levelSettings.filter(level => level.levelId !== levelId)
         
-        // Hoặc fetch lại data từ server
         await this.fetchLevelSettings()
         
         return true

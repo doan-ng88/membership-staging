@@ -1,0 +1,27 @@
+{
+  "level": {
+    "management": "Quản lý cấp bậc",
+    "selectWebsite": "Chọn Website",
+    "addLevel": "Thêm cấp bậc",
+    "columns": {
+      "levelName": "Tên cấp bậc",
+      "rank": "Thứ hạng",
+      "thresholdAmount": "Ngưỡng số tiền",
+      "duration": "Thời hạn (Tháng)",
+      "actions": "Thao tác"
+    },
+    "actions": {
+      "edit": "Sửa",
+      "delete": "Xóa"
+    },
+    "messages": {
+      "deleteSuccess": "Xóa cấp bậc thành công",
+      "updateSuccess": "Cập nhật thành công",
+      "error": {
+        "loading": "Đã xảy ra lỗi khi tải dữ liệu",
+        "deleting": "Đã xảy ra lỗi khi xóa cấp bậc",
+        "updating": "Đã xảy ra lỗi khi cập nhật"
+      }
+    }
+  }
+} 
