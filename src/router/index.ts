@@ -355,6 +355,15 @@ const routes = [
       requiresAuth: true
     }
   },
+  {
+    path: '/app-push/campaigns-zalo-oa/create-zalo-campaign',
+    name: 'CreateZaloCampaign',
+    component: () => import('@/views/Zalo/CreateZaloCampaignView.vue'),
+    meta: {
+      title: 'Create Zalo OA Campaign',
+      requiresAuth: true
+    }
+  },
   // System Management
   {
     path: '/system-management/permission-management',

@@ -269,7 +269,7 @@ const handleTableChange = (pag: TablePaginationConfig) => {
 }
 
 const handleAdd = () => {
-  router.push('/zalo/campaigns/new')
+  router.push('/app-push/campaigns-zalo-oa/create-zalo-campaign')
 }
 
 const handleEdit = (campaign: ZaloCampaign) => {

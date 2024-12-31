@@ -63,17 +63,17 @@
         <div>
           <label class="block text-gray-700">Member Level</label>
           <select 
-            v-model="filters.levelId"
+            v-model="filters.levelName"
             class="w-full p-2 border rounded-lg"
             @change="handleFilter"
           >
             <option value="">All Levels</option>
             <option 
               v-for="level in memberLevels" 
-              :key="level.levelId" 
-              :value="level.levelId"
+              :key="level.levelName"
+              :value="level.levelName"
             >
-              {{ level.Name }}
+              {{ level.levelName }}
             </option>
           </select>
         </div>
@@ -114,7 +114,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { websites, type Website } from '@/api/types/website'
 import type { TabType } from '@/types/profile'
 import { membershipAPI } from '@/api/services/membershipApi'
@@ -133,16 +133,17 @@ const emit = defineEmits<{
 // State
 const dateRange = ref<[dayjs.Dayjs, dayjs.Dayjs] | null>(null)
 
-interface MemberLevel {
-  levelId: number
-  Name: string  // Đổi tên để match với template
+interface Member {
+  levelName: string;
+  // other properties...
 }
 
-const memberLevels = ref<MemberLevel[]>([])
+// Thêm type cho memberLevels ref
+const memberLevels = ref<Member[]>([])
 
 const filters = ref({
   websiteId: '',
-  levelId: '',
+  levelName: '',
   // memberDowngradeMonth: undefined,
   birthMonth: undefined
 })
@@ -157,7 +158,7 @@ const months = ref(Array.from({ length: 12 }, (_, i) => ({
 // Methods
 const handleWebsiteChange = (websiteId: number | '') => {
   // Chỉ cập nhật state, không gọi handleFilter nữa
-  filters.value.levelId = ''
+  filters.value.levelName = ''
   filters.value.websiteId = websiteId
 }
 
@@ -195,10 +196,10 @@ const handleFilter = () => {
   }
 
   // Xử lý level
-  if (filters.value.levelId) {
+  if (filters.value.levelName) {
     searchParams.push({
-      key: 'levelId',
-      value: filters.value.levelId
+      key: 'levelName',
+      value: filters.value.levelName
     })
   }
 
@@ -226,7 +227,7 @@ const handleFilter = () => {
 const handleReset = () => {
   filters.value = {
     websiteId: '',
-    levelId: '',
+    levelName: '',
     // memberDowngradeMonth: undefined,
     birthMonth: undefined
   }
@@ -262,13 +263,16 @@ onMounted(async () => {
       []
     )
     
+    console.log('API Response:', response) // Log toàn bộ response
+    
     if (response.data?.data) {
-      console.log('API Response data:', response.data.data) // Debug
-      memberLevels.value = extractUniqueLevels(response.data.data)
-      console.log('Extracted levels:', memberLevels.value) // Debug
+      console.log('Response data:', response.data.data) // Log data array
+      const levels = new Set(response.data.data.map(member => member.levelName))
+      memberLevels.value = Array.from(levels)
+      console.log('Loaded levels:', memberLevels.value) // Debug log
     }
   } catch (error) {
-    console.error('Error loading member levels:', error)
+    console.error('Error loading levels:', error)
   } finally {
     loading.value = false
   }
@@ -278,6 +282,11 @@ onMounted(async () => {
 const disabledDate = (current: dayjs.Dayjs) => {
   return current && current > dayjs().endOf('day')
 }
+
+// Thêm watch để theo dõi thay đổi
+watch(memberLevels, (newValue) => {
+  console.log('memberLevels changed:', newValue)
+}, { deep: true })
 
 // Export all necessary methods and refs
 defineExpose({

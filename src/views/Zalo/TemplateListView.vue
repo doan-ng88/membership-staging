@@ -46,9 +46,9 @@
       <!-- Template Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div v-for="template in templates" :key="template.templateId" 
-          class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+          class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow h-[600px]">
           <!-- Preview iframe -->
-          <div class="aspect-w-16 aspect-h-9">
+          <div class="aspect-w-16 aspect-h-9 h-[450px]">
             <iframe
               v-if="template.previewUrl"
               :src="template.previewUrl"
