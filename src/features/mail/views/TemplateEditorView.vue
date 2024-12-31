@@ -88,8 +88,10 @@
         </a-form-item>
 
         <div class="editor-container">
-          <QuillEditor v-model:content="editorData" contentType="html" toolbar="full" theme="snow" @paste="handlePaste"
-            @drop="handleDrop" />
+          <a-spin :spinning="isLoadingImages" tip="Loading images...">
+            <QuillEditor v-model:content="editorData" contentType="html" toolbar="full" theme="snow" @paste="handlePaste"
+              @drop="handleDrop" />
+          </a-spin>
         </div>
       </div>
     </div>
@@ -186,7 +188,6 @@ import axios from 'axios'
 import CampaignTab from '../components/SendMail/CampaignTab.vue'
 import MembershipTab from '../components/SendMail/MembershipTab.vue'
 import SendTemplateMailModal from '../components/SendTemplateMailModal.vue'
-// import SendMailModal from '../components/SendMailModal.vue'
 import type { Campaign } from '@/types/campaign'  // Import interface
 
 const route = useRoute()
@@ -418,20 +419,31 @@ const processTemplateContent = async (html: string): Promise<{
   const doc = parser.parseFromString(html, 'text/html')
   const images = doc.getElementsByTagName('img')
   const processedImages: File[] = []
+  
+  // Tạo mảng chứa thông tin ảnh để sắp xếp
+  const imageInfos = Array.from(images).map((img, index) => ({
+    element: img,
+    originalIndex: index,
+    imageKey: img.getAttribute('data-key'),
+    src: img.src
+  }))
 
-  for (const img of Array.from(images)) {
+  // Xử lý từng ảnh và giữ nguyên thứ tự
+  for (let i = 0; i < imageInfos.length; i++) {
+    const { element: img, originalIndex } = imageInfos[i]
     try {
       const imageKey = img.getAttribute('data-key')
+      // Đảm bảo index + 1 để tránh số 0
+      const filename = `image_${(originalIndex + 1).toString().padStart(3, '0')}.${img.src.split(';')[0].split('/')[1] || 'jpeg'}`
 
       if (imageKey && imageFiles.value.has(imageKey)) {
-        // Lấy file gốc từ Map
         const file = imageFiles.value.get(imageKey)
-        processedImages.push(file as File)
-
-        // Cập nhật đường dẫn ảnh trong HTML
-        img.src = imageKey
+        if (file) {
+          const newFile = new File([file], filename, { type: file.type })
+          processedImages[originalIndex] = newFile // Giữ vị trí gốc
+          img.src = filename
+        }
       } else if (img.src.startsWith('data:image')) {
-        // Xử lý ảnh base64 (nếu còn)
         const base64Data = img.src.split(',')[1]
         const imageType = img.src.split(';')[0].split('/')[1]
         const binaryData = atob(base64Data)
@@ -440,20 +452,22 @@ const processTemplateContent = async (html: string): Promise<{
           array[j] = binaryData.charCodeAt(j)
         }
         const blob = new Blob([array], { type: `image/${imageType}` })
-        const filename = `image-${Date.now()}.${imageType}`
         const file = new File([blob], filename, { type: `image/${imageType}` })
-        processedImages.push(file)
+        processedImages[originalIndex] = file // Giữ vị trí gốc
         img.src = filename
       }
     } catch (error) {
       console.error('Error processing image:', error)
-      message.warning(`Không thể xử lý ảnh: ${img.src}`)
+      message.warning(`Cannot process image at position ${originalIndex + 1}`)
     }
   }
 
+  // Loại bỏ các phần tử undefined nếu có
+  const finalProcessedImages = processedImages.filter(Boolean)
+
   return {
     processedHtml: doc.documentElement.outerHTML,
-    imageFiles: processedImages
+    imageFiles: finalProcessedImages
   }
 }
 
@@ -703,7 +717,7 @@ const processHtmlContent = async (html: string): Promise<string> => {
   return tempDiv.innerHTML
 }
 
-// Thêm watcher để tự động xử lý khi nội dung thay đ���i
+// Thêm watcher để tự động xử lý khi nội dung thay đổi
 watch(editorData, async (newContent) => {
   if (newContent) {
     const processedContent = await processHtmlContent(newContent)
@@ -727,11 +741,25 @@ onBeforeUnmount(() => {
 })
 
 async function fetchImageAsBlob(url: string): Promise<Blob> {
-  const response = await fetch(url)
-  if (!response.ok) throw new Error('Cannot load image')
-  return await response.blob()
-}
+  try {
+    // Thử get qua proxy đã cấu hình trong vite.config.ts
+    if (url.includes('actsone.vercel.app')) {
+      const proxyUrl = url.replace('https://actsone.vercel.app', '') // Chuyển sang URL proxy
+      const response = await fetch(proxyUrl)
+      if (!response.ok) throw new Error('Cannot load image')
+      return await response.blob()
+    }
 
+    // Nếu không phải URL từ actsone, dùng fetch thông thường
+    const response = await fetch(url)
+    if (!response.ok) throw new Error('Cannot load image')
+    const blob = await response.blob()
+    return new Blob([blob], { type: blob.type || 'image/jpeg' })
+  } catch (error) {
+    console.error('Error fetching image:', error, 'URL:', url)
+    throw error
+  }
+}
 const processImage = async (imageBlob: Blob, originalName: string = ''): Promise<{
   key: string,
   base64: string,
@@ -811,15 +839,48 @@ const captureEditorPreview = async (): Promise<File | null> => {
   }
 }
 
+// Thêm ref để track trạng thái loading
+const isLoadingImages = ref(false)
+
+// Hàm xử lý load tất cả ảnh
+const loadAllImages = async (content: string): Promise<string> => {
+  try {
+    isLoadingImages.value = true
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(content, 'text/html')
+    const images = doc.getElementsByTagName('img')
+    
+    // Load tất cả ảnh song song
+    const imagePromises = Array.from(images).map(async (img) => {
+      try {
+        const url = img.src
+        const blob = await fetchImageAsBlob(url)
+        const base64 = await convertImageToBase64(blob)
+        img.src = base64
+      } catch (error) {
+        console.error('Error loading image:', error)
+      }
+    })
+    
+    await Promise.all(imagePromises)
+    return doc.documentElement.innerHTML
+  } finally {
+    isLoadingImages.value = false
+  }
+}
+
+// Sửa lại fetchTemplateData
 const fetchTemplateData = async (bodyPath: string): Promise<string> => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL_TEMPLATE}/${bodyPath}`)
+    const response = await fetch(`/public/${bodyPath}`)
     if (!response.ok) throw new Error('Failed to fetch HTML content')
-    return await response.text()
+    const content = await response.text()
+    // Load tất cả ảnh trước khi trả về nội dung
+    return await loadAllImages(content)
   } catch (error) {
     console.error('Error fetching template:', error)
     message.error('Cannot load template information')
-    return '' // Trả về chuỗi rỗng trong trường hợp lỗi
+    return ''
   }
 }
 
@@ -837,9 +898,9 @@ const handleSendMail = async () => {
       value: ''
     }))
     
-    if (templateFields.value.length === 0) {
-      return message.warning('No merge fields found in template')
-    }
+    // if (templateFields.value.length === 0) {
+    //   return message.warning('No merge fields found in template555')
+    // }
 
     // Show first drawer
     showSendMailDrawer.value = true
@@ -955,23 +1016,18 @@ interface TemplateData {
 const templateData = ref<TemplateData | null>(null)
 
 // Sửa lại hàm handleShowSendMailModal có sẵn
-const handleShowSendMailModal = (campaigns: Campaign[]) => {
-  console.log('handleShowSendMailModal called with campaigns:', campaigns)
-  
-  selectedCampaign.value = campaigns
-  
+const handleShowSendMailModal = () => {
+  // Chỉ warning, không return để vẫn cho phép mở modal
+  if (templateFields.value.length === 0) {
+    message.warning('No merge fields found in template')
+  }
+
   templateData.value = {
     id: Number(route.params.id),
     content: editorData.value,
     name: templateName.value
   }
-  
-  console.log('Template Data:', templateData.value)
-  console.log('showSendMailModal before:', showSendMailModal.value)
-  
   showSendMailModal.value = true
-  
-  console.log('showSendMailModal after:', showSendMailModal.value)
 }
 
 // Thêm watch để debug templateData trong SendTemplateMailModal
@@ -1011,15 +1067,21 @@ const extractMergeFields = (content: string) => {
 }
 
 // Thêm hàm xử lý cho membership
-const handleShowSendMailModalByMembership = (members: any[]) => {
-  selectedMembers.value = members
-  templateData.value = {
-    id: Number(route.params.id),
-    content: editorData.value,
-    name: templateName.value
-  }
-  showSendMailModal.value = true
-}
+// const handleShowSendMailModalByMembership = (members: any[]) => {
+//   // Chỉ warning, không return để vẫn cho phép mở modal
+//   if (templateFields.value.length === 0) {
+//     message.warning('No merge fields found in template777')
+//   }
+
+//   selectedMembers.value = members
+//   templateData.value = {
+//     id: Number(route.params.id),
+//     content: editorData.value,
+//     name: templateName.value
+//   }
+//   showSendMailModal.value = true
+// }
+
 </script>
 <style scoped>
 .grid {

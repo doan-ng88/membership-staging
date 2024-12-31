@@ -132,7 +132,14 @@ const emit = defineEmits<{
 
 // State
 const dateRange = ref<[dayjs.Dayjs, dayjs.Dayjs] | null>(null)
-const memberLevels = ref<any[]>([])
+
+interface MemberLevel {
+  levelId: number
+  Name: string  // Đổi tên để match với template
+}
+
+const memberLevels = ref<MemberLevel[]>([])
+
 const filters = ref({
   websiteId: '',
   levelId: '',
@@ -227,15 +234,43 @@ const handleReset = () => {
   emit('reset')
 }
 
-// Lifecycle hooks
+// Sửa lại hàm extractUniqueLevels
+const extractUniqueLevels = (members: any[]): MemberLevel[] => {
+  const uniqueLevels = new Map<number, MemberLevel>()
+  
+  members.forEach(member => {
+    if (member.levelId && member.levelName) {
+      uniqueLevels.set(member.levelId, {
+        levelId: member.levelId,
+        Name: member.levelName  // Map levelName từ API thành Name cho template
+      })
+    }
+  })
+  
+  return Array.from(uniqueLevels.values())
+}
+
+// Sửa lại cách load data
 onMounted(async () => {
   try {
-    const response = await membershipAPI.getLevelInfo()
-    if (response?.code === 200 && response?.data) {
-      memberLevels.value = response.data
+    loading.value = true
+    const response = await membershipAPI.getList(
+      'MembershipsWebsitesId', 
+      'ASC', 
+      100,
+      1, 
+      []
+    )
+    
+    if (response.data?.data) {
+      console.log('API Response data:', response.data.data) // Debug
+      memberLevels.value = extractUniqueLevels(response.data.data)
+      console.log('Extracted levels:', memberLevels.value) // Debug
     }
   } catch (error) {
-    console.error('Error fetching member levels:', error)
+    console.error('Error loading member levels:', error)
+  } finally {
+    loading.value = false
   }
 })
 

@@ -3,18 +3,24 @@
   <div class="bg-white p-6 rounded-lg shadow-md">
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-lg font-semibold">Membership Data</h2>
-      <div class="flex items-center space-x-4">
-        <input 
-          type="text" 
-          v-model="searchTerm"
-          class="w-1/3 p-2 border rounded-lg" 
-          placeholder="Search Customer Name..."
-        >
+      <div class="flex items-center space-x-4 w-1/3">
+        <div class="relative w-full">
+          <input 
+            type="text" 
+            v-model="searchTerm"
+            class="w-full p-2 border rounded-lg pr-8" 
+            placeholder="Search Customer Name..."
+          >
+          <span v-if="searchLoading" class="absolute right-2 top-1/2 -translate-y-1/2">
+            <a-spin :size="small" />
+          </span>
+        </div>
         <button 
           @click="handleExport"
-          class="bg-green-600 text-white py-2 px-4 rounded-lg"
+          :disabled="exporting"
+          class="bg-green-600 text-white py-2 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Export Excel
+          {{ exporting ? 'Exporting...' : 'Export Excel' }}
         </button>
       </div>
     </div>
@@ -34,7 +40,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="member in members" :key="member.membershipId">
+        <tr v-for="member in filteredMembers" :key="member.membershipId">
           <td class="border border-gray-300 p-2">{{ member.fullName }}</td>
           <td class="border border-gray-300 p-2">{{ member.mainPhoneNumber }}</td>
           <td class="border border-gray-300 p-2">
@@ -60,10 +66,10 @@
     </table>
 
     <!-- Enhanced Member Details Modal -->
-    <div v-if="selectedMember && activeModal === 'details'" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+    <div v-if="selectedMember && activeModal === 'details'" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-9999">
       <div class="bg-white rounded-xl shadow-2xl w-[800px] max-h-[90vh] overflow-hidden relative animate-modal-enter">
         <!-- Modal Header -->
-        <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 flex justify-between items-center">
+        <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-2 flex justify-between items-center">
           <h2 class="text-xl font-bold text-white">Customer Details</h2>
           <button 
             @click="closeModal"
@@ -166,18 +172,18 @@
         </div>
 
         <!-- Modal Footer -->
-        <div class="bg-gray-50 px-6 py-4 border-t flex justify-end gap-3">
+        <div class="bg-gray-50 px-6 py-2 border-t flex justify-end gap-3">
           <button 
             v-if="isEditing"
             @click="cancelEdit"
-            class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition-colors"
+            class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-1 rounded-lg transition-colors"
           >
             Cancel
           </button>
           <button 
             v-if="isEditing"
             @click="saveChanges"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-1 rounded-lg transition-colors"
           >
             Save Changes
           </button>
@@ -192,12 +198,12 @@
       </div>
     </div>
 
-    <!-- History Modal -->
-    <div v-if="selectedMember && activeModal === 'history'" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-      <div class="bg-white rounded-xl shadow-2xl w-[900px] max-h-[90vh] overflow-hidden relative animate-modal-enter">
+    <!-- Order History Modal -->
+    <div v-if="selectedMember && activeModal === 'history'" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[99] mt-[70px]">
+      <div class="bg-white rounded-xl shadow-2xl w-[800px] max-h-[calc(100vh-70px)] overflow-hidden relative animate-modal-enter">
         <!-- Modal Header -->
-        <div class="bg-gradient-to-r from-green-600 to-green-700 px-6 py-4 flex justify-between items-center">
-          <h2 class="text-xl font-bold text-white">Customer History</h2>
+        <div class="bg-gradient-to-r from-green-600 to-green-700 px-6 py-2 flex justify-between items-center">
+          <h2 class="text-xl font-bold text-white">Order History</h2>
           <button 
             @click="closeModal"
             class="text-white/80 hover:text-white transition-colors"
@@ -209,79 +215,85 @@
         </div>
 
         <!-- Modal Content -->
-        <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+        <div class="p-6 overflow-y-auto max-h-[calc(100vh-250px)]">
           <div class="space-y-6">
             <!-- Purchase History -->
             <div class="bg-gray-50 p-6 rounded-lg">
-              <h3 class="font-semibold text-lg text-gray-800 mb-4">Purchase History</h3>
+              <h3 class="font-semibold text-lg text-gray-800 mb-4">{{ t('profileManagement.orderHistory.title') }}</h3>
               <div class="overflow-x-auto">
-                <!-- <table class="w-full border-collapse border border-gray-300">
+                <table class="w-full border-collapse border border-gray-300">
                   <thead class="bg-gray-100">
                     <tr>
-                      <th class="border p-2">Date</th>
-                      <th class="border p-2">Order ID</th>
-                      <th class="border p-2">Products</th>
-                      <th class="border p-2">Total Amount</th>
-                      <th class="border p-2">Status</th>
+                      <th class="border p-2">{{ t('profileManagement.orderHistory.headers.date') }}</th>
+                      <th class="border p-2">{{ t('profileManagement.orderHistory.headers.orderId') }}</th>
+                      <th class="border p-2">{{ t('profileManagement.orderHistory.headers.products') }}</th>
+                      <th class="border p-2">{{ t('profileManagement.orderHistory.headers.total') }}</th>
+                      <th class="border p-2">{{ t('profileManagement.orderHistory.headers.status') }}</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="purchase in selectedMember?.purchaseHistory" :key="purchase.orderId">
-                      <td class="border p-2">{{ formatDate(purchase.date || '') }}</td>
-                      <td class="border p-2">{{ purchase.orderId }}</td>
+                    <tr v-for="order in orderHistory || []" :key="order.order_id">
+                      <td class="border p-2">{{ formatDate(order.order_date) }}</td>
+                      <td class="border p-2">#{{ order.order_id }}</td>
                       <td class="border p-2">
-                        <div v-for="product in purchase.products" :key="product.id" class="mb-1">
-                          {{ product.name }} (x{{ product.quantity }})
+                        <div v-for="item in order.items" :key="item.product_id" class="mb-1">
+                          {{ item.order_item_name }} (x{{ item.product_quantity }})
                         </div>
                       </td>
-                      <td class="border p-2">${{ purchase.totalAmount }}</td>
+                      <td class="border p-2">{{ formatCurrency(order.order_total) }}</td>
                       <td class="border p-2">
-                        <span :class="getStatusClass(purchase.status)">
-                          {{ purchase.status }}
+                        <span :class="getOrderStatusClass(order.order_status)">
+                          {{ order.order_status }}
                         </span>
                       </td>
                     </tr>
+                    <tr v-if="!orderHistory?.length">
+                      <td colspan="5" class="text-center p-4 text-gray-500">No orders found</td>
+                    </tr>
                   </tbody>
-                </table> -->
+                </table>
               </div>
             </div>
 
             <!-- Point History -->
-            <div class="bg-gray-50 p-6 rounded-lg">
+            <div class="bg-gray-50 p-6 rounded-lg mt-6">
               <h3 class="font-semibold text-lg text-gray-800 mb-4">Point History</h3>
               <div class="overflow-x-auto">
-                <!-- <table class="w-full border-collapse border border-gray-300">
+                <table class="w-full border-collapse border border-gray-300">
                   <thead class="bg-gray-100">
                     <tr>
                       <th class="border p-2">Date</th>
-                      <th class="border p-2">Transaction Type</th>
+                      <th class="border p-2">Order ID</th>
+                      <th class="border p-2">Action</th>
                       <th class="border p-2">Points</th>
-                      <th class="border p-2">Description</th>
-                      <th class="border p-2">Balance</th>
+                      <th class="border p-2">Total Points</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="point in selectedMember?.pointHistory" :key="point.id">
-                      <td class="border p-2">{{ formatDate(point.date) }}</td>
-                      <td class="border p-2">{{ point.type }}</td>
-                      <td class="border p-2" :class="point.points > 0 ? 'text-green-600' : 'text-red-600'">
-                        {{ point.points > 0 ? '+' : '' }}{{ point.points }}
+                    <tr v-for="point in pointHistory" :key="`${point.orderId}-${point.productId}`">
+                      <td class="border p-2">{{ formatDate(new Date(Number(point.dateRecord) * 1000)) }}</td>
+                      <td class="border p-2">#{{ point.orderId }}</td>
+                      <td class="border p-2">{{ point.action }}</td>
+                      <td class="border p-2" :class="point.point > 0 ? 'text-green-600' : 'text-red-600'">
+                        {{ point.point > 0 ? '+' : '' }}{{ point.point }}
                       </td>
-                      <td class="border p-2">{{ point.description }}</td>
-                      <td class="border p-2">{{ point.balance }}</td>
+                      <td class="border p-2">{{ point.totalPoint }}</td>
+                    </tr>
+                    <tr v-if="!pointHistory.length">
+                      <td colspan="5" class="text-center p-4 text-gray-500">No point transactions found</td>
                     </tr>
                   </tbody>
-                </table> -->
+                </table>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Modal Footer -->
-        <div class="bg-gray-50 px-6 py-4 border-t flex justify-end">
+        <div class="bg-gray-50 px-6 py-1 border-t flex justify-end">
           <button 
             @click="closeModal"
-            class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition-colors"
+            class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-1 rounded-lg transition-colors"
           >
             Close
           </button>
@@ -292,11 +304,11 @@
     <!-- Thay thế phần pagination cũ bằng a-pagination -->
     <div class="mt-4 flex justify-between items-center">
       <div class="text-sm text-gray-600">
-        Total {{ totalCount }} items
+        Total {{ filteredMembers.length }} items
       </div>
       <a-pagination
         :current="currentPage"
-        :total="totalCount"
+        :total="filteredMembers.length"
         :pageSize="pageSize"
         :defaultPageSize="10"
         :showSizeChanger="true"
@@ -309,210 +321,291 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, computed, onMounted } from 'vue'
-import type { TabType, Member, FilterParams, ModalType } from '@/types/profile'
-import { formatDate } from '@/utils/date'
-import { formatDateRange } from '@/utils/date'
-import { websites } from '@/api/types/website'
+<script setup lang="ts">
+import { ref, computed, watch } from 'vue'
+import { useI18nGlobal } from '@/i18n'
+import { orderHistoryApi, type Order } from '@/api/services/orderHistoryApi'
+import { message } from 'ant-design-vue'
+import type { Member } from '@/types/profile'
 import { membershipAPI } from '@/api/services/membershipApi'
+import { pointHistoryApi, type PointTransaction } from '@/api/services/pointHistoryApi'
+import * as XLSX from 'xlsx'
 
-export default defineComponent({
-  name: 'MembershipTable',
+const { t } = useI18nGlobal()
 
-  props: {
-    tab: { type: String as () => TabType, required: true },
-    members: { type: Array as () => Member[], required: true },
-    // filters: { type: Object as () => FilterParams, default: () => ({}) },
-    filters: { type: Array, default: () => [] },
-    currentPage: { type: Number, required: true },
-    totalCount: { type: Number, required: true },
-    pageSize: { type: Number, required: true }
-  },
+// Props
+const props = defineProps<{
+  members: Member[]
+  loading?: boolean
+  tab: string
+  filters: Array<{key: string, value: any}>
+  currentPage: number
+  totalCount: number
+  pageSize: number
+  sortField?: string
+  sortType?: 'ASC' | 'DESC'
+}>()
 
-  emits: ['view', 'page-change', 'size-change'],
+// Emits
+const emit = defineEmits<{
+  (e: 'page-change', params: { 
+    pageIndex: number
+    pageSize: number
+    searchParams: Array<{key: string, value: any}>
+    sortField?: string
+    sortType?: string
+  }): void
+  (e: 'size-change', size: number): void
+  (e: 'view', member: Member): void
+}>()
 
-  setup(props, { emit }) {
-    const searchTerm = ref('')
-    const activeModal = ref<ModalType>(null)
-    const selectedMember = ref<Member | null>(null)
-    const isEditing = ref(false)
-    const editedMember = ref<Member | null>(null)
-    const loading = ref(false)
+// State
+const searchTerm = ref('')
+const selectedMember = ref<Member | null>(null)
+const activeModal = ref<'details' | 'history' | null>(null)
+const isEditing = ref(false)
+const editedMember = ref<Member | null>(null)
+const orderHistory = ref<Order[]>([])
+const pointHistory = ref<PointTransaction[]>([])
+const loading = ref(false)
+const websites = ref([
+  { websiteId: 1, name: 'Website 1' },
+  { websiteId: 2, name: 'Website 2' }
+])
+const exporting = ref(false)
+const searchLoading = ref(false)
 
-    const totalPages = computed(() => Math.ceil(props.totalCount / props.pageSize))
-
-    const tableHeaders = computed(() => {
-      const baseHeaders = ['Customer Name', 'Phone Number']
-      const dateHeader = props.tab === 'date-join-member' ? 'Date Join Member' : 'Select Month'
-      const platformHeader = ['Platform Website']
-      const additionalHeaders = props.tab === 'date-join-member' 
-        ? ['Member Level']
-        : []
-      
-      return [...baseHeaders, dateHeader, ...platformHeader, ...additionalHeaders, 'Options']
+// Add watcher for search term
+watch(searchTerm, debounce(async (newValue: string) => {
+  try {
+    searchLoading.value = true
+    const currentFilters = Array.isArray(props.filters) ? props.filters : []
+    
+    // Luôn emit page-change, kể cả khi searchTerm rỗng
+    emit('page-change', {
+      pageIndex: 1,
+      pageSize: props.pageSize,
+      searchParams: [
+        ...currentFilters.filter(f => f.key !== 'fullName'), // Loại bỏ fullName filter cũ nếu có
+        ...(newValue.trim() ? [{ // Chỉ thêm fullName filter khi có giá trị search
+          key: 'fullName',
+          value: newValue.trim()
+        }] : [])
+      ]
     })
-
-    const displayMemberDetails = computed(() => {
-      if (!selectedMember.value) return {}
-      
-      if (props.tab === 'date-of-birth') {
-        const { points, level, totalOrder, ...details } = selectedMember.value
-        return details
-      }
-      return selectedMember.value
-    })
-
-    const formatMonth = (date: string) => {
-      return new Date(date).toLocaleString('default', { month: 'long' })
-    }
-
-    const formatDateRange = (startDate: string, endDate: string) => {
-      return `${startDate} - ${endDate}`
-    }
-
-    const formatDateJoinMember = (date: string) => {
-      if (!date) return ''
-      return new Date(date).toLocaleDateString('vi-VN', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-      })
-    }
-
-    const formatLabel = (key: string) => {
-      return key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())
-    }
-
-    const filteredMembers = computed(() => {
-      let result = [...props.members]
-
-      // Apply filters
-      if (props.filters.date) {
-        result = result.filter(member => 
-          props.tab === 'date-join-member' 
-            ? member.registeredTime === props.filters.date
-            : member.birthday === props.filters.date
-        )
-      }
-      // ... apply other filters
-
-      // Apply search
-      if (searchTerm.value) {
-        result = result.filter(member => 
-          member.fullName.toLowerCase().includes(searchTerm.value.toLowerCase())
-        )
-      }
-
-      return result
-    })
-
-    const handleView = (member: Member) => {
-      selectedMember.value = member
-      activeModal.value = 'details'
-      emit('view', member)
-    }
-
-    const handleExport = () => {
-      // Implement export logic
-      console.log('Exporting data...')
-    }
-
-    const toggleEdit = () => {
-      isEditing.value = true
-      editedMember.value = selectedMember.value ? { ...selectedMember.value } as Member : null
-    }
-
-    const cancelEdit = () => {
-      isEditing.value = false
-      editedMember.value = selectedMember.value ? { ...selectedMember.value } as Member : null
-    }
-
-    const saveChanges = () => {
-      // Implement save changes logic
-      console.log('Saving changes...')
-      isEditing.value = false
-    }
-
-    const closeModal = () => {
-      selectedMember.value = null
-      activeModal.value = null
-    }
-
-    const handleHistory = (member: Member) => {
-      selectedMember.value = member
-      activeModal.value = 'history'
-    }
-
-    const getWebsiteName = (websiteId: number) => {
-      const website = websites.find(w => w.websiteId === websiteId)
-      return website?.name || 'Unknown'
-    }
-
-    const handlePageChange = (page: number, size: number) => {
-      emit('page-change', {
-        pageIndex: page,
-        pageSize: size || 10
-      })
-    }
-
-    const handleSizeChange = (_: number, size: number) => {
-      emit('page-change', {
-        pageIndex: 1,
-        pageSize: size || 10
-      })
-    }
-
-    const fetchMembers = async () => {
-      try {
-        loading.value = true
-        const response = await membershipAPI.getList(
-          'MembershipsWebsitesId',
-          'ASC',
-          10,
-          1,
-          []
-        )
-        console.log('Members data:', response.data)
-      } catch (error) {
-        console.error('Error fetching members:', error)
-      } finally {
-        loading.value = false
-      }
-    }
-
-    onMounted(() => {
-      fetchMembers()
-    })
-
-    return {
-      searchTerm,
-      tableHeaders,
-      filteredMembers,
-      selectedMember,
-      activeModal,
-      displayMemberDetails,
-      formatMonth,
-      handleView,
-      handleExport,
-      formatDate,
-      formatDateJoinMember,
-      formatDateRange,
-      formatLabel,
-      isEditing,
-      editedMember,
-      toggleEdit,
-      cancelEdit,
-      saveChanges,
-      closeModal,
-      handleHistory,
-      getWebsiteName,
-      totalPages,
-      handlePageChange,
-      handleSizeChange,
-      loading
-    }
+  } finally {
+    searchLoading.value = false
   }
+}, 300))
+
+// Add debounce utility
+function debounce(fn: Function, delay: number) {
+  let timeout: NodeJS.Timeout
+  return (...args: any[]) => {
+    clearTimeout(timeout)
+    timeout = setTimeout(() => fn(...args), delay)
+  }
+}
+
+// Computed
+const filteredMembers = computed(() => {
+  if (!searchTerm.value) return props.members
+  
+  return props.members.filter(member => 
+    member.fullName.toLowerCase().includes(searchTerm.value.toLowerCase())
+  )
+})
+
+// Methods
+const formatDate = (date: string) => {
+  if (!date) return ''
+  return new Date(date).toLocaleDateString('vi-VN')
+}
+
+const formatMonth = (date: string) => {
+  if (!date) return ''
+  return new Date(date).toLocaleDateString('vi-VN', { month: 'long', year: 'numeric' })
+}
+
+const formatDateRange = (startDate: string, endDate: string) => {
+  return `${formatDate(startDate)} - ${formatDate(endDate)}`
+}
+
+const formatDateJoinMember = (date: string) => {
+  return formatDate(date)
+}
+
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND'
+  }).format(amount)
+}
+
+const getOrderStatusClass = (status: string) => {
+  const statusClasses = {
+    'wc-completed': 'text-green-600 bg-green-100',
+    'wc-processing': 'text-blue-600 bg-blue-100',
+    'wc-cancelled': 'text-red-600 bg-red-100',
+    'wc-pending': 'text-yellow-600 bg-yellow-100'
+  }
+  return `px-2 py-1 rounded-full text-sm ${statusClasses[status] || 'text-gray-600 bg-gray-100'}`
+}
+
+const handleView = (member: Member) => {
+  selectedMember.value = member
+  activeModal.value = 'details'
+  emit('view', member)
+}
+
+const handleHistory = async (member: Member) => {
+  selectedMember.value = member
+  activeModal.value = 'history'
+  
+  if (!member.membershipWebsiteId) {
+    message.error('Member Website ID not found')
+    return
+  }
+  try {
+    loading.value = true
+    const [orderResponse, pointResponse] = await Promise.all([
+      orderHistoryApi.getOrderHistory(member.membershipWebsiteId),
+      pointHistoryApi.getPointHistory(member.membershipWebsiteId)
+    ])
+    orderHistory.value = orderResponse.orders
+    pointHistory.value = pointResponse.data
+  } catch (error) {
+    console.error('Error fetching history:', error)
+    message.error(t('profileManagement.history.error.fetch'))
+  } finally {
+    loading.value = false
+  }
+}
+
+const handlePointHistory = async (member: Member) => {
+  if (!member.membershipWebsiteId) {
+    message.error('Member Website ID not found')
+    return
+  }
+
+  try {
+    loading.value = true
+    const response = await pointHistoryApi.getPointHistory(member.membershipWebsiteId)
+    pointHistory.value = response.data
+  } catch (error) {
+    console.error('Error fetching point history:', error)
+    message.error(t('profileManagement.pointHistory.error.fetch'))
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleExport = async () => {
+  try {
+    exporting.value = true
+    // Lấy toàn bộ data để export (có thể dùng API riêng để lấy all data)
+    let exportData = props.members
+    // Nếu đang search thì chỉ export data đã filter
+    if (searchTerm.value) {
+      exportData = exportData.filter(member => 
+        member.fullName.toLowerCase().includes(searchTerm.value.toLowerCase())
+      )
+    }
+    // Format data cho Excel
+    const dataToExport = exportData.map(member => ({
+      'Customer Name': member.fullName,
+      'Email': member.email,
+      'Phone': member.mainPhoneNumber,        
+      'Address': member.defaultAddress,
+      'Level Name': member.levelName,
+      'Join Date': member.registeredTime,
+      'Website': member.websiteId
+    }))
+
+    // Tạo workbook và worksheet
+    const wb = XLSX.utils.book_new()
+    const ws = XLSX.utils.json_to_sheet(dataToExport)
+
+    // Thêm worksheet vào workbook
+    XLSX.utils.book_append_sheet(wb, ws, 'Members')
+
+    // Generate Excel file
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+    const data = new Blob([excelBuffer], { 
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    })
+    
+    // Download file
+    const fileName = `members_${new Date().toISOString().split('T')[0]}.xlsx`
+    const link = document.createElement('a')
+    link.href = window.URL.createObjectURL(data)
+    link.download = fileName
+    link.click()
+
+    message.success('Export successful')
+  } catch (error) {
+    console.error('Error exporting data:', error)
+    message.error('Failed to export data')
+  } finally {
+    exporting.value = false
+  }
+}
+
+const handlePageChange = (page: number, pageSize: number) => {
+  emit('page-change', { pageIndex: page, pageSize })
+}
+
+const handleSizeChange = (current: number, size: number) => {
+  emit('size-change', size)
+}
+
+const closeModal = () => {
+  selectedMember.value = null
+  activeModal.value = null
+  orderHistory.value = []
+  pointHistory.value = []
+  isEditing.value = false
+  editedMember.value = null
+}
+
+const toggleEdit = () => {
+  isEditing.value = !isEditing.value
+  if (isEditing.value && selectedMember.value) {
+    editedMember.value = { ...selectedMember.value }
+  }
+}
+
+const cancelEdit = () => {
+  isEditing.value = false
+  editedMember.value = null
+}
+
+const saveChanges = async () => {
+  if (!editedMember.value) return
+  
+  try {
+    // Implement save changes logic here
+    console.log('Saving changes:', editedMember.value)
+    isEditing.value = false
+    editedMember.value = null
+  } catch (error) {
+    message.error('Failed to save changes')
+  }
+}
+
+const getWebsiteName = (websiteId: number) => {
+  const website = websites.value.find(w => w.websiteId === websiteId)
+  return website?.name || 'Unknown'
+}
+
+const formatLabel = (key: string) => {
+  return key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())
+}
+
+// Expose necessary methods and properties
+defineExpose({
+  handleHistory,
+  closeModal
 })
 </script>
 

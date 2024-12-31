@@ -49,6 +49,26 @@
         "length": "Password must be at least 8 characters",
         "match": "Passwords must match"
       }
+    },
+    "orderHistory": {
+      "title": "Purchase History",
+      "headers": {
+        "date": "Date",
+        "orderId": "Order ID",
+        "products": "Products",
+        "total": "Total Amount",
+        "status": "Status"
+      },
+      "status": {
+        "wc-completed": "Completed",
+        "wc-processing": "Processing",
+        "wc-cancelled": "Cancelled",
+        "wc-pending": "Pending"
+      },
+      "noOrders": "No orders found",
+      "error": {
+        "fetch": "Failed to load order history"
+      }
     }
   }
 } 

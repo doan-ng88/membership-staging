@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <DefaultLayout>
     <div class="p-6">
       <PageHeader>
@@ -647,7 +647,7 @@ const captureEditorPreview = async (): Promise<File | null> => {
 
 const fetchTemplateData = async (bodyPath: string) => {
   try {
-    const response = await fetch(`https://lxwvj138-9000.asse.devtunnels.ms/${bodyPath}`)
+    const response = await fetch(`${baseUrl}/public/${bodyPath}`)
     if (!response.ok) throw new Error('Failed to fetch HTML content')
 
     const htmlContent = await response.text()
@@ -716,4 +716,4 @@ const handleSendMail = async () => {
 .transition-shadow {
   transition: box-shadow 0.3s ease;
 }
-</style>
+</style> -->

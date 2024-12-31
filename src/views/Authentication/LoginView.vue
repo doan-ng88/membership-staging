@@ -3,7 +3,7 @@
     <!-- Background Image -->
     <div 
       class="absolute inset-0 bg-cover bg-center bg-no-repeat blur-sm"
-      style="background-image: url('../../../public/images/login-bg.png')"
+      :style="{ backgroundImage: loginBg }"
     ></div>
     
     <!-- Content -->
@@ -68,6 +68,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
+import loginBgImage from '@/assets/images/login-bg.png';
 
 export default defineComponent({
   name: 'LoginView',
@@ -76,6 +77,7 @@ export default defineComponent({
     const email = ref('');
     const password = ref('');
     const error = ref('');
+    const loginBg = ref(`url(${loginBgImage})`) 
 
     const handleSubmit = async () => {
       try {
@@ -94,7 +96,8 @@ export default defineComponent({
       email,
       password,
       error,
-      handleSubmit
+      handleSubmit,
+      loginBg
     };
   }
 });

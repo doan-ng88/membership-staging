@@ -49,6 +49,26 @@
         "length": "Mật khẩu phải có ít nhất 8 ký tự",
         "match": "Mật khẩu phải khớp nhau"
       }
+    },
+    "orderHistory": {
+      "title": "Lịch Sử Mua Hàng",
+      "headers": {
+        "date": "Ngày",
+        "orderId": "Mã Đơn Hàng",
+        "products": "Sản Phẩm",
+        "total": "Tổng Tiền",
+        "status": "Trạng Thái"
+      },
+      "status": {
+        "wc-completed": "Hoàn Thành",
+        "wc-processing": "Đang Xử Lý",
+        "wc-cancelled": "Đã Hủy",
+        "wc-pending": "Chờ Xử Lý"
+      },
+      "noOrders": "Không có đơn hàng nào",
+      "error": {
+        "fetch": "Không thể tải lịch sử đơn hàng"
+      }
     }
   }
 } 

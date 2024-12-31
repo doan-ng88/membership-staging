@@ -26,31 +26,20 @@ export interface Order {
   }
 }
 
-export interface OrdersResponse {
-  data: Order[]
-  pagination: {
-    total: number
-    pageIndex: number
-    pageSize: number
-    totalPages: number
-  }
+export interface OrderHistoryResponse {
+  orders: Order[]
 }
 
-class PurchaseApi {
-  async getPurchaseHistory(websiteId: number, page: number = 1, pageSize: number = 10) {
+export class OrderHistoryApi {
+  async getOrderHistory(userId: number): Promise<OrderHistoryResponse> {
     try {
-      const response = await axiosInstance.post(`/membership/get/orders/${websiteId}`, {
-        params: {
-          page,
-          page_size: pageSize
-        }
-      })
-      return response.data as OrdersResponse
+      const response = await axiosInstance.get(`/membership/get/get-order-history/${userId}`)
+      return response.data
     } catch (error) {
-      console.error('Error fetching member orders:', error)
+      console.error('Error fetching order history:', error)
       throw error
     }
   }
 }
 
-export const purchaseApi = new PurchaseApi() 
+export const orderHistoryApi = new OrderHistoryApi() 
