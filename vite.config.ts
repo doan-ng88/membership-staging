@@ -16,21 +16,22 @@ export default defineConfig({
       '@components': path.resolve(__dirname, './src/components'),
       '@features': path.resolve(__dirname, './src/features'),
       '@views': path.resolve(__dirname, './src/views'),
+      
     },
   },
   server: {
     proxy: {
       '/api': {
-        target: 'https://lxwvj138-8081.asse.devtunnels.ms',
+        target: 'https://actsone.vercel.app',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api/, '/api'),
-        configure: (proxy, _options) => {
-          proxy.on('proxyReq', (proxyReq, req, _res) => {
-            proxyReq.removeHeader('Origin');
-            proxyReq.removeHeader('Referer');
-          });
-        }
+        // Nếu cần rewrite path
+        // rewrite: (path) => path.replace(/^\/api/, '')
+      },
+      '/public': {
+        target: 'https://actsone.vercel.app',
+        changeOrigin: true,
+        secure: false,
       }
     }
   },
