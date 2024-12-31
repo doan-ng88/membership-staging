@@ -318,7 +318,7 @@ const fetchTemplates = async () => {
   try {
     loading.value = true
     
-    let url = `/api/zalo/templates?page=${pagination.current}&pageSize=${pagination.pageSize}`
+    let url = `/api/membership/zalo/templates?page=${pagination.current}&pageSize=${pagination.pageSize}`
     
     if (filters.status !== '0') {
       url += `&status=${filters.status}`

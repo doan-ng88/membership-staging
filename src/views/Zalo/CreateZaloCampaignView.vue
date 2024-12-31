@@ -335,31 +335,42 @@ const showAddMemberModal = () => {
 };
 
 const handleSubmit = async () => {
+  const previousRoute = router.options.history.state.back;
+  console.log('Previous route:', router.resolve(previousRoute).name);
   try {
     await formRef.value.validate();
     if (formState.members.length === 0) {
       message.error('Please select at least one membership');
       return;
     }
-
-    const payload = {
+  } catch (error) {
+    console.error('Validation failed:', error);
+    return;
+  }
+  try {
+    const previousRouteName = router.resolve(router.options.history.state.back).name;
+    let payload = {
       campaignName: formState.name,
       description: formState.description,
       startDate: formState.startDate,
       dueDate: formState.dueDate,
       membershipIds: formState.members.map((member: any) => member.id),
       websiteID: formState.websiteId,
-      coupons: formState.coupons.map((coupon) => ({ couponCode: coupon })),
-      employeePermissions: formState.pic.map((user) => ({
-        employeeId: user.id,
+      coupons: formState.coupons.map((coupon)=> ({couponCode: coupon})),
+      employeePermissions: formState.pic.map((user)=> ({           
+        employeeId: user,
         permissionLevel: "edit"
       })),
-      isServiceZalo: true
-    };
+      isServiceZalo: true,
+      ...( previousRouteName === 'MailCampaign' && {isServiceEmail: true}),
+      ...( previousRouteName === 'CallCampaign' && {isServiceCall: true})
+    }
+
+    console.log('Payload:', payload);
 
     await axios.post(
-      `${import.meta.env.VITE_API_BASE_URL}/membership/update/create-campaign`,
-      payload,
+      `${import.meta.env.VITE_API_BASE_URL}/membership/update/create-campaign`, 
+      payload,          
       {
         headers: {
           'Authorization': `Bearer ${useAuthStore().token}`
@@ -368,9 +379,10 @@ const handleSubmit = async () => {
     );
 
     message.success('Campaign created successfully');
-    router.back();
+    router.back()
   } catch (error) {
-    message.error(error.message || 'Failed to save campaign');
+    console.error('Error:', error.response?.data);
+    message.error(error.response?.data?.message || 'Failed to save campaign');
   }
 };
 

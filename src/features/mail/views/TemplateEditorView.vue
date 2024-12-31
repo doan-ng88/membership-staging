@@ -490,9 +490,9 @@ const handleSave = async () => {
       return message.error('Please enter template name')
     }
 
-    if (!subject.value.trim()) {
-      return message.error('Please enter email subject')
-    }
+    // if (!subject.value.trim()) {
+    //   return message.error('Please enter email subject')
+    // }
 
     if (!editorData.value.trim()) {
       return message.error('Please enter template content')

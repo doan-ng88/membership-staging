@@ -1,5 +1,8 @@
 <template>
-  <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-999">
+  <div 
+    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-999"
+    @click.self="$emit('close')"
+  >
     <div class="bg-white rounded-lg shadow-lg w-[500px] p-6">
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-medium text-gray-900">
@@ -167,6 +170,7 @@ import { reactive, ref, computed, watch } from 'vue'
 import { useBenefitStore } from '@/stores/benefitSettings'
 import type { LevelSetting } from '@/data/benefits'
 import { useI18nGlobal } from '@/i18n'
+import { message } from 'ant-design-vue'
 
 const { t } = useI18nGlobal()
 
@@ -335,9 +339,30 @@ const handleSubmit = async () => {
   
   try {
     isSubmitting.value = true
-    await emit('save', {...formData})
+    
+    const payload = {
+      ...formData,
+      websiteId: Number(formData.websiteId),
+      thresholdAmount: Number(formData.thresholdAmount),
+      rewardRate: Number(formData.rewardRate),
+      redeemRate: Number(formData.redeemRate),
+      durationExpired: Number(formData.durationExpired),
+      rank: Number(formData.rank),
+      discountPerOrder: Number(formData.discountPerOrder),
+      Name: formData.Name.trim(),
+      levelIdWebsite: formData.levelIdWebsite || 0,
+      membershipWebsites: formData.membershipWebsites || null
+    }
+
+    await emit('save', payload)
+    message.success(props.isEditing ? 'Cập nhật cấp bậc thành công' : 'Thêm mới cấp bậc thành công')
+    emit('update:visible', false)
   } catch (error) {
     console.error('Error submitting form:', error)
+    message.error(
+      error.response?.data?.message || 
+      (props.isEditing ? 'Cập nhật cấp bậc thất bại' : 'Thêm mới cấp bậc thất bại')
+    )
   } finally {
     isSubmitting.value = false
   }

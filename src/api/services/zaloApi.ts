@@ -2,7 +2,7 @@ import axiosInstance from '../config/axios'
 
 export const zaloApi = {
   getTemplates() {
-    return axiosInstance.get('/api/zalo/templates')
+    return axiosInstance.get('/api/membership/zalo/templates')
   },
 
   createCampaign(data: {
@@ -12,10 +12,10 @@ export const zaloApi = {
     templateId: number
     recipients: any[]
   }) {
-    return axiosInstance.post('/api/zalo/campaigns', data)
+    return axiosInstance.post('/api/membership/zalo/campaigns', data)
   },
 
   getCampaigns(params?: any) {
-    return axiosInstance.get('/api/zalo/campaigns', { params })
+    return axiosInstance.get('/api/membership/zalo/campaigns', { params })
   }
 } 

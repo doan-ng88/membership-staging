@@ -4,7 +4,7 @@
     <div class="p-6">
       <PageHeader>
         <template #title>
-          <h2 class="text-2xl font-bold text-gray-800">Create Email Campaign345</h2>
+          <h2 class="text-2xl font-bold text-gray-800">Create Email Campaign</h2>
         </template>
       </PageHeader>
 
