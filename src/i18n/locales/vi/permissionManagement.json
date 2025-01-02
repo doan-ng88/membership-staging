@@ -1,0 +1,32 @@
+{
+  "permissionManagement": {
+    "title": "Quản lý phân quyền",
+    "warningMessage": "Bạn không có quyền truy cập trang này. Vui lòng liên hệ quản trị viên.",
+    "table": {
+      "columns": {
+        "id": "ID",
+        "fullName": "Họ và tên",
+        "email": "Email",
+        "permission": "Quyền hạn"
+      },
+      "notUpdated": "Chưa cập nhật"
+    },
+    "roles": {
+      "admin": "Quản trị viên",
+      "manager": "Quản lý",
+      "staff": "Nhân viên",
+      "reporter": "Người báo cáo",
+      "notAssign": "Chưa phân quyền"
+    },
+    "buttons": {
+      "saveChanges": "Lưu thay đổi"
+    },
+    "messages": {
+      "noPermission": "Bạn không có quyền truy cập trang này",
+      "noChanges": "Không có thay đổi để lưu",
+      "updateSuccess": "Cập nhật phân quyền thành công",
+      "updateError": "Không thể cập nhật phân quyền",
+      "loadError": "Không thể tải danh sách người dùng"
+    }
+  }
+} 

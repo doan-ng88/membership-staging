@@ -1,0 +1,13 @@
+{
+  "memberStatistics": {
+    "title": "Thống Kê Thành Viên Theo Cấp Độ",
+    "table": {
+      "headers": {
+        "level": "Cấp độ",
+        "count": "Số lượng",
+        "percentage": "Phần trăm (%)"
+      }
+    },
+    "total": "Tổng số thành viên: {count}"
+  }
+} 

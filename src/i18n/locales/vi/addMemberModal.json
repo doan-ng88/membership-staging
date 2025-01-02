@@ -1,0 +1,24 @@
+{
+  "addMemberModal": {
+    "title": "Thêm thành viên",
+    "search": {
+      "placeholder": "Tìm kiếm thành viên..."
+    },
+    "table": {
+      "columns": {
+        "customerName": "Tên khách hàng",
+        "phoneNumber": "Số điện thoại",
+        "website": "Website",
+        "registeredTime": "Thời gian đăng ký",
+        "birthday": "Ngày sinh"
+      },
+      "pagination": {
+        "total": "Tổng {total} mục"
+      }
+    },
+    "buttons": {
+      "cancel": "Hủy",
+      "add": "Thêm ({count})"
+    }
+  }
+} 

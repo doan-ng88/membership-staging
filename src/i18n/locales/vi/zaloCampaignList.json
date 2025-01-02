@@ -1,0 +1,53 @@
+{
+  "zaloCampaignList": {
+    "title": "Quản lý chiến dịch Zalo OA",
+    "buttons": {
+      "add": "Thêm chiến dịch",
+      "reset": "Đặt lại",
+      "search": "Tìm kiếm",
+      "edit": "Sửa",
+      "delete": "Xóa"
+    },
+    "filters": {
+      "status": {
+        "label": "Trạng thái",
+        "placeholder": "Chọn trạng thái",
+        "options": {
+          "all": "Tất cả",
+          "pending": "Chờ xử lý",
+          "processing": "Đang xử lý",
+          "completed": "Hoàn thành",
+          "failed": "Thất bại"
+        }
+      },
+      "search": {
+        "label": "Tìm kiếm",
+        "placeholder": "Nhập tên chiến dịch"
+      }
+    },
+    "table": {
+      "columns": {
+        "name": "Tên chiến dịch",
+        "status": "Trạng thái",
+        "totalRecipients": "Tổng người nhận",
+        "remaining": "Còn lại",
+        "startDate": "Ngày bắt đầu",
+        "endDate": "Ngày kết thúc",
+        "actions": "Thao tác"
+      },
+      "pagination": {
+        "total": "Tổng {total} chiến dịch"
+      }
+    },
+    "messages": {
+      "error": {
+        "load": "Không thể tải danh sách chiến dịch",
+        "unauthorized": "Chưa đăng nhập",
+        "delete": "Xóa chiến dịch thất bại"
+      },
+      "success": {
+        "delete": "Xóa chiến dịch thành công"
+      }
+    }
+  }
+} 

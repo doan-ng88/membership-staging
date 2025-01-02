@@ -1,0 +1,103 @@
+{
+  "marketingPerformance": {
+    "channelPerformance": {
+      "title": "Phân Tích Hiệu Suất Kênh",
+      "subtitle": "Theo dõi và phân tích hiệu suất các kênh marketing",
+      "filters": {
+        "website": "Chọn Website",
+        "dateRange": "Khoảng Thời Gian"
+      },
+      "cards": {
+        "email": {
+          "title": "Hiệu Suất Email"
+        },
+        "sms": {
+          "title": "Hiệu Suất SMS"
+        },
+        "overall": {
+          "title": "Hiệu Suất Tổng Thể"
+        }
+      },
+      "sections": {
+        "email": {
+          "title": "Hiệu Suất Email Marketing"
+        },
+        "sms": {
+          "title": "Hiệu Suất SMS Marketing"
+        },
+        "channel": {
+          "title": "Phân Tích Đóng Góp Kênh"
+        }
+      },
+      "errors": {
+        "loadFailed": "Không thể tải dữ liệu thống kê kênh"
+      }
+    },
+    "email": {
+      "title": "Hiệu Suất Email Marketing",
+      "subtitle": "Phân tích hiệu quả chiến dịch email marketing",
+      "metrics": {
+        "openRate": {
+          "title": "Tỷ Lệ Mở Email",
+          "subtitle": "Tổng số email đã mở",
+          "label": "Tỷ lệ mở"
+        },
+        "deliveryRate": {
+          "title": "Tỷ Lệ Gửi Thành Công",
+          "subtitle": "Tổng số email đã gửi",
+          "label": "Tỷ lệ gửi"
+        },
+        "clickRate": {
+          "title": "Tỷ Lệ Click",
+          "subtitle": "Tổng số email được click",
+          "label": "Tỷ lệ click"
+        }
+      }
+    },
+    "sms": {
+      "title": "Hiệu Suất SMS Marketing",
+      "subtitle": "Phân tích hiệu quả chiến dịch SMS marketing",
+      "campaign": {
+        "label": "Chọn Chiến Dịch SMS",
+        "options": {
+          "campaign1": "Chiến Dịch SMS 1",
+          "campaign2": "Chiến Dịch SMS 2",
+          "campaign3": "Chiến Dịch SMS 3"
+        }
+      },
+      "metrics": {
+        "deliveryRate": {
+          "title": "Tỷ Lệ Gửi SMS Thành Công",
+          "subtitle": "Tổng số SMS gửi thành công",
+          "label": "Tỷ lệ gửi"
+        },
+        "responseRate": {
+          "title": "Tỷ Lệ Phản Hồi SMS",
+          "subtitle": "Tổng số phản hồi từ SMS",
+          "label": "Tỷ lệ phản hồi"
+        }
+      }
+    },
+    "channelContribution": {
+      "title": "Phân Tích Đóng Góp Kênh",
+      "timeRange": {
+        "label": "Chọn Khoảng Thời Gian:",
+        "options": {
+          "6months": "6 Tháng Gần Đây",
+          "12months": "12 Tháng Gần Đây",
+          "24months": "24 Tháng Gần Đây"
+        }
+      },
+      "chart": {
+        "title": "Đóng Góp Kênh Marketing",
+        "labels": {
+          "email": "Email",
+          "sms": "SMS",
+          "social": "Mạng Xã Hội",
+          "direct": "Thư Trực Tiếp",
+          "other": "Khác"
+        }
+      }
+    }
+  }
+} 

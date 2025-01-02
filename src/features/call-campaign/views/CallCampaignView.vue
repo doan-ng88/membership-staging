@@ -3,47 +3,48 @@
   <DefaultLayout>
     <div class="p-6">
       <PageHeader>
-      <template #title>
-        <h2 class="text-2xl font-bold text-gray-800">Call Campaign Management</h2>
-      </template>
-      <template #extra>
-        <CampaignActions 
-          :loading="loading"
-          @add="handleAdd"
-          @refresh="fetchCampaignList"
-        />
-      </template>
-    </PageHeader>
+        <template #title>
+          <h2 class="text-2xl font-bold text-gray-800">{{ t('callCampaign.title') }}</h2>
+        </template>
+        <template #extra>
+          <CampaignActions 
+            :loading="loading"
+            @add="handleAdd"
+            @refresh="fetchCampaignList"
+          />
+        </template>
+      </PageHeader>
 
-    <div class="mb-6">
-      <CampaignFilters
-        v-model:filters="filters"
-        @search="handleSearch"
-        @reset="handleReset"
+      <div class="mb-6">
+        <CampaignFilters
+          v-model:filters="filters"
+          @search="handleSearch"
+          @reset="handleReset"
+        />
+      </div>
+
+      <CampaignTable
+        :campaigns="campaigns"
+        :loading="loading"
+        :pagination="pagination"
+        @page-change="handlePageChange"
+        @edit="handleEdit"
+        :enable-name-click="true"
+      />
+
+      <EditCampaignModal
+        v-model:visible="showEditModal"
+        :campaignId="selectedCampaign?.CampaignID"
+        :campaign-data="selectedCampaign || {}"
+        @success="fetchCampaignList"
       />
     </div>
-
-    <CampaignTable
-      :campaigns="campaigns"
-      :loading="loading"
-      :pagination="pagination"
-      @page-change="handlePageChange"
-      @edit="handleEdit"
-      :enable-name-click="true"
-    />
-
-    <EditCampaignModal
-      v-model:visible="showEditModal"
-      :campaignId="selectedCampaign?.CampaignID"
-      :campaign-data="selectedCampaign || {}"
-      @success="fetchCampaignList"
-    />
-  </div>
   </DefaultLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useI18nGlobal  } from '@/i18n';
 import PageHeader from '@/shared/components/PageHeader.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import CampaignActions from '../components/CampaignList/CampaignActions.vue';
@@ -54,6 +55,7 @@ import EditCampaignModal from '../components/CampaignForm/EditCampaignModal.vue'
 import type { Campaign } from '../types/campaign.types'
 import { useRouter } from 'vue-router';
 
+const { t } = useI18nGlobal();
 const router = useRouter();
 
 const showEditModal = ref(false)

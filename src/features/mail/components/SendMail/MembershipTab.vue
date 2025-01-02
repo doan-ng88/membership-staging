@@ -70,7 +70,7 @@
           :loading="sending" 
           @click="showSendMailModal"
         >
-          Send by Membership
+          Send by Membership324
         </a-button>
       </a-space>
     </div>

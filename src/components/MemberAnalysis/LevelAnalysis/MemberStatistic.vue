@@ -1,22 +1,24 @@
 <template>
   <div class="mb-12">
-    <h3 class="text-2xl font-semibold mb-4">Member Statistics by Level</h3>
+    <h3 class="text-2xl font-semibold mb-4">{{ t('memberStatistics.title') }}</h3>
     <div class="overflow-x-auto">
       <table class="min-w-full bg-white shadow rounded">
         <thead>
           <tr>
-            <th v-for="header in headers" 
-                :key="header" 
-                class="py-3 px-6 bg-gray-200 text-left text-gray-700 uppercase font-semibold text-sm"
+            <th 
+              v-for="header in headers" 
+              :key="header"
+              class="py-3 px-6 bg-gray-200 text-left text-gray-700 uppercase font-semibold text-sm"
             >
               {{ header }}
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(count, level) in statistics" 
-              :key="level" 
-              class="hover:bg-gray-100"
+          <tr 
+            v-for="(count, level) in statistics" 
+            :key="level" 
+            class="hover:bg-gray-100"
           >
             <td class="py-3 px-6 border-b">{{ level }}</td>
             <td class="py-3 px-6 border-b">{{ count }}</td>
@@ -27,36 +29,28 @@
         </tbody>
       </table>
     </div>
-    <p class="mt-4 text-gray-700">Total Members: {{ total }}</p>
+    <p class="mt-4 text-gray-700">{{ t('memberStatistics.total', { count: total }) }}</p>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue'
-import type { PropType } from 'vue'
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useI18nGlobal } from '@/i18n'
 import type { MemberStats } from '@/types/memberAnalysis'
 
-export default defineComponent({
-  name: 'MemberStatistics',
+const { t } = useI18nGlobal()
 
-  props: {
-    statistics: {
-      type: Object as PropType<MemberStats>,
-      required: true
-    }
-  },
+const props = defineProps<{
+  statistics: MemberStats
+}>()
 
-  setup(props) {
-    const headers = ['Level', 'Member Count', 'Percentage (%)']
-    
-    const total = computed(() => 
-      Object.values(props.statistics).reduce((a, b) => a + b, 0)
-    )
+const headers = computed(() => [
+  t('memberStatistics.table.headers.level'),
+  t('memberStatistics.table.headers.count'),
+  t('memberStatistics.table.headers.percentage')
+])
 
-    return {
-      headers,
-      total
-    }
-  }
-})
+const total = computed(() => 
+  Object.values(props.statistics).reduce((a, b) => a + b, 0)
+)
 </script>

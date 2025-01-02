@@ -1,0 +1,79 @@
+{
+  "templateEditor": {
+    "title": "Soạn thảo mẫu",
+    "buttons": {
+      "uploadWord": "Tải lên Word",
+      "sendMail": "Chọn chiến dịch/thành viên để gửi mail",
+      "save": "Lưu mẫu",
+      "create": "Tạo mẫu mới",
+      "uploadExcel": "Tải lên Excel"
+    },
+    "form": {
+      "name": {
+        "label": "Tên mẫu",
+        "placeholder": "Nhập tên mẫu",
+        "required": "Vui lòng nhập tên mẫu"
+      },
+      "type": {
+        "label": "Loại",
+        "placeholder": "Chọn loại mẫu"
+      },
+      "category": {
+        "label": "Danh mục",
+        "placeholder": "Chọn danh mục"
+      },
+      "elasticMail": {
+        "checked": "Lưu vào ElasticMail",
+        "unchecked": "Không lưu"
+      }
+    },
+    "drawer": {
+      "title": "Chọn chiến dịch/thành viên để gửi mail"
+    },
+    "messages": {
+      "save": {
+        "success": {
+          "update": "Cập nhật mẫu thành công",
+          "create": "Tạo mẫu mới thành công"
+        },
+        "error": "Đã xảy ra lỗi, vui lòng thử lại sau"
+      },
+      "upload": {
+        "success": "Tải lên thành công",
+        "error": "Không thể xử lý file Word"
+      },
+      "validation": {
+        "content": "Vui lòng nhập nội dung mẫu",
+        "login": "Vui lòng đăng nhập lại",
+        "noTemplate": "Chưa có nội dung mẫu",
+        "noMergeFields": "Không tìm thấy trường merge trong mẫu"
+      },
+      "image": {
+        "loading": "Đang tải ảnh...",
+        "error": {
+          "process": "Không thể xử lý ảnh ở vị trí {position}",
+          "load": "Không thể tải ảnh: {src}",
+          "zip": "Không thể tạo file zip"
+        }
+      },
+      "template": {
+        "error": "Không thể tải thông tin mẫu"
+      }
+    },
+    "mapping": {
+      "fields": {
+        "customerName": "Tên khách hàng",
+        "email": "Email",
+        "phone": "Số điện thoại",
+        "address": "Địa chỉ",
+        "campaignName": "Tên chiến dịch",
+        "startDate": "Ngày bắt đầu",
+        "endDate": "Ngày kết thúc"
+      }
+    },
+    "tabs": {
+      "campaign": "Gửi theo chiến dịch",
+      "membership": "Gửi theo thành viên"
+    }
+  }
+} 

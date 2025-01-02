@@ -1,14 +1,14 @@
 <template>
   <div class="bg-white rounded-lg shadow-sm p-6">
     <div class="mb-6">
-      <h3 class="text-lg font-medium text-gray-900">Revenue by Category</h3>
-      <p class="text-sm text-gray-500 mt-1">Analysis of revenue and orders by product category</p>
+      <h3 class="text-lg font-medium text-gray-900">{{ t('productSales.category.title') }}</h3>
+      <p class="text-sm text-gray-500 mt-1">{{ t('productSales.category.subtitle') }}</p>
       
       <!-- Filter Section -->
       <div class="mt-4 flex items-center justify-between">
         <!-- Brand Selection -->
         <div class="flex items-center">
-          <label class="text-sm font-medium text-gray-700 mr-2">Brand Selection:</label>
+          <label class="text-sm font-medium text-gray-700 mr-2">{{ t('productSales.category.filters.brand') }}</label>
           <a-select 
             :value="selectedBrand"
             @change="(value: string) => $emit('update:selectedBrand', value)"
@@ -16,14 +16,14 @@
             placeholder="Select brand"
           >
             <a-select-option v-for="brand in defaultBrands" :key="brand.value" :value="brand.value">
-              {{ brand.label }}
+              {{ t(`productSales.filters.brand.options.${brand.key}`) }}
             </a-select-option>
           </a-select>
         </div>
 
         <!-- Date Range -->
         <div class="flex items-center">
-          <label class="text-sm font-medium text-gray-700 mr-2">Date Range:</label>
+          <label class="text-sm font-medium text-gray-700 mr-2">{{ t('productSales.category.filters.dateRange') }}</label>
           <a-range-picker
             v-model:value="dateRange"
             format="YYYY-MM-DD"
@@ -39,7 +39,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
       <!-- Revenue Chart -->
       <div class="bg-gray-50 p-4 rounded-lg">
-        <h4 class="text-sm font-medium text-gray-700 mb-4">Revenue Distribution</h4>
+        <h4 class="text-sm font-medium text-gray-700 mb-4">{{ t('productSales.category.charts.revenue.title') }}</h4>
         <VueApexCharts
           type="bar"
           height="400"
@@ -50,7 +50,7 @@
 
       <!-- Order Status Chart -->
       <div class="bg-gray-50 p-4 rounded-lg">
-        <h4 class="text-sm font-medium text-gray-700 mb-4">Order Status by Category</h4>
+        <h4 class="text-sm font-medium text-gray-700 mb-4">{{ t('productSales.category.charts.orders.title') }}</h4>
         <VueApexCharts
           type="bar"
           height="400"
@@ -63,19 +63,19 @@
     <!-- Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       <div class="bg-blue-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-blue-700">Total Revenue</h5>
+        <h5 class="text-sm font-medium text-blue-700">{{ t('productSales.category.metrics.revenue.title') }}</h5>
         <p class="text-2xl font-bold text-blue-900 mt-2">
           {{ formatCurrency(totalRevenue) }}
         </p>
       </div>
       <div class="bg-green-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-green-700">Total Orders</h5>
+        <h5 class="text-sm font-medium text-green-700">{{ t('productSales.category.metrics.orders.title') }}</h5>
         <p class="text-2xl font-bold text-green-900 mt-2">
           {{ totalOrders }}
         </p>
       </div>
       <div class="bg-purple-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-purple-700">Completion Rate</h5>
+        <h5 class="text-sm font-medium text-purple-700">{{ t('productSales.category.metrics.completion.title') }}</h5>
         <p class="text-2xl font-bold text-purple-900 mt-2">
           {{ completionRate }}%
         </p>
@@ -91,6 +91,7 @@ import { message } from 'ant-design-vue'
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
 import dayjs from 'dayjs'
+import { useI18nGlobal } from '@/i18n'
 
 interface Brand {
   value: string;
@@ -105,6 +106,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:selectedBrand', value: string): void
 }>()
+
+const { t } = useI18nGlobal()
 
 // Định nghĩa brands mặc định
 const defaultBrands: Brand[] = [
@@ -174,7 +177,7 @@ const fetchCategoryStats = async () => {
     categoryStats.value = response.data.stats
   } catch (error: any) {
     console.error('Error fetching category stats:', error)
-    message.error('Không thể tải dữ liệu thống kê danh mục')
+    message.error(t('productSales.category.errors.loadFailed'))
   } finally {
     loading.value = false
   }
@@ -228,7 +231,7 @@ const revenueChartOptions = computed(() => ({
   },
   yaxis: {
     title: {
-      text: 'Revenue (VND)'
+      text: t('productSales.category.charts.revenue.yaxis')
     },
     labels: {
       formatter: (value: number) => `${(value/1000000).toFixed(0)}M`
@@ -240,19 +243,19 @@ const revenueChartOptions = computed(() => ({
 const orderStatusSeries = computed(() => {
   return [
     {
-      name: 'Completed',
+      name: t('productSales.category.charts.orders.status.completed'),
       data: sortedOrderStats.value.map(stat => stat.completed_orders)
     },
     {
-      name: 'Processing',
+      name: t('productSales.category.charts.orders.status.processing'),
       data: sortedOrderStats.value.map(stat => stat.processing_orders)
     },
     {
-      name: 'On Hold',
+      name: t('productSales.category.charts.orders.status.onHold'),
       data: sortedOrderStats.value.map(stat => stat.on_hold_orders)
     },
     {
-      name: 'Cancelled',
+      name: t('productSales.category.charts.orders.status.cancelled'),
       data: sortedOrderStats.value.map(stat => stat.cancelled_orders)
     }
   ]
@@ -274,7 +277,7 @@ const orderStatusOptions = computed(() => ({
   },
   yaxis: {
     title: {
-      text: 'Number of Orders'
+      text: t('productSales.category.charts.orders.yaxis')
     }
   },
   legend: {

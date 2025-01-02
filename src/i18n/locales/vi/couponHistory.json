@@ -1,0 +1,69 @@
+{
+  "couponHistory": {
+    "title": "Lịch Sử Sử Dụng Mã Giảm Giá",
+    "filters": {
+      "website": {
+        "label": "Website",
+        "placeholder": "Chọn website"
+      },
+      "status": {
+        "label": "Trạng thái",
+        "placeholder": "Chọn trạng thái",
+        "options": {
+          "all": "Tất cả",
+          "publish": "Đang hoạt động",
+          "draft": "Nháp",
+          "trash": "Đã xóa"
+        }
+      },
+      "search": {
+        "label": "Tìm kiếm",
+        "placeholder": "Nhập mã giảm giá"
+      },
+      "dateRange": {
+        "label": "Thời gian",
+        "placeholder": {
+          "start": "Từ ngày",
+          "end": "Đến ngày"
+        }
+      },
+      "buttons": {
+        "reset": "Đặt lại",
+        "search": "Tìm kiếm"
+      }
+    },
+    "table": {
+      "columns": {
+        "code": "Mã giảm giá",
+        "status": "Trạng thái",
+        "discountType": "Loại giảm giá",
+        "value": "Giá trị",
+        "orderLimit": "Giới hạn đơn hàng",
+        "time": "Thời gian",
+        "usage": "Usage",
+        "actions": "Thao tác"
+      },
+      "discountTypes": {
+        "fixed_cart": "Đơn hàng",
+        "percent": "%",
+        "fixed_product": "Sản phẩm"
+      },
+      "status": {
+        "publish": "Đang hoạt động",
+        "draft": "Nháp",
+        "trash": "Đã xóa"
+      },
+      "actions": {
+        "details": "Chi tiết"
+      },
+      "pagination": {
+        "total": "Tổng {total} mã giảm giá"
+      }
+    },
+    "messages": {
+      "error": {
+        "load": "Không thể tải danh sách mã giảm giá"
+      }
+    }
+  }
+} 

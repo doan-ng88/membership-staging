@@ -1,0 +1,27 @@
+{
+  "mailCampaign": {
+    "title": "Email Campaign Management",
+    "messages": {
+      "loadError": "Unable to load campaign list",
+      "deleteSuccess": "Campaign deleted successfully",
+      "deleteError": "Failed to delete campaign"
+    },
+    "table": {
+      "pagination": {
+        "pageSize": 10
+      }
+    },
+    "filters": {
+      "searchParams": {
+        "search": "search",
+        "status": "status",
+        "startDateFrom": "startDateFrom",
+        "dueDateTo": "dueDateTo",
+        "isServiceEmail": "true"
+      }
+    },
+    "search": {
+      "placeholder": "Search by campaign name"
+    }
+  }
+} 

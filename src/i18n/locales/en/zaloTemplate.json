@@ -1,0 +1,68 @@
+{
+  "zaloTemplate": {
+    "title": "Zalo OA Template List",
+    "filters": {
+      "status": {
+        "label": "Status",
+        "placeholder": "Select status",
+        "options": {
+          "all": "All templates",
+          "approved": "Approved (Enable)",
+          "pending": "Pending Review",
+          "rejected": "Rejected",
+          "disabled": "Disabled"
+        }
+      },
+      "search": {
+        "label": "Search",
+        "placeholder": "Enter template name"
+      },
+      "buttons": {
+        "reset": "Reset",
+        "search": "Search"
+      }
+    },
+    "template": {
+      "id": "ID",
+      "status": {
+        "approved": "Approved",
+        "pending": "Pending Review",
+        "rejected": "Rejected",
+        "disabled": "Disabled"
+      },
+      "actions": {
+        "view": "View",
+        "edit": "Edit",
+        "send": "Send"
+      }
+    },
+    "drawer": {
+      "title": "Select Recipients for Zalo Template",
+      "tabs": {
+        "campaign": "Send by Campaign",
+        "membership": "Send by Membership"
+      },
+      "upload": {
+        "button": "Upload Excel",
+        "error": "Only Excel files are supported!"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "continue": "Continue"
+      }
+    },
+    "messages": {
+      "noPreview": "No preview link available for this template",
+      "loadError": "Cannot load template list",
+      "sendError": "Cannot prepare to send template",
+      "selectRecipients": "Please select recipients",
+      "sendSuccess": "Template sent successfully",
+      "sendFailed": "Failed to send template",
+      "selectCampaign": "Please select at least one campaign",
+      "sendMessageSuccess": "Message sent successfully"
+    },
+    "pagination": {
+      "total": "{range0}-{range1} of {total} items"
+    }
+  }
+} 

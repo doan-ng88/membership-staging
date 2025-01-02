@@ -1,0 +1,159 @@
+{
+  "sidebar": {
+    "company": "ACTSONE VIETNAM",
+    "logo": {
+      "alt": "ACTSONE VIETNAM"
+    },
+    "groups": {
+      "membershipManagement": {
+        "name": "Membership Management",
+        "items": {
+          "memberLevelDefinition": {
+            "label": "Membership Level Definition",
+            "children": {
+              "benefitSettings": "Benefit Settings",
+              "levelUpDownRules": "Level Up/Down Rules",
+              "automaticLevelAdjustment": "Automatic Level Adjustment"
+            }
+          },
+          "memberInformation": {
+            "label": "Member Information",
+            "children": {
+              "profileManagement": "Profile Management",
+              "purchaseHistory": "Purchase History",
+              "pointRewardManagement": "Point/Reward Management"
+            }
+          },
+          "appPush": {
+            "label": "App Push",
+            "children": {
+              "templatesZaloOA": "Templates Zalo OA",
+              "campaignsZaloOA": "Campaigns Zalo OA"
+            }
+          }
+        }
+      },
+      "communicationManagement": {
+        "name": "Communication Management",
+        "items": {
+          "mailIntergration": {
+            "label": "Mail Integration",
+            "children": {
+              "apiConfiguration": "API Configuration",
+              "memberDataSync": "Member Data Sync",
+              "mailCampaign": "Mail Campaign",
+              "templateMailManagement": "Template Mail Management",
+              "performanceAnalysis": "Performance Analysis"
+            }
+          },
+          "appPush": {
+            "label": "App Push",
+            "children": {
+              "templatesZaloOA": "Templates Zalo OA",
+              "campaignsZaloOA": "Campaigns Zalo OA"
+            }
+          }
+        }
+      },
+      "analysisReporting": {
+        "name": "Analysis & Reporting",
+        "items": {
+          "memberAnalysis": {
+            "label": "Member Analysis",
+            "children": {
+              "levelAnalysis": "Level Analysis",
+              "purchasePatternAnalysis": "Purchase Pattern Analysis"
+            }
+          },
+          "marketingPerformance": {
+            "label": "Marketing Performance",
+            "children": {
+              "channelPerformance": "Channel Performance"
+            }
+          },
+          "salesAnalysis": {
+            "label": "Sales Analysis",
+            "children": {
+              "productSales": "Product Sales"
+            }
+          }
+        }
+      },
+      "promotionManagement": {
+        "name": "Promotion Management",
+        "items": {
+          "campaignManagement": {
+            "label": "Campaign Management",
+            "children": {
+              "regularCampaigns": "Regular Campaigns",
+              "specialPromotions": "Special Promotions"
+            }
+          },
+          "couponVoucherManagement": {
+            "label": "Coupon & Voucher",
+            "children": {
+              "createCoupon": "Create Coupon",
+              "usageHistory": "Usage History"
+            }
+          }
+        }
+      },
+      "analysis": {
+        "name": "Analysis",
+        "items": {
+          "memberAnalysis": {
+            "label": "Member Analysis",
+            "children": {
+              "levelAnalysis": "Level Analysis",
+              "purchasePatternAnalysis": "Purchase Pattern Analysis"
+            }
+          },
+          "marketingPerformance": {
+            "label": "Marketing Performance",
+            "children": {
+              "channelPerformance": "Channel Performance"
+            }
+          },
+          "salesAnalysis": {
+            "label": "Sales Analysis",
+            "children": {
+              "productSales": "Product Sales"
+            }
+          }
+        }
+      },
+      "callCampaign": {
+        "name": "Call Campaign",
+        "items": {
+          "callCampaign": {
+            "label": "Call Campaign"
+          }
+        }
+      },
+      "systemManagement": {
+        "name": "System Management",
+        "items": {
+          "adminSettings": {
+            "label": "Admin Settings",
+            "children": {
+              "permissionManagement": "Permission Management"
+            }
+          }
+        }
+      },
+      "callCampaign": {
+        "name": "Call Campaign",
+        "items": {
+          "callCampaignManagement": {
+            "label": "Call Campaign Management",
+            "children": {
+              "createCampaign": "Create Campaign",
+              "campaignList": "Campaign List",
+              "campaignHistory": "Campaign History"
+            }
+          }
+        }
+      }
+    }
+  }
+} 

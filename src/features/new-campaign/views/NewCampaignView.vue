@@ -4,7 +4,7 @@
     <div class="p-6">
       <PageHeader>
         <template #title>
-          <h2 class="text-2xl font-bold text-gray-800">Create Email Campaign</h2>
+          <h2 class="text-2xl font-bold text-gray-800">{{ t('newEmailCampaign.title') }}</h2>
         </template>
       </PageHeader>
 
@@ -15,16 +15,16 @@
       layout="vertical"
     >
       <div class="flex gap-4">
-        <a-form-item label="Campaign Name" name="name" class="flex-1">
+        <a-form-item :label="t('newEmailCampaign.form.name.label')" name="name" class="flex-1">
           <a-input v-model:value="formState.name" placeholder="Enter campaign name" />
         </a-form-item>
-        <a-form-item label="Campaign Description" name="description" class="flex-1">
+        <a-form-item :label="t('newEmailCampaign.form.description.label')" name="description" class="flex-1">
           <a-input v-model:value="formState.description" placeholder="Enter campaign description" />
         </a-form-item>
       </div>
 
       <div class="flex gap-4">
-        <a-form-item label="Website" name="websiteId" class="flex-1">
+        <a-form-item :label="t('newEmailCampaign.form.website.label')" name="websiteId" class="flex-1">
           <a-select
             v-model:value="formState.websiteId"
             placeholder="Select website"
@@ -36,7 +36,11 @@
           </a-select>
         </a-form-item>
 
-        <a-form-item :label="`Coupon name ${!formState.websiteId ? '(Please select website first)' : ''}`" name="coupons" class="flex-1">
+        <a-form-item 
+          :label="t(formState.websiteId ? 'newEmailCampaign.form.coupon.label' : 'newEmailCampaign.form.coupon.labelWithWebsite')" 
+          name="coupons" 
+          class="flex-1"
+        >
           <a-select
             v-model:value="formState.coupons"
             placeholder="Select coupons"
@@ -55,7 +59,7 @@
       </div>
 
       <div class="flex gap-4">
-        <a-form-item label="Person in charge" name="pic" class="flex-1">
+        <a-form-item :label="t('newEmailCampaign.form.pic.label')" name="pic" class="flex-1">
           <a-select
             v-model:value="formState.pic"
             :options="formState.adminUsers"
@@ -71,14 +75,17 @@
           </a-select>
         </a-form-item>
         <a-form-item
-            label="Time of Sending"
+            :label="t('newEmailCampaign.form.time.label')"
             name="startDate"
             class="flex-1"
           >
             <a-range-picker
               v-model:value="dateRange"
               format="YYYY-MM-DD"
-              :placeholder="['Start time', 'End time']"
+              :placeholder="[
+                t('newEmailCampaign.form.time.startPlaceholder'),
+                t('newEmailCampaign.form.time.endPlaceholder')
+              ]"
               style="width: 100%"
               :disabled-date="disabledDate"
               @change="onDateRangeChange"
@@ -87,19 +94,18 @@
       </div>
       <div class="mt-6 pt-4 border-t border-gray-200">
         <div class="flex justify-between items-center mb-4">
-          <h4 class="text-lg font-medium">Selected member list</h4>
+          <h4 class="text-lg font-medium">{{ t('newEmailCampaign.memberList.title') }}</h4>
           <a-button type="primary" @click="showAddMemberModal">
             <template #icon><UserAddOutlined /></template>
-            Add member
+            {{ t('newEmailCampaign.memberList.addButton') }}
           </a-button>
         </div>
 
         <a-table
           :columns="memberColumns"
           :data-source="formState.members"
-          :pagination="tableConfig.pagination"
-          row-key="id"
-          size="small"
+          :pagination="tableConfig"
+          :row-key="(record: any) => record.membershipWebsiteId"
         >
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'action'">
@@ -114,8 +120,8 @@
       </div>
       <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
         <div class="max-w-7xl mx-auto flex justify-end gap-4">
-          <a-button @click="handleBack">Back</a-button>
-          <a-button type="primary" @click="handleSubmit">Submit</a-button>
+          <a-button @click="handleBack">{{ t('newEmailCampaign.buttons.back') }}</a-button>
+          <a-button type="primary" @click="handleSubmit">{{ t('newEmailCampaign.buttons.submit') }}</a-button>
         </div>
       </div>
     </a-form>
@@ -136,6 +142,7 @@ import type { Dayjs } from 'dayjs';
 import { membershipAPI } from '@/api/services/membershipApi';
 import { websites } from '@/api/types/website'
 import { debounce, update } from 'lodash';
+import { useI18nGlobal } from '@/i18n';
 import { message } from 'ant-design-vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import PageHeader from '@/shared/components/PageHeader.vue';
@@ -146,57 +153,58 @@ import { useAuthStore } from '@/stores/auth';
 import dayjs from 'dayjs';
 import AddMemberModal from '../components/AddMember/AddMemberModal.vue';
 
+const { t } = useI18nGlobal();
+
 type User = { 
   id: string,
   name: string 
 }
 export type NewCampaign ={name: string,description: string,startDate: string| null, dueDate: string|null, pic: User[], members: CampaignMember[],websiteId:  number | undefined, coupons: string[], adminUsers: User[] }
-const memberColumns = [
+const memberColumns = computed(() => [
   {
-    title: 'Customer Name',
+    title: t('newEmailCampaign.memberList.table.customerName'),
     dataIndex: 'fullName',
     key: 'fullName',
     width: '20%',
   },
   {
-    title: 'Phone Number',
+    title: t('newEmailCampaign.memberList.table.phoneNumber'),
     dataIndex: 'mainPhoneNumber',
     key: 'mainPhoneNumber',
     width: '20%',
   },
   {
-    title: 'Platform Website',
+    title: t('newEmailCampaign.memberList.table.website'),
     dataIndex: 'websiteName',
     key: 'websiteName',
     width: '20%',
   },
   {
-    title: 'Birthday',
+    title: t('newEmailCampaign.memberList.table.birthday'),
     dataIndex: 'birthday',
     key: 'birthday',
     width: '20%',
   },
   {
-    title: 'Registered Time',
+    title: t('newEmailCampaign.memberList.table.registeredTime'),
     dataIndex: 'registeredTime',
     key: 'registeredTime',
     width: '20%',
   },
   {
-    title: 'Actions',
+    title: t('newEmailCampaign.memberList.table.actions'),
     key: 'action',
     width: '10%',
   },
-];
+])
 
-const rules = {
-  name: [{ required: true, message: 'Please enter campaign name' }],
-  // TODO: Refactor with start date and end date
-  startDate: [{ required: true, message: 'Please select sending time'}],
-  pic: [{ required: true, message: 'Please select person in charge' }],
-  coupons: [{ required: true, message: 'Please select at least one coupon code'}],
-  websiteId: [{ required: true, message: 'Please select a website' }],
-};
+const rules = computed(() => ({
+  name: [{ required: true, message: t('newEmailCampaign.form.name.required') }],
+  startDate: [{ required: true, message: t('newEmailCampaign.form.time.required')}],
+  pic: [{ required: true, message: t('newEmailCampaign.form.pic.required') }],
+  coupons: [{ required: true, message: t('newEmailCampaign.form.coupon.required')}],
+  websiteId: [{ required: true, message: t('newEmailCampaign.form.website.required') }],
+}))
 
 const props = defineProps<{
   visible: boolean;
@@ -254,7 +262,7 @@ const fetchAdminUsers = async () => {
       name: admin.name || admin.fullName || admin.email,
     }));
   } catch (error) {
-    message.error('Error fetching admin users');
+    message.error(t('newEmailCampaign.messages.error.fetchAdmins'));
   } finally {
     loadingAdmins.value = false;
   }
@@ -266,7 +274,7 @@ const handleSubmit = async () => {
   try {
     await formRef.value.validate();
     if (formState.members.length === 0) {
-      message.error('Please select at least one membership');
+      message.error(t('newEmailCampaign.messages.selectMember'));
       return;
     }
   } catch (error) {
@@ -301,10 +309,10 @@ const handleSubmit = async () => {
         });
     // await mailCampaignService.createCampaign(payload);
 
-    message.success('Campaign created successfully');
+    message.success(t('newEmailCampaign.messages.success'));
     router.back()
   } catch (error) {
-    message.error(error.message || 'Failed to save campaign');
+    message.error(t('newEmailCampaign.messages.error.default'));
   }
 };
 
@@ -354,7 +362,7 @@ const fetchCoupons = async (search? : string) => {
       value: coupon.code,
     }));
   } catch (error) {
-    message.error('Error fetching coupons');
+    message.error(t('newEmailCampaign.messages.error.fetchCoupons'));
     // message.error('Cannot load coupon list');
   } finally {
     loadingCoupons.value = false;
@@ -384,7 +392,7 @@ const tableConfig = computed(() => ({
   pagination: {
     ...pagination,
     showSizeChanger: true,
-    showTotal: (total: number) => `Total ${formState.members.length} items`,
+    showTotal: (total: number) => t('newEmailCampaign.memberList.total', { total: formState.members.length }),
     pageSizeOptions: ['5', '10', '20'],
     onChange: (page: number, pageSize: number) => {
       pagination.current = page;

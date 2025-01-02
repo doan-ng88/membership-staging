@@ -1,0 +1,30 @@
+{
+  "campaignFilters": {
+    "search": {
+      "placeholder": "Tìm theo tên chiến dịch"
+    },
+    "status": {
+      "placeholder": "Trạng thái",
+      "options": {
+        "all": "Tất cả",
+        "draft": "Nháp",
+        "scheduled": "Đã lên lịch",
+        "inProgress": "Đang thực hiện",
+        "completed": "Hoàn thành",
+        "cancelled": "Đã hủy"
+      }
+    },
+    "pic": {
+      "placeholder": "Người phụ trách",
+      "options": {
+        "all": "Tất cả",
+        "user1": "Người dùng 1",
+        "user2": "Người dùng 2"
+      }
+    },
+    "buttons": {
+      "filter": "Lọc",
+      "reset": "Đặt lại"
+    }
+  }
+} 

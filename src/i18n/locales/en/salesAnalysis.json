@@ -1,0 +1,102 @@
+{
+  "productSales": {
+    "title": "Product Sales Analytics",
+    "subtitle": "Track and analyze your product sales performance",
+    "filters": {
+      "brand": {
+        "label": "Brand Selection",
+        "options": {
+          "sky007": "Sky007, BBIA",
+          "hince": "Hince",
+          "mixsoon": "Mixsoon"
+        }
+      }
+    },
+    "products": {
+      "laptop": "Laptop",
+      "smartphone": "Smartphone",
+      "tablet": "Tablet",
+      "smartwatch": "Smartwatch",
+      "camera": "Camera"
+    },
+    "category": {
+      "title": "Revenue by Category",
+      "subtitle": "Analysis of revenue and orders by product category",
+      "filters": {
+        "brand": "Brand Selection:",
+        "dateRange": "Date Range:"
+      },
+      "charts": {
+        "revenue": {
+          "title": "Revenue Distribution",
+          "yaxis": "Revenue (VND)"
+        },
+        "orders": {
+          "title": "Order Status by Category",
+          "yaxis": "Number of Orders",
+          "status": {
+            "completed": "Completed",
+            "processing": "Processing",
+            "onHold": "On Hold",
+            "cancelled": "Cancelled"
+          }
+        }
+      },
+      "metrics": {
+        "revenue": {
+          "title": "Total Revenue"
+        },
+        "orders": {
+          "title": "Total Orders"
+        },
+        "completion": {
+          "title": "Completion Rate"
+        }
+      },
+      "errors": {
+        "loadFailed": "Unable to load category statistics"
+      }
+    },
+    "product": {
+      "title": "Product Sales Analysis",
+      "subtitle": "Track performance of individual products",
+      "filters": {
+        "product": "Select Product",
+        "dateRange": "Date Range",
+        "placeholder": "Select product"
+      },
+      "metrics": {
+        "totalOrders": {
+          "title": "Total Orders"
+        },
+        "completedOrders": {
+          "title": "Completed Orders"
+        },
+        "processingOrders": {
+          "title": "Processing Orders"
+        },
+        "totalQuantity": {
+          "title": "Total Quantity"
+        }
+      },
+      "charts": {
+        "orderStatus": {
+          "title": "Order Status",
+          "labels": {
+            "completed": "Completed",
+            "processing": "Processing",
+            "onHold": "On Hold",
+            "cancelled": "Cancelled"
+          }
+        },
+        "topProducts": {
+          "title": "Top 10 Best-Selling Products",
+          "series": "Sales Quantity"
+        }
+      },
+      "errors": {
+        "loadFailed": "Unable to load product statistics"
+      }
+    }
+  }
+} 

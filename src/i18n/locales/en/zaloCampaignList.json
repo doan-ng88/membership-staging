@@ -1,0 +1,53 @@
+{
+  "zaloCampaignList": {
+    "title": "Zalo OA Campaign Management",
+    "buttons": {
+      "add": "Add Campaign",
+      "reset": "Reset",
+      "search": "Search",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "filters": {
+      "status": {
+        "label": "Status",
+        "placeholder": "Select status",
+        "options": {
+          "all": "All",
+          "pending": "Pending",
+          "processing": "Processing",
+          "completed": "Completed",
+          "failed": "Failed"
+        }
+      },
+      "search": {
+        "label": "Search",
+        "placeholder": "Enter campaign name"
+      }
+    },
+    "table": {
+      "columns": {
+        "name": "Campaign Name",
+        "status": "Status",
+        "totalRecipients": "Total Recipients",
+        "remaining": "Remaining",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "actions": "Actions"
+      },
+      "pagination": {
+        "total": "Total {total} campaigns"
+      }
+    },
+    "messages": {
+      "error": {
+        "load": "Cannot load campaign list",
+        "unauthorized": "Unauthorized",
+        "delete": "Failed to delete campaign"
+      },
+      "success": {
+        "delete": "Campaign deleted successfully"
+      }
+    }
+  }
+} 

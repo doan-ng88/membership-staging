@@ -1,0 +1,66 @@
+{
+  "pointReward": {
+    "title": "Quản lý điểm thưởng",
+    "manualAdjustment": {
+      "title": "Điều chỉnh điểm thủ công",
+      "fields": {
+        "customerId": {
+          "label": "Mã khách hàng",
+          "placeholder": "Nhập mã khách hàng"
+        },
+        "points": {
+          "label": "Điểm",
+          "placeholder": "Nhập số điểm"
+        },
+        "type": {
+          "label": "Loại điều chỉnh",
+          "options": {
+            "add": "Thêm điểm",
+            "subtract": "Trừ điểm"
+          }
+        },
+        "reason": {
+          "label": "Lý do điều chỉnh"
+        }
+      },
+      "button": "Áp dụng điều chỉnh",
+      "success": "Đã điều chỉnh điểm thành công"
+    },
+    "history": {
+      "title": "Lịch sử sử dụng điểm thưởng",
+      "filters": {
+        "type": {
+          "label": "Transaction Type",
+          "options": {
+            "all": "Tất cả",
+            "earn": "Nhận điểm",
+            "use": "Sử dụng",
+            "expire": "Hết hạn",
+            "adjust": "Điều chỉnh"
+          }
+        },
+        "startDate": {
+          "label": "Từ ngày"
+        },
+        "endDate": {
+          "label": "Đến ngày"
+        },
+        "button": "Lọc"
+      },
+      "table": {
+        "headers": {
+          "date": "Ngày",
+          "type": "Loại",
+          "points": "Điểm",
+          "description": "Mô tả",
+          "expiry": "Hết hạn"
+        }
+      },
+      "pagination": {
+        "showing": "Hiển thị {from}-{to} của {total} kết quả",
+        "previous": "Trước",
+        "next": "Tiếp"
+      }
+    }
+  }
+} 

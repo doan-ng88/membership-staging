@@ -1,0 +1,63 @@
+{
+  "newEmailCampaign": {
+    "title": "Tạo chiến dịch Email",
+    "form": {
+      "name": {
+        "label": "Tên chiến dịch",
+        "placeholder": "Nhập tên chiến dịch",
+        "required": "Vui lòng nhập tên chiến dịch"
+      },
+      "description": {
+        "label": "Mô tả chiến dịch",
+        "placeholder": "Nhập mô tả chiến dịch"
+      },
+      "website": {
+        "label": "Website",
+        "placeholder": "Chọn website",
+        "required": "Vui lòng chọn website"
+      },
+      "coupon": {
+        "label": "Tên mã giảm giá",
+        "labelWithWebsite": "Tên mã giảm giá (Vui lòng chọn website trước)",
+        "placeholder": "Chọn mã giảm giá",
+        "required": "Vui lòng chọn ít nhất một mã giảm giá"
+      },
+      "pic": {
+        "label": "Người phụ trách",
+        "placeholder": "Chọn người phụ trách",
+        "required": "Vui lòng chọn người phụ trách"
+      },
+      "time": {
+        "label": "Thời gian gửi",
+        "startPlaceholder": "Thời gian bắt đầu",
+        "endPlaceholder": "Thời gian kết thúc",
+        "required": "Vui lòng chọn thời gian gửi"
+      }
+    },
+    "memberList": {
+      "title": "Danh sách thành viên đã chọn",
+      "addButton": "Thêm thành viên",
+      "table": {
+        "customerName": "Tên khách hàng",
+        "phoneNumber": "Số điện thoại",
+        "website": "Website",
+        "birthday": "Ngày sinh",
+        "registeredTime": "Thời gian đăng ký",
+        "actions": "Thao tác"
+      }
+    },
+    "buttons": {
+      "back": "Quay lại",
+      "submit": "Gửi"
+    },
+    "messages": {
+      "selectMember": "Vui lòng chọn ít nhất một thành viên",
+      "success": "Tạo chiến dịch thành công",
+      "error": {
+        "default": "Lưu chiến dịch thất bại",
+        "fetchCoupons": "Lỗi khi tải mã giảm giá",
+        "fetchAdmins": "Lỗi khi tải danh sách quản trị viên"
+      }
+    }
+  }
+} 

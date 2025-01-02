@@ -1,17 +1,19 @@
 <template>
   <DefaultLayout>
     <div class="p-6">
-      <h2 class="text-2xl font-bold mb-6">Lịch Sử Sử Dụng Mã Giảm Giá</h2>
+      <h2 class="text-2xl font-bold mb-6">{{ t('couponHistory.title') }}</h2>
 
-      <!-- Bộ lọc -->
+      <!-- Filters -->
       <div class="mb-6 bg-white p-4 rounded shadow">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Website</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              {{ t('couponHistory.filters.website.label') }}
+            </label>
             <a-select
               v-model:value="filters.websiteId"
               style="width: 100%"
-              placeholder="Chọn website"
+              :placeholder="t('couponHistory.filters.website.placeholder')"
               @change="handleSearch"
             >
               <a-select-option v-for="web in websites" :key="web.websiteId" :value="web.websiteId">
@@ -21,25 +23,29 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Trạng thái</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              {{ t('couponHistory.filters.status.label') }}
+            </label>
             <a-select
               v-model:value="filters.status"
               style="width: 100%"
-              placeholder="Chọn trạng thái"
+              :placeholder="t('couponHistory.filters.status.placeholder')"
               @change="handleSearch"
             >
-              <a-select-option value="">Tất cả</a-select-option>
-              <a-select-option value="publish">Đang hoạt động</a-select-option>
-              <a-select-option value="draft">Nháp</a-select-option>
-              <a-select-option value="trash">Đã xóa</a-select-option>
+              <a-select-option value="">{{ t('couponHistory.filters.status.options.all') }}</a-select-option>
+              <a-select-option value="publish">{{ t('couponHistory.filters.status.options.publish') }}</a-select-option>
+              <a-select-option value="draft">{{ t('couponHistory.filters.status.options.draft') }}</a-select-option>
+              <a-select-option value="trash">{{ t('couponHistory.filters.status.options.trash') }}</a-select-option>
             </a-select>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Tìm kiếm</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              {{ t('couponHistory.filters.search.label') }}
+            </label>
             <a-input
               v-model:value="filters.search"
-              placeholder="Nhập mã giảm giá"
+              :placeholder="t('couponHistory.filters.search.placeholder')"
               @pressEnter="handleSearch"
               allowClear
             >
@@ -50,27 +56,32 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Thời gian</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              {{ t('couponHistory.filters.dateRange.label') }}
+            </label>
             <a-range-picker
               v-model:value="filters.dateRange"
               style="width: 100%"
               @change="handleSearch"
-              :placeholder="['Từ ngày', 'Đến ngày']"
+              :placeholder="[
+                t('couponHistory.filters.dateRange.placeholder.start'),
+                t('couponHistory.filters.dateRange.placeholder.end')
+              ]"
             />
           </div>
         </div>
 
         <div class="flex justify-end mt-4 space-x-2">
           <a-button @click="handleReset">
-            Đặt lại
+            {{ t('couponHistory.filters.buttons.reset') }}
           </a-button>
           <a-button type="primary" @click="handleSearch">
-            Tìm kiếm
+            {{ t('couponHistory.filters.buttons.search') }}
           </a-button>
         </div>
       </div>
 
-      <!-- Bảng dữ liệu -->
+      <!-- Table -->
       <a-table
         :columns="columns"
         :data-source="coupons"
@@ -81,7 +92,7 @@
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'status'">
             <a-tag :color="getStatusColor(record.status)">
-              {{ getStatusText(record.status) }}
+              {{ t(`couponHistory.table.status.${record.status}`) }}
             </a-tag>
           </template>
           
@@ -96,7 +107,7 @@
           <template v-if="column.key === 'action'">
             <a-space>
               <a-button type="link" @click="viewDetails(record)">
-                Chi tiết
+                {{ t('couponHistory.table.actions.details') }}
               </a-button>
             </a-space>
           </template>
@@ -106,8 +117,9 @@
   </DefaultLayout>
 </template>
 
-<script lang="ts" setup>
-import { ref, reactive, onMounted, render, h } from 'vue'
+<script setup lang="ts">
+import { ref, reactive, onMounted, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { SearchOutlined } from '@ant-design/icons-vue'
 import { Tag, Space, Button } from 'ant-design-vue'
 import type { TablePaginationConfig, TableColumnType } from 'ant-design-vue'
@@ -117,6 +129,7 @@ import { useAuthStore } from '@/stores/auth'
 import { websites } from '@/api/types/website'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 
+const { t } = useI18n()
 const authStore = useAuthStore()
 const loading = ref(false)
 const coupons = ref([])
@@ -186,75 +199,51 @@ const getDiscountTypeConfig = (type: string): DiscountTypeConfig => {
   return discountTypeConfig[type] || { label: '-', color: 'default' }
 }
 
-const columns: TableColumnType<Coupon>[] = [
+const columns = computed<TableColumnType<Coupon>[]>(() => [
   {
-    title: 'Mã giảm giá',
+    title: t('couponHistory.table.columns.code'),
     dataIndex: 'code',
     key: 'code',
     sorter: true,
   },
   {
-    title: 'Trạng thái',
+    title: t('couponHistory.table.columns.status'),
     dataIndex: 'status',
     key: 'status',
     sorter: true,
-    customRender: ({ record }) => h(Tag, {
-      color: getStatusColor(record.status || '')
-    }, () => getStatusText(record.status || ''))
   },
   {
-    title: 'Loại giảm giá',
+    title: t('couponHistory.table.columns.discountType'),
     key: 'discount_type',
     dataIndex: 'discount_type',
     sorter: true,
-    customRender: ({ text }) => h(Tag, {
-      color: getDiscountTypeConfig(text).color
-    }, () => getDiscountTypeConfig(text).label)
   },
   {
-    title: 'Giá trị',
-    key: 'discount',
-    customRender: ({ record }) => h('span', {
-      style: {
-        color: record.discount_type ? getDiscountTypeConfig(record.discount_type).color : 'inherit',
-        fontWeight: 'bold'
-      }
-    }, formatDiscount(record.discount_type, record.amount))
-  },
-  {
-    title: 'Giới hạn đơn hàng',
+    title: t('couponHistory.table.columns.orderLimit'),
     key: 'order_limit',
     customRender: ({ record }) => 
       `${formatCurrency(record.minimum_amount)} - ${formatCurrency(record.maximum_amount)}`
   },
   {
-    title: 'Thời gian',
+    title: t('couponHistory.table.columns.time'),
     key: 'date_range',
     customRender: ({ record }) => {
-      console.log('start_date:', record.start_date) // Debug
-      console.log('expiry_date:', record.expiry_date) // Debug
       const start = formatDate(record.start_date)
       const end = formatDate(record.expiry_date)
       return `${start} - ${end}`
     }
   },
   {
-    title: 'Usage',
+    title: t('couponHistory.table.columns.usage'),
     key: 'usage',
     customRender: ({ record }) => 
       `${record.times_used || 0}/${record.usage_limit || '∞'} (${record.usage_limit_per_user}/user)`
   },
   {
-    title: 'Thao tác',
+    title: t('couponHistory.table.columns.actions'),
     key: 'action',
-    customRender: ({ record }) => h('div', [
-      h(Button, { 
-        type: 'link',
-        onClick: () => viewDetails(record)
-      }, () => 'Chi tiết')
-    ])
   }
-]
+])
 
 // Pagination config
 const pagination = reactive<TablePaginationConfig>({
@@ -262,7 +251,7 @@ const pagination = reactive<TablePaginationConfig>({
   current: 1,
   pageSize: 10,
   showSizeChanger: true,
-  showTotal: (total) => `Tổng ${total} mã giảm giá`
+  showTotal: (total) => t('couponHistory.table.pagination.total', { total })
 })
 
 // Methods
@@ -331,7 +320,7 @@ const fetchCoupons = async (params = {
 
   } catch (error) {
     console.error('Error fetching coupons:', error)
-    message.error('Không thể tải danh sách mã giảm giá')
+    message.error(t('couponHistory.messages.error.load'))
   } finally {
     loading.value = false
   }
@@ -373,12 +362,7 @@ const getStatusColor = (status: string) => {
 }
 
 const getStatusText = (status: string) => {
-  const texts = {
-    publish: 'Đang hoạt động',
-    draft: 'Nháp',
-    trash: 'Đã xóa'
-  }
-  return texts[status as keyof typeof texts] || status
+  return t(`couponHistory.table.status.${status}`) || status
 }
 
 const formatDiscount = (type: string, amount: number) => {
@@ -423,5 +407,10 @@ onMounted(() => {
 
 .usage-history h1 {
   text-align: center;
+}
+
+:deep(.ant-select-item-option-content img) {
+  object-fit: cover;
+  border-radius: 4px;
 }
 </style>

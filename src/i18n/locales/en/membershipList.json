@@ -1,0 +1,16 @@
+{
+  "membershipList": {
+    "title": "Members",
+    "addButton": "Add Members",
+    "table": {
+      "name": "Name",
+      "phone": "Phone",
+      "level": "Level",
+      "website": "Website",
+      "action": "Action"
+    },
+    "actions": {
+      "remove": "Remove"
+    }
+  }
+} 

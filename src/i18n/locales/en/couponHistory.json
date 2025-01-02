@@ -1,0 +1,69 @@
+{
+  "couponHistory": {
+    "title": "Discount Code Usage History",
+    "filters": {
+      "website": {
+        "label": "Website",
+        "placeholder": "Select website"
+      },
+      "status": {
+        "label": "Status",
+        "placeholder": "Select status",
+        "options": {
+          "all": "All",
+          "publish": "Active",
+          "draft": "Draft",
+          "trash": "Deleted"
+        }
+      },
+      "search": {
+        "label": "Search",
+        "placeholder": "Enter discount code"
+      },
+      "dateRange": {
+        "label": "Time",
+        "placeholder": {
+          "start": "From date",
+          "end": "To date"
+        }
+      },
+      "buttons": {
+        "reset": "Reset",
+        "search": "Search"
+      }
+    },
+    "table": {
+      "columns": {
+        "code": "Discount code",
+        "status": "Status",
+        "discountType": "Discount type",
+        "value": "Value",
+        "orderLimit": "Order limit",
+        "time": "Time",
+        "usage": "Usage",
+        "actions": "Actions"
+      },
+      "discountTypes": {
+        "fixed_cart": "Order",
+        "percent": "%",
+        "fixed_product": "Product"
+      },
+      "status": {
+        "publish": "Active",
+        "draft": "Draft",
+        "trash": "Deleted"
+      },
+      "actions": {
+        "details": "Details"
+      },
+      "pagination": {
+        "total": "Total {total} discount codes"
+      }
+    },
+    "messages": {
+      "error": {
+        "load": "Cannot load discount code list"
+      }
+    }
+  }
+} 

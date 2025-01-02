@@ -1,0 +1,74 @@
+{
+  "zaloCreateCampaign": {
+    "title": "Tạo chiến dịch Zalo",
+    "form": {
+      "campaign": {
+        "name": {
+          "label": "Tên chiến dịch",
+          "placeholder": "Nhập tên chiến dịch",
+          "required": "Vui lòng nhập tên chiến dịch"
+        },
+        "description": {
+          "label": "Mô tả chiến dịch",
+          "placeholder": "Nhập mô tả chiến dịch"
+        }
+      },
+      "website": {
+        "label": "Website",
+        "placeholder": "Chọn website",
+        "required": "Vui lòng chọn website"
+      },
+      "coupon": {
+        "label": "Tên coupon",
+        "labelWithNote": "Tên coupon (Vui lòng chọn website trước)",
+        "placeholder": "Chọn coupon",
+        "required": "Vui lòng chọn ít nhất một mã coupon"
+      },
+      "pic": {
+        "label": "Người phụ trách",
+        "placeholder": "Chọn người phụ trách",
+        "required": "Vui lòng chọn người phụ trách"
+      },
+      "time": {
+        "label": "Thời gian gửi",
+        "placeholder": {
+          "start": "Thời gian bắt đầu",
+          "end": "Thời gian kết thúc"
+        },
+        "required": "Vui lòng chọn thời gian gửi"
+      }
+    },
+    "members": {
+      "title": "Danh sách thành viên đã chọn",
+      "addButton": "Thêm thành viên",
+      "table": {
+        "columns": {
+          "name": "Tên khách hàng",
+          "phone": "Số điện thoại",
+          "website": "Website",
+          "birthday": "Ngày sinh",
+          "registered": "Thời gian đăng ký",
+          "actions": "Thao tác"
+        },
+        "pagination": {
+          "total": "Tổng {total} mục"
+        }
+      }
+    },
+    "buttons": {
+      "back": "Quay lại",
+      "submit": "Xác nhận"
+    },
+    "messages": {
+      "error": {
+        "coupons": "Lỗi khi tải danh sách coupon",
+        "adminUsers": "Lỗi khi tải danh sách admin",
+        "validation": "Vui lòng chọn ít nhất một thành viên",
+        "save": "Lưu chiến dịch thất bại"
+      },
+      "success": {
+        "create": "Tạo chiến dịch thành công"
+      }
+    }
+  }
+} 

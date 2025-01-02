@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white rounded-lg shadow-sm p-6">
-    <h3 class="text-lg font-medium text-gray-900 mb-4">Level Transition Analysis</h3>
+    <h3 class="text-lg font-medium text-gray-900 mb-4">{{ t('transitionAnalysis.title') }}</h3>
 
     <!-- Filter Section -->
     <div class="mb-6">
@@ -8,25 +8,29 @@
         v-model:value="dateRange"
         class="w-full md:w-1/3"
         :disabled-date="disabledDate"
+        :placeholder="[
+          t('transitionAnalysis.datePicker.placeholder.0'),
+          t('transitionAnalysis.datePicker.placeholder.1')
+        ]"
       />
     </div>
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       <div class="bg-green-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-green-700">Upgrades</h5>
+        <h5 class="text-sm font-medium text-green-700">{{ t('transitionAnalysis.stats.upgrades.title') }}</h5>
         <p class="text-2xl font-bold text-green-900 mt-2">
           {{ totalUpgrades }}
         </p>
       </div>
       <div class="bg-yellow-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-yellow-700">Extensions</h5>
+        <h5 class="text-sm font-medium text-yellow-700">{{ t('transitionAnalysis.stats.extensions.title') }}</h5>
         <p class="text-2xl font-bold text-yellow-900 mt-2">
           {{ totalExtends }}
         </p>
       </div>
       <div class="bg-red-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-red-700">Downgrades</h5>
+        <h5 class="text-sm font-medium text-red-700">{{ t('transitionAnalysis.stats.downgrades.title') }}</h5>
         <p class="text-2xl font-bold text-red-900 mt-2">
           {{ totalDowngrades }}
         </p>
@@ -39,7 +43,7 @@
     </div>
     <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div class="bg-gray-50 p-4 rounded-lg">
-        <h4 class="text-sm font-medium text-gray-700 mb-4">Transition Details</h4>
+        <h4 class="text-sm font-medium text-gray-700 mb-4">{{ t('transitionAnalysis.charts.transition.title') }}</h4>
         <VueApexCharts
           type="bar"
           height="350"
@@ -49,7 +53,7 @@
       </div>
 
       <div class="bg-gray-50 p-4 rounded-lg">
-        <h4 class="text-sm font-medium text-gray-700 mb-4">Extension Details</h4>
+        <h4 class="text-sm font-medium text-gray-700 mb-4">{{ t('transitionAnalysis.charts.extension.title') }}</h4>
         <VueApexCharts
           type="bar"
           height="350"
@@ -63,11 +67,14 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
+import { useI18nGlobal } from '@/i18n'
 import VueApexCharts from 'vue3-apexcharts'
 import { message } from 'ant-design-vue'
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
 import dayjs from 'dayjs'
+
+const { t } = useI18nGlobal()
 
 // Types
 interface LevelDetail {
@@ -159,7 +166,7 @@ const totalDowngrades = computed((): number => {
 const downgradeSeries = computed(() => {
   const downData = websiteData.value.find(d => d.action === 'down')?.details || []
   return [{
-    name: 'Number of Downgrades',
+    name: t('transitionAnalysis.charts.transition.series'),
     data: downData.map(d => d.count)
   }]
 })
@@ -204,7 +211,7 @@ const downgradeChartOptions = computed(() => ({
 const extendSeries = computed(() => {
   const extendData = websiteData.value.find(d => d.action === 'extend')?.details || []
   return [{
-    name: 'Number of Extensions',
+    name: t('transitionAnalysis.charts.extension.series'),
     data: extendData.map(d => d.count)
   }]
 })
@@ -263,12 +270,10 @@ const fetchLevelData = async (): Promise<void> => {
         }
       }
     )
-    console.log('Response data:', response.data)
     levelData.value = response.data.LevelAnalysis
-    console.log('Level data:', levelData.value)
   } catch (error) {
     console.error('Error fetching level data:', error)
-    message.error('Unable to load level transition data')
+    message.error(t('transitionAnalysis.messages.error.loadData'))
   } finally {
     loading.value = false
   }

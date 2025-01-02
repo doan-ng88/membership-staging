@@ -1,0 +1,46 @@
+{
+  "campaignTab": {
+    "form": {
+      "name": {
+        "label": "Tên chiến dịch",
+        "placeholder": "Tìm kiếm tên chiến dịch"
+      },
+      "status": {
+        "label": "Trạng thái",
+        "placeholder": "Chọn trạng thái",
+        "options": {
+          "active": "Đang hoạt động",
+          "inactive": "Không hoạt động",
+          "completed": "Đã hoàn thành"
+        }
+      },
+      "website": {
+        "label": "Website",
+        "placeholder": "Chọn website"
+      }
+    },
+    "table": {
+      "columns": {
+        "name": "Tên chiến dịch",
+        "website": "Website",
+        "startDate": "Ngày bắt đầu",
+        "endDate": "Ngày kết thúc",
+        "status": "Trạng thái"
+      }
+    },
+    "selection": {
+      "count": "Đã chọn: {count} chiến dịch",
+      "clear": "Xóa lựa chọn"
+    },
+    "buttons": {
+      "cancel": "Hủy",
+      "send": "Gửi theo chiến dịch"
+    },
+    "messages": {
+      "error": {
+        "noSelection": "Vui lòng chọn ít nhất một chiến dịch",
+        "fetchFailed": "Không thể tải danh sách chiến dịch"
+      }
+    }
+  }
+} 

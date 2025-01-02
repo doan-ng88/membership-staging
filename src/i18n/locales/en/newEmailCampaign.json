@@ -1,0 +1,64 @@
+{
+  "newEmailCampaign": {
+    "title": "Create Email Campaign",
+    "form": {
+      "name": {
+        "label": "Campaign Name",
+        "placeholder": "Enter campaign name",
+        "required": "Please enter campaign name"
+      },
+      "description": {
+        "label": "Campaign Description",
+        "placeholder": "Enter campaign description"
+      },
+      "website": {
+        "label": "Website",
+        "placeholder": "Select website",
+        "required": "Please select a website"
+      },
+      "coupon": {
+        "label": "Coupon name",
+        "labelWithWebsite": "Coupon name (Please select website first)",
+        "placeholder": "Select coupons",
+        "required": "Please select at least one coupon code"
+      },
+      "pic": {
+        "label": "Person in charge",
+        "placeholder": "Select person in charge",
+        "required": "Please select person in charge"
+      },
+      "time": {
+        "label": "Time of Sending",
+        "startPlaceholder": "Start time",
+        "endPlaceholder": "End time",
+        "required": "Please select sending time"
+      }
+    },
+    "memberList": {
+      "title": "Selected member list",
+      "addButton": "Add member",
+      "total": "Total {total} items",
+      "table": {
+        "customerName": "Customer Name",
+        "phoneNumber": "Phone Number",
+        "website": "Website",
+        "birthday": "Birthday",
+        "registeredTime": "Registered Time",
+        "actions": "Actions"
+      }
+    },
+    "buttons": {
+      "back": "Back",
+      "submit": "Submit"
+    },
+    "messages": {
+      "selectMember": "Please select at least one membership",
+      "success": "Campaign created successfully",
+      "error": {
+        "default": "Failed to save campaign",
+        "fetchCoupons": "Error fetching coupons",
+        "fetchAdmins": "Error fetching admin users"
+      }
+    }
+  }
+} 

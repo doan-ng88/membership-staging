@@ -5,27 +5,30 @@
       <!-- Date Range Picker for Date Join Member -->
       <template v-if="tab === 'date-join-member'">
         <div>
-          <label class="block text-gray-700">Date Join Member</label>
+          <label class="block text-gray-700">{{ t(`membershipTable.tabs.${tab}`) }}</label>
           <a-form-item
-          :rules="[{ required: true, message: 'Vui lòng chọn thời gian tham gia' }]"
-          class="flex-1"
-        >
-          <a-range-picker
-            v-model:value="dateRange"
-            format="YYYY-MM-DD"
-            :placeholder="['Start date', 'End date']"
-            style="width: 100%; height: 40px;"
-            :disabled-date="disabledDate"
-            @change="onDateRangeChange"
-          />
-        </a-form-item>
+            :rules="[{ required: true, message: t('searchFilters.dateJoinMember.validation') }]"
+            class="flex-1"
+          >
+            <a-range-picker
+              v-model:value="dateRange"
+              format="YYYY-MM-DD"
+              :placeholder="[
+                t('searchFilters.dateJoinMember.placeholder.start'), 
+                t('searchFilters.dateJoinMember.placeholder.end')
+              ]"
+              style="width: 100%; height: 40px;"
+              :disabled-date="disabledDate"
+              @change="onDateRangeChange"
+            />
+          </a-form-item>
         </div>
       </template>
 
-      <!-- Month Selection for Date of Birth -->
+      <!-- Birthday Month -->
       <template v-if="tab === 'date-of-birth'">
         <div>
-          <label class="block text-gray-700">Select Birthday Month</label>
+          <label class="block text-gray-700">{{ t(`membershipTable.tabs.${tab}`) }}</label>
           <select 
             v-model="filters.birthMonth"
             class="w-full p-2 border rounded-lg"
@@ -39,15 +42,15 @@
       
       <!-- Platform Website Filter -->
       <div>
-        <label class="block text-gray-700 mb-2">Platform Website</label>
+        <label class="block text-gray-700 mb-2">{{ t('searchFilters.platform.label') }}</label>
         <a-select
           v-model:value="filters.websiteId"
           style="width: 100%"
-          placeholder="Select Platform"
+          :placeholder="t('searchFilters.platform.placeholder')"
           allow-clear
           @change="handleWebsiteChange"
         >
-          <a-select-option value="">All Platforms</a-select-option>
+          <a-select-option value="">{{ t('searchFilters.platform.allPlatforms') }}</a-select-option>
           <a-select-option 
             v-for="website in websites" 
             :key="website.websiteId" 
@@ -58,16 +61,16 @@
         </a-select>
       </div>
 
-      <!-- Member Level Filter -->
+      <!-- Member Level -->
       <template v-if="tab === 'date-join-member'">
         <div>
-          <label class="block text-gray-700">Member Level</label>
+          <label class="block text-gray-700">{{ t('searchFilters.memberLevel.label') }}</label>
           <select 
             v-model="filters.levelName"
             class="w-full p-2 border rounded-lg"
             @change="handleFilter"
           >
-            <option value="">All Levels</option>
+            <option value="">{{ t('searchFilters.memberLevel.allLevels') }}</option>
             <option 
               v-for="level in memberLevels" 
               :key="level.levelName"
@@ -78,36 +81,21 @@
           </select>
         </div>
       </template>
-
-      <!-- Additional filters only for Date Join Member tab -->
-      <!-- <template v-if="tab === 'date-join-member'">
-        <div>
-          <label class="block text-gray-700">Member Downgrade Month</label>
-          <select 
-            v-model="filters.memberDowngradeMonth"
-            class="w-full p-2 border rounded-lg"
-          >
-            <option value="">Select month</option>
-            <option v-for="month in months" :key="month.value" :value="month.value">
-              {{ month.label }}
-            </option>
-          </select>
-        </div>
-      </template> -->
     </div>
 
+    <!-- Buttons -->
     <div class="flex justify-end gap-4 mt-4">
       <button 
         @click="handleFilter"
         class="bg-blue-600 text-white py-2 px-4 rounded-lg"
       >
-        Filter
+        {{ t('searchFilters.buttons.filter') }}
       </button>
       <button 
         @click="handleReset"
         class="bg-gray-500 text-white py-2 px-4 rounded-lg"
       >
-        Reset
+        {{ t('searchFilters.buttons.reset') }}
       </button>
     </div>
   </div>
@@ -119,6 +107,8 @@ import { websites, type Website } from '@/api/types/website'
 import type { TabType } from '@/types/profile'
 import { membershipAPI } from '@/api/services/membershipApi'
 import dayjs from 'dayjs'
+import { useI18nGlobal } from '@/i18n'
+const { t } = useI18nGlobal()
 
 // Props & Emits
 defineProps<{

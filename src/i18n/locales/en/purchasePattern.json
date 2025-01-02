@@ -1,0 +1,25 @@
+{
+  "purchasePattern": {
+    "title": "Purchase Pattern Analysis",
+    "brand": {
+      "label": "Select Brand:",
+      "options": {
+        "sky007": "Sky007",
+        "bbia": "Bbia",
+        "hince": "Hince",
+        "mixsoon": "Mixsoon"
+      }
+    },
+    "purchaseCycle": {
+      "title": "Purchase Cycle Analysis",
+      "chart": {
+        "title": "Purchase Frequency Distribution",
+        "xaxis": "Days Between Purchases",
+        "yaxis": "Number of Customers",
+        "series": {
+          "frequency": "Purchase Frequency"
+        }
+      }
+    }
+  }
+} 

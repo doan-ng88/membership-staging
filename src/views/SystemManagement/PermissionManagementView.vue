@@ -1,14 +1,14 @@
 <template>
   <DefaultLayout>
     <div class="p-6">
-      <h2 class="text-2xl font-bold mb-6">Permission Management</h2>
+      <h2 class="text-2xl font-bold mb-6">{{ t('permissionManagement.title') }}</h2>
 
       <!-- Display warning if not admin -->
       <div v-if="!isAdmin" class="bg-yellow-50 border border-yellow-200 p-4 rounded-lg mb-6">
         <div class="flex items-center">
           <ExclamationCircleOutlined class="text-yellow-500 mr-2" />
           <span class="text-yellow-700">
-            You don't have permission to access this page. Please contact an administrator.
+            {{ t('permissionManagement.warningMessage') }}
           </span>
         </div>
       </div>
@@ -24,7 +24,7 @@
         >
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'fullName'">
-              <span>{{ record.fullName || 'Not updated' }}</span>
+              <span>{{ record.fullName || t('permissionManagement.table.notUpdated') }}</span>
             </template>
 
             <template v-if="column.key === 'role'">
@@ -33,11 +33,11 @@
                 style="width: 120px"
                 @change="(value: string) => handleRoleChange(record, value)"
               >
-                <a-select-option value="admin">Admin</a-select-option>
-                <a-select-option value="manager">Manager</a-select-option>
-                <a-select-option value="staff">Staff</a-select-option>
-                <a-select-option value="reporter">Reporter</a-select-option>
-                <a-select-option value="not_assign">Not Assign</a-select-option>
+                <a-select-option value="admin">{{ t('permissionManagement.roles.admin') }}</a-select-option>
+                <a-select-option value="manager">{{ t('permissionManagement.roles.manager') }}</a-select-option>
+                <a-select-option value="staff">{{ t('permissionManagement.roles.staff') }}</a-select-option>
+                <a-select-option value="reporter">{{ t('permissionManagement.roles.reporter') }}</a-select-option>
+                <a-select-option value="not_assign">{{ t('permissionManagement.roles.notAssign') }}</a-select-option>
               </a-select>
             </template>
           </template>
@@ -45,7 +45,7 @@
 
         <div class="flex justify-end">
           <a-button type="primary" @click="handleSubmit" :loading="submitting">
-            Save Changes
+            {{ t('permissionManagement.buttons.saveChanges') }}
           </a-button>
         </div>
       </div>
@@ -60,6 +60,7 @@ import { ExclamationCircleOutlined } from '@ant-design/icons-vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
+import { useI18nGlobal } from '@/i18n'
 
 export default defineComponent({
   name: 'PermissionManagementView',
@@ -68,6 +69,7 @@ export default defineComponent({
     ExclamationCircleOutlined
   },
   setup() {
+    const { t, locale } = useI18nGlobal()
     const authStore = useAuthStore()
     const router = useRouter()
     const loading = ref(false)
@@ -78,40 +80,41 @@ export default defineComponent({
     // Check admin permission
     const isAdmin = computed(() => true)
 
-    // Redirect if not admin
-    onMounted(() => {
-      if (!isAdmin.value) {
-        message.error('You don\'t have permission to access this page')
-        router.push('/') // Redirect to home page
-        return
-      }
-      fetchUsers()
-    })
-
-    const columns = [
+    // Chuyển columns thành computed để reactive với locale
+    const columns = computed(() => [
       {
-        title: 'ID',
+        title: t('permissionManagement.table.columns.id'),
         dataIndex: 'userId',
         key: 'userId',
         width: '80px'
       },
       {
-        title: 'Full Name',
+        title: t('permissionManagement.table.columns.fullName'),
         dataIndex: 'fullName',
         key: 'fullName'
       },
       {
-        title: 'Email',
+        title: t('permissionManagement.table.columns.email'),
         dataIndex: 'email',
         key: 'email'
       },
       {
-        title: 'Permission',
+        title: t('permissionManagement.table.columns.permission'),
         dataIndex: 'role',
         key: 'role',
         width: '150px'
       }
-    ]
+    ])
+
+    // Redirect if not admin
+    onMounted(() => {
+      if (!isAdmin.value) {
+        message.error(t('permissionManagement.messages.noPermission'))
+        router.push('/') // Redirect to home page
+        return
+      }
+      fetchUsers()
+    })
 
     const fetchUsers = async () => {
       if (!isAdmin.value) return
@@ -131,7 +134,7 @@ export default defineComponent({
         users.value = result.data
       } catch (error) {
         console.error('Error fetching users:', error)
-        message.error('Unable to load user list')
+        message.error(t('permissionManagement.messages.loadError'))
       } finally {
         loading.value = false
       }
@@ -144,12 +147,12 @@ export default defineComponent({
 
     const handleSubmit = async () => {
       if (!isAdmin.value) {
-        message.error('You don\'t have permission to perform this action')
+        message.error(t('permissionManagement.messages.noPermission'))
         return
       }
 
       if (changedRoles.value.size === 0) {
-        message.info('No changes to save')
+        message.info(t('permissionManagement.messages.noChanges'))
         return
       }
 
@@ -174,18 +177,19 @@ export default defineComponent({
 
         if (!response.ok) throw new Error('Failed to update permissions')
 
-        message.success('Permissions updated successfully')
+        message.success(t('permissionManagement.messages.updateSuccess'))
         changedRoles.value.clear()
         await fetchUsers() // Refresh data
       } catch (error) {
         console.error('Error updating permissions:', error)
-        message.error('Unable to update permissions')
+        message.error(t('permissionManagement.messages.updateError'))
       } finally {
         submitting.value = false
       }
     }
 
     return {
+      t,
       loading,
       submitting,
       users,

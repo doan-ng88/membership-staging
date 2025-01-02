@@ -1,0 +1,102 @@
+{
+  "productSales": {
+    "title": "Phân Tích Doanh Số Sản Phẩm",
+    "subtitle": "Theo dõi và phân tích hiệu suất bán hàng của sản phẩm",
+    "filters": {
+      "brand": {
+        "label": "Chọn Thương Hiệu",
+        "options": {
+          "sky007": "Sky007, BBIA",
+          "hince": "Hince",
+          "mixsoon": "Mixsoon"
+        }
+      }
+    },
+    "products": {
+      "laptop": "Máy Tính Xách Tay",
+      "smartphone": "Điện Thoại Thông Minh",
+      "tablet": "Máy Tính Bảng",
+      "smartwatch": "Đồng Hồ Thông Minh",
+      "camera": "Máy Ảnh"
+    },
+    "category": {
+      "title": "Doanh Thu Theo Danh Mục",
+      "subtitle": "Phân tích doanh thu và đơn hàng theo danh mục sản phẩm",
+      "filters": {
+        "brand": "Chọn Thương Hiệu:",
+        "dateRange": "Khoảng Thời Gian:"
+      },
+      "charts": {
+        "revenue": {
+          "title": "Phân Bố Doanh Thu",
+          "yaxis": "Doanh Thu (VND)"
+        },
+        "orders": {
+          "title": "Trạng Thái Đơn Hàng Theo Danh Mục",
+          "yaxis": "Số Lượng Đơn Hàng",
+          "status": {
+            "completed": "Hoàn Thành",
+            "processing": "Đang Xử Lý",
+            "onHold": "Tạm Giữ",
+            "cancelled": "Đã Hủy"
+          }
+        }
+      },
+      "metrics": {
+        "revenue": {
+          "title": "Tổng Doanh Thu"
+        },
+        "orders": {
+          "title": "Tổng Đơn Hàng"
+        },
+        "completion": {
+          "title": "Tỷ Lệ Hoàn Thành"
+        }
+      },
+      "errors": {
+        "loadFailed": "Không thể tải dữ liệu thống kê danh mục"
+      }
+    },
+    "product": {
+      "title": "Phân Tích Doanh Số Sản Phẩm",
+      "subtitle": "Theo dõi hiệu suất của từng sản phẩm",
+      "filters": {
+        "product": "Chọn Sản Phẩm",
+        "dateRange": "Khoảng Thời Gian",
+        "placeholder": "Chọn sản phẩm"
+      },
+      "metrics": {
+        "totalOrders": {
+          "title": "Tổng Đơn Hàng"
+        },
+        "completedOrders": {
+          "title": "Đơn Hoàn Thành"
+        },
+        "processingOrders": {
+          "title": "Đơn Đang Xử Lý"
+        },
+        "totalQuantity": {
+          "title": "Tổng Số Lượng"
+        }
+      },
+      "charts": {
+        "orderStatus": {
+          "title": "Trạng Thái Đơn Hàng",
+          "labels": {
+            "completed": "Hoàn Thành",
+            "processing": "Đang Xử Lý",
+            "onHold": "Tạm Giữ",
+            "cancelled": "Đã Hủy"
+          }
+        },
+        "topProducts": {
+          "title": "Top 10 Sản Phẩm Bán Chạy",
+          "series": "Số Lượng Bán"
+        }
+      },
+      "errors": {
+        "loadFailed": "Không thể tải dữ liệu thống kê sản phẩm"
+      }
+    }
+  }
+} 

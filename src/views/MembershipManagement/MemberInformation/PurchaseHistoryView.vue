@@ -1,17 +1,17 @@
 <template>
   <DefaultLayout>
     <div class="bg-white p-6 rounded-lg shadow-md">
-      <h1 class="text-2xl font-bold text-center mb-8">Purchase History</h1>
+      <h1 class="text-2xl font-bold text-center mb-8">{{ t('purchaseHistory.title') }}</h1>
 
       <!-- Loading state -->
       <div v-if="loading" class="text-center py-4">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-        <p class="mt-2">Loading purchase history...</p>
+        <p class="mt-2">{{ t('purchaseHistory.loading') }}</p>
       </div>
 
       <!-- Error state -->
       <div v-else-if="error" class="text-center py-4 text-red-600">
-        {{ error }}
+        {{ t('purchaseHistory.error') }}
       </div>
 
       <!-- Data table -->
@@ -19,11 +19,11 @@
         <table class="w-full border-collapse border border-gray-300 mt-4">
           <thead class="bg-gray-100">
             <tr>
-              <th class="border border-gray-300 p-2">Order ID</th>
-              <th class="border border-gray-300 p-2">Date</th>
-              <th class="border border-gray-300 p-2">Items</th>
-              <th class="border border-gray-300 p-2">Total Amount</th>
-              <th class="border border-gray-300 p-2">Status</th>
+              <th class="border border-gray-300 p-2">{{ t('purchaseHistory.table.headers.orderId') }}</th>
+              <th class="border border-gray-300 p-2">{{ t('purchaseHistory.table.headers.date') }}</th>
+              <th class="border border-gray-300 p-2">{{ t('purchaseHistory.table.headers.items') }}</th>
+              <th class="border border-gray-300 p-2">{{ t('purchaseHistory.table.headers.totalAmount') }}</th>
+              <th class="border border-gray-300 p-2">{{ t('purchaseHistory.table.headers.status') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -38,7 +38,7 @@
               <td class="border border-gray-300 p-2">{{ formatAmount(order.order_total) }}</td>
               <td class="border border-gray-300 p-2">
                 <span :class="getStatusClass(order.order_status)">
-                  {{ order.order_status.replace('wc-', '') }}
+                  {{ t(`purchaseHistory.status.${order.order_status.replace('wc-', '')}`) }}
                 </span>
               </td>
             </tr>
@@ -48,7 +48,7 @@
         <!-- Pagination -->
         <div class="mt-4 flex justify-between items-center">
           <div class="text-sm text-gray-600">
-            Total {{ totalOrders }} orders
+            {{ t('purchaseHistory.pagination.total', { count: totalOrders }) }}
           </div>
           <a-pagination
             v-model:current="currentPage"
@@ -70,6 +70,9 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import { formatDate } from '@/utils/date'
 import { purchaseApi, type MemberOrder } from '@/api/services/purchaseApi'
 import { message } from 'ant-design-vue'
+import { useI18nGlobal } from '@/i18n'
+
+const { t } = useI18nGlobal()
 
 // State
 const orders = ref<MemberOrder[]>([])

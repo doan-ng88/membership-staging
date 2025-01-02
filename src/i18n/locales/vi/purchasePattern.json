@@ -1,0 +1,25 @@
+{
+  "purchasePattern": {
+    "title": "Phân Tích Mô Hình Mua Hàng",
+    "brand": {
+      "label": "Chọn Thương Hiệu:",
+      "options": {
+        "sky007": "Sky007",
+        "bbia": "Bbia",
+        "hince": "Hince",
+        "mixsoon": "Mixsoon"
+      }
+    },
+    "purchaseCycle": {
+      "title": "Phân Tích Chu Kỳ Mua Hàng",
+      "chart": {
+        "title": "Phân Bố Tần Suất Mua Hàng",
+        "xaxis": "Số Ngày Giữa Các Lần Mua",
+        "yaxis": "Số Lượng Khách Hàng",
+        "series": {
+          "frequency": "Tần Suất Mua Hàng"
+        }
+      }
+    }
+  }
+} 

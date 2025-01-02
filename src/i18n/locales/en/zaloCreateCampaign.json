@@ -1,0 +1,74 @@
+{
+  "zaloCreateCampaign": {
+    "title": "Create Zalo Campaign",
+    "form": {
+      "campaign": {
+        "name": {
+          "label": "Campaign Name",
+          "placeholder": "Enter campaign name",
+          "required": "Please enter campaign name"
+        },
+        "description": {
+          "label": "Campaign Description",
+          "placeholder": "Enter campaign description"
+        }
+      },
+      "website": {
+        "label": "Website",
+        "placeholder": "Select website",
+        "required": "Please select a website"
+      },
+      "coupon": {
+        "label": "Coupon name",
+        "labelWithNote": "Coupon name (Please select website first)",
+        "placeholder": "Select coupons",
+        "required": "Please select at least one coupon code"
+      },
+      "pic": {
+        "label": "Person in charge",
+        "placeholder": "Select person in charge",
+        "required": "Please select person in charge"
+      },
+      "time": {
+        "label": "Time of Sending",
+        "placeholder": {
+          "start": "Start time",
+          "end": "End time"
+        },
+        "required": "Please select sending time"
+      }
+    },
+    "members": {
+      "title": "Selected member list",
+      "addButton": "Add member",
+      "table": {
+        "columns": {
+          "name": "Customer Name",
+          "phone": "Phone Number",
+          "website": "Platform Website",
+          "birthday": "Birthday",
+          "registered": "Registered Time",
+          "actions": "Actions"
+        },
+        "pagination": {
+          "total": "Total {total} items"
+        }
+      }
+    },
+    "buttons": {
+      "back": "Back",
+      "submit": "Submit"
+    },
+    "messages": {
+      "error": {
+        "coupons": "Error fetching coupons",
+        "adminUsers": "Error fetching admin users",
+        "validation": "Please select at least one membership",
+        "save": "Failed to save campaign"
+      },
+      "success": {
+        "create": "Campaign created successfully"
+      }
+    }
+  }
+} 

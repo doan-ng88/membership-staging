@@ -3,7 +3,9 @@ import { useSidebarStore } from '@/stores/sidebar'
 import DarkModeSwitcher from './DarkModeSwitcher.vue'
 import DropdownUser from './DropdownUser.vue'
 import LanguageSwitcher from './LanguageSwitcher.vue'
+import { useI18nGlobal } from '@/i18n'
 
+const { t } = useI18nGlobal()
 const { toggleSidebar } = useSidebarStore()
 const sidebarStore = useSidebarStore()
 </script>
@@ -17,12 +19,8 @@ const sidebarStore = useSidebarStore()
         <!-- Hamburger Toggle BTN -->
         <button
           class="z-99999 block rounded-sm border border-stroke bg-white p-1.5 shadow-sm dark:border-strokedark dark:bg-boxdark lg:hidden"
-          @click="
-            () => {
-              console.log('Toggling Sidebar')
-              toggleSidebar()
-            }
-          "
+          @click="toggleSidebar"
+          :aria-label="t('header.buttons.toggleSidebar')"
         >
           <span class="relative block h-5.5 w-5.5 cursor-pointer">
             <span class="block absolute right-0 h-full w-full">
@@ -53,16 +51,17 @@ const sidebarStore = useSidebarStore()
         </button>
         <!-- Hamburger Toggle BTN -->
         <router-link class="block flex-shrink-0 lg:hidden mb-1.5" to="/">
-          <img src="@/assets/images/logo/logo.svg" alt="Logo" />
+          <img src="@/assets/images/logo/logo.svg" :alt="t('header.logo.alt')" />
         </router-link>
       </div>
-      <!-- <div class="hidden sm:block"> -->
-        <div class="flex items-center justify-between gap-2 text-2xl">
-          <router-link to="/">
-            <h1 class="gap-2.5 self-stretch my-auto text-black font-bold">Membership Management</h1>
-          </router-link>
-        </div>
-      <!-- </div> -->
+
+      <div class="flex items-center justify-between gap-2 text-2xl">
+        <router-link to="/">
+          <h1 class="gap-2.5 self-stretch my-auto text-black font-bold">
+            {{ t('header.title') }}
+          </h1>
+        </router-link>
+      </div>
 
       <div class="flex items-center gap-3 2xsm:gap-7">
         <!-- Language Switcher -->  

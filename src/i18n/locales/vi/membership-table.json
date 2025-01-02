@@ -1,0 +1,86 @@
+{
+  "membershipTable": {
+    "title": "Dữ liệu Thành viên",
+    "search": {
+      "placeholder": "Tìm kiếm theo tên..."
+    },
+    "export": {
+      "button": "Xuất Excel",
+      "loading": "Đang xuất..."
+    },
+    "filter": {
+      "level": {
+        "placeholder": "Chọn Cấp độ"
+      }
+    },
+    "table": {
+      "headers": {
+        "customerName": "Tên Khách hàng",
+        "phoneNumber": "Số điện thoại",
+        "dateJoinMember": "Ngày tham gia",
+        "birthday": "Ngày sinh",
+        "platformWebsite": "Nền tảng Website",
+        "memberLevel": "Cấp độ thành viên",
+        "actions": "Thao tác"
+      }
+    },
+    "actions": {
+      "edit": "Sửa",
+      "history": "Lịch sử"
+    },
+    "modal": {
+      "details": {
+        "title": "Chi tiết Khách hàng",
+        "basicInfo": {
+          "title": "Thông tin Cơ bản",
+          "fullName": "Họ và Tên",
+          "phoneNumber": "Số điện thoại",
+          "address": "Địa chỉ"
+        },
+        "membershipInfo": {
+          "title": "Thông tin Thành viên",
+          "orderPoint": "Điểm đơn hàng"
+        },
+        "birthInfo": {
+          "title": "Thông tin Ngày sinh",
+          "dateOfBirth": "Ngày sinh"
+        },
+        "buttons": {
+          "cancel": "Hủy",
+          "save": "Lưu thay đổi",
+          "close": "Đóng"
+        }
+      },
+      "history": {
+        "title": "Lịch sử Đơn hàng",
+        "headers": {
+          "date": "Ngày",
+          "orderId": "Mã đơn hàng",
+          "products": "Sản phẩm",
+          "total": "Tổng tiền",
+          "status": "Trạng thái"
+        },
+        "noData": "Không tìm thấy đơn hàng nào"
+      }
+    },
+    "pointHistory": {
+      "title": "Lịch sử điểm",
+      "headers": {
+        "date": "Ngày",
+        "orderId": "Mã đơn hàng",
+        "action": "Hành động",
+        "points": "Điểm",
+        "totalPoints": "Tổng điểm"
+      },
+      "noData": "Không tìm thấy giao dịch điểm nào"
+    },
+    "pagination": {
+      "total": "Tổng {count} thành viên",
+      "perPage": "{count}/trang"
+    },
+    "tabs": {
+      "date-join-member": "Ngày tham gia",
+      "date-of-birth": "Ngày sinh"
+    }
+  }
+} 

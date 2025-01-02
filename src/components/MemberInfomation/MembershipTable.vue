@@ -2,14 +2,15 @@
 <template>
   <div class="bg-white p-6 rounded-lg shadow-md">
     <div class="flex justify-between items-center mb-4">
-      <h2 class="text-lg font-semibold">Membership Data</h2>
-      <div class="flex items-center space-x-4 w-1/3">
+      <h2 class="text-lg font-semibold">{{ t('membershipTable.title') }}</h2>
+      <div class="flex items-center space-x-4">
+        <!-- Search input và Export button hiện tại -->
         <div class="relative w-full">
           <input 
             type="text" 
             v-model="searchTerm"
             class="w-full p-2 border rounded-lg pr-8" 
-            placeholder="Search Customer Name..."
+            :placeholder="t('membershipTable.search.placeholder')"
           >
           <span v-if="searchLoading" class="absolute right-2 top-1/2 -translate-y-1/2">
             <a-spin :size="small" />
@@ -27,16 +28,16 @@
     <table class="w-full border-collapse border border-gray-300">
       <thead class="bg-gray-100">
         <tr>
-          <th class="border border-gray-300 p-2">Customer Name</th>
-          <th class="border border-gray-300 p-2">Phone Number</th>
+          <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.customerName') }}</th>
+          <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.phoneNumber') }}</th>
           <th class="border border-gray-300 p-2">
-            {{ tab === 'date-join-member' ? 'Date Join Member' : 'Birthday' }}
+            {{ t(`membershipTable.tabs.${tab}`) }}
           </th>
-          <th class="border border-gray-300 p-2">Platform Website</th>
+          <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.platformWebsite') }}</th>
           <template v-if="tab === 'date-join-member'">
-            <th class="border border-gray-300 p-2">Member Level</th>
+            <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.memberLevel') }}</th>
           </template>
-          <th class="border border-gray-300 p-2">Thao tác</th>
+          <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.actions') }}</th>
         </tr>
       </thead>
       <tbody>
@@ -45,7 +46,6 @@
           <td class="border border-gray-300 p-2">{{ member.mainPhoneNumber }}</td>
           <td class="border border-gray-300 p-2">
             {{ formatDate(tab === 'date-join-member' ? member.registeredTime : member.birthday) }}
-          
           </td>
           <td class="border border-gray-300 p-2">{{ getWebsiteName(member.websiteId) }}</td>
           <template v-if="tab === 'date-join-member'">
@@ -54,10 +54,10 @@
           <td class="border border-gray-300 p-2">
             <div class="flex gap-2">
               <button @click="handleView(member)" class="bg-blue-600 text-white py-1 px-2 rounded-lg">
-                Edit
+                {{ t('membershipTable.actions.edit') }}
               </button>
               <button @click="handleHistory(member)" class="bg-green-600 text-white py-1 px-2 rounded-lg">
-                History
+                {{ t('membershipTable.actions.history') }}
               </button>
             </div>
           </td>
@@ -70,7 +70,7 @@
       <div class="bg-white rounded-xl shadow-2xl w-[800px] max-h-[90vh] overflow-hidden relative animate-modal-enter">
         <!-- Modal Header -->
         <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-2 flex justify-between items-center">
-          <h2 class="text-xl font-bold text-white">Customer Details</h2>
+          <h2 class="text-xl font-bold text-white">{{ t('membershipTable.modal.details.title') }}</h2>
           <button 
             @click="closeModal"
             class="text-white/80 hover:text-white transition-colors"
@@ -87,17 +87,17 @@
             <!-- Basic Information -->
             <div class="bg-gray-50 p-6 rounded-lg shadow-sm">
               <h3 class="font-semibold text-lg text-gray-800 mb-4 pb-2 border-b border-gray-200">
-                Basic Information
+                {{ t('membershipTable.modal.details.basicInfo.title') }}
               </h3>
               <div class="space-y-4">
                 <div class="flex flex-col">
-                  <span class="text-sm text-gray-500">Full Name</span>
+                  <span class="text-sm text-gray-500">{{ t('membershipTable.modal.details.basicInfo.fullName') }}</span>
                   <span class="text-gray-800 font-medium">{{ selectedMember.fullName }}</span>
                 </div>
                 
                 <!-- Editable Phone Number -->
                 <div class="flex flex-col">
-                  <span class="text-sm text-gray-500">Phone Number</span>
+                  <span class="text-sm text-gray-500">{{ t('membershipTable.modal.details.basicInfo.phoneNumber') }}</span>
                   <div class="flex items-center gap-2">
                     <input 
                       v-if="isEditing && editedMember"
@@ -120,7 +120,7 @@
 
                 <!-- Editable Address -->
                 <div class="flex flex-col">
-                  <span class="text-sm text-gray-500">Address</span>
+                  <span class="text-sm text-gray-500">{{ t('membershipTable.modal.details.basicInfo.address') }}</span>
                   <div class="flex items-center gap-2">
                     <textarea 
                       v-if="isEditing && editedMember"
@@ -141,7 +141,7 @@
             <!-- Date Information -->
             <div class="bg-gray-50 p-6 rounded-lg">
               <h3 class="font-semibold text-lg text-gray-800 mb-4 pb-2 border-b">
-                {{ tab === 'date-join-member' ? 'Membership Information' : 'Birth Information' }}
+                {{ t(`membershipTable.modal.details.${tab === 'date-join-member' ? 'membershipInfo.title' : 'birthInfo.title'}`) }}
               </h3>
               <div class="space-y-4">
                 <template v-if="tab === 'date-join-member'">
@@ -178,21 +178,21 @@
             @click="cancelEdit"
             class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-1 rounded-lg transition-colors"
           >
-            Cancel
+            {{ t('membershipTable.modal.details.buttons.cancel') }}
           </button>
           <button 
             v-if="isEditing"
             @click="saveChanges"
             class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-1 rounded-lg transition-colors"
           >
-            Save Changes
+            {{ t('membershipTable.modal.details.buttons.save') }}
           </button>
           <button 
             v-else
             @click="closeModal"
             class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition-colors"
           >
-            Close
+            {{ t('membershipTable.modal.details.buttons.close') }}
           </button>
         </div>
       </div>
@@ -257,16 +257,16 @@
 
             <!-- Point History -->
             <div class="bg-gray-50 p-6 rounded-lg mt-6">
-              <h3 class="font-semibold text-lg text-gray-800 mb-4">Point History</h3>
+              <h3 class="font-semibold text-lg text-gray-800 mb-4">{{ t('membershipTable.pointHistory.title') }}</h3>
               <div class="overflow-x-auto">
                 <table class="w-full border-collapse border border-gray-300">
                   <thead class="bg-gray-100">
                     <tr>
-                      <th class="border p-2">Date</th>
-                      <th class="border p-2">Order ID</th>
-                      <th class="border p-2">Action</th>
-                      <th class="border p-2">Points</th>
-                      <th class="border p-2">Total Points</th>
+                      <th class="border p-2">{{ t('membershipTable.pointHistory.headers.date') }}</th>
+                      <th class="border p-2">{{ t('membershipTable.pointHistory.headers.orderId') }}</th>
+                      <th class="border p-2">{{ t('membershipTable.pointHistory.headers.action') }}</th>
+                      <th class="border p-2">{{ t('membershipTable.pointHistory.headers.points') }}</th>
+                      <th class="border p-2">{{ t('membershipTable.pointHistory.headers.totalPoints') }}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -280,7 +280,9 @@
                       <td class="border p-2">{{ point.totalPoint }}</td>
                     </tr>
                     <tr v-if="!pointHistory.length">
-                      <td colspan="5" class="text-center p-4 text-gray-500">No point transactions found</td>
+                      <td colspan="5" class="text-center p-4 text-gray-500">
+                        {{ t('membershipTable.pointHistory.noData') }}
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -302,21 +304,25 @@
     </div>
 
     <!-- Thay thế phần pagination cũ bằng a-pagination -->
-    <div class="mt-4 flex justify-between items-center">
-      <div class="text-sm text-gray-600">
-        Total {{ filteredMembers.length }} items
-      </div>
+    <div class="mt-4 flex items-center gap-4 justify-between">
+      <span class="text-sm text-gray-600">
+        {{ t('membershipTable.pagination.total', { count: totalCount }) }}
+      </span>
+
       <a-pagination
         :current="currentPage"
-        :total="filteredMembers.length"
-        :pageSize="pageSize"
-        :defaultPageSize="10"
-        :showSizeChanger="true"
-        :pageSizeOptions="['10', '20', '50', '100']"
-        :showTotal="(total: number) => `Total ${total} items`"
+        :total="totalCount"
+        :page-size="pageSize"
+        :show-total="false"
+        :show-size-changer="true"
+        :page-size-options="['10', '20', '50', '100']"
         @change="handlePageChange"
         @showSizeChange="handleSizeChange"
-      />
+      >
+        <template #buildOptionText="props">
+          <span>{{ t('membershipTable.pagination.perPage', { count: props.value }) }}</span>
+        </template>
+      </a-pagination>
     </div>
   </div>
 </template>
@@ -330,6 +336,7 @@ import type { Member } from '@/types/profile'
 import { membershipAPI } from '@/api/services/membershipApi'
 import { pointHistoryApi, type PointTransaction } from '@/api/services/pointHistoryApi'
 import * as XLSX from 'xlsx'
+import { getWebsiteName } from '@/api/types/website'
 
 const { t } = useI18nGlobal()
 
@@ -348,6 +355,7 @@ const props = defineProps<{
 
 // Emits
 const emit = defineEmits<{
+  (e: 'update:currentPage', page: number): void
   (e: 'page-change', params: { 
     pageIndex: number
     pageSize: number
@@ -356,7 +364,7 @@ const emit = defineEmits<{
     sortType?: string
   }): void
   (e: 'size-change', size: number): void
-  (e: 'view', member: Member): void
+  (e: 'filter-change', filters: Array<{key: string, value: any}>): void
 }>()
 
 // State
@@ -374,6 +382,12 @@ const websites = ref([
 ])
 const exporting = ref(false)
 const searchLoading = ref(false)
+
+// Định nghĩa interface cho Member Level
+interface MemberLevel {
+  id: number
+  name: string
+}
 
 // Add watcher for search term
 watch(searchTerm, debounce(async (newValue: string) => {
@@ -551,11 +565,18 @@ const handleExport = async () => {
   }
 }
 
-const handlePageChange = (page: number, pageSize: number) => {
-  emit('page-change', { pageIndex: page, pageSize })
+const handlePageChange = (page: number) => {
+  emit('update:currentPage', page)
+  emit('page-change', {
+    pageIndex: page,
+    pageSize: props.pageSize,
+    searchParams: props.filters,
+    sortField: props.sortField,
+    sortType: props.sortType
+  })
 }
 
-const handleSizeChange = (current: number, size: number) => {
+const handleSizeChange = (_: number, size: number) => {
   emit('size-change', size)
 }
 
@@ -593,13 +614,42 @@ const saveChanges = async () => {
   }
 }
 
-const getWebsiteName = (websiteId: number) => {
-  const website = websites.value.find(w => w.websiteId === websiteId)
-  return website?.name || 'Unknown'
-}
-
 const formatLabel = (key: string) => {
   return key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())
+}
+
+// Handler cho việc thay đổi level
+const handleLevelChange = (value: number | null) => {
+  const currentFilters = Array.isArray(props.filters) ? [...props.filters] : []
+  
+  // Xóa filter level cũ nếu có
+  const filtersWithoutLevel = currentFilters.filter(f => f.key !== 'level')
+  
+  // Thêm filter level mới nếu có giá trị được chọn
+  const newFilters = value 
+    ? [...filtersWithoutLevel, { key: 'level', value }]
+    : filtersWithoutLevel
+
+  emit('filter-change', newFilters)
+  
+  // Reset về trang 1 khi filter thay đổi
+  emit('page-change', {
+    pageIndex: 1,
+    pageSize: props.pageSize,
+    searchParams: newFilters,
+    sortField: props.sortField,
+    sortType: props.sortType
+  })
+}
+
+// Style cho level
+const getLevelStyle = (levelName: string) => {
+  const styles = {
+    'Silver': 'text-gray-600 bg-gray-100',
+    'Gold': 'text-yellow-600 bg-yellow-100',
+    'Platinum': 'text-purple-600 bg-purple-100'
+  }
+  return `px-2 py-1 rounded-full text-sm ${styles[levelName] || 'text-gray-600 bg-gray-100'}`
 }
 
 // Expose necessary methods and properties
@@ -611,18 +661,37 @@ defineExpose({
 
 <style scoped>
 .ant-pagination {
-  @apply flex items-center;
+  @apply flex items-center gap-2;
+}
+
+.ant-pagination-prev,
+.ant-pagination-next {
+  @apply flex items-center justify-center w-8 h-8 border rounded hover:border-blue-500 hover:text-blue-500;
 }
 
 .ant-pagination-item {
-  @apply mx-1;
+  @apply flex items-center justify-center w-8 h-8 border rounded;
 }
 
 .ant-pagination-item-active {
-  @apply bg-blue-600 border-blue-600 text-white;
+  @apply border-blue-500 text-blue-500;
+}
+
+.ant-select-selection-selected-value {
+  @apply text-sm;
+}
+
+/* Style for page size dropdown */
+.ant-pagination-options {
+  @apply ml-4;
 }
 
 .ant-select-selector {
-  @apply h-8 min-w-[90px];
+  @apply min-w-[90px] h-8 flex items-center;
+}
+
+/* Thêm style cho level badge nếu cần */
+.level-badge {
+  @apply px-2 py-1 rounded-full text-sm;
 }
 </style>

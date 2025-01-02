@@ -1,32 +1,32 @@
 <template>
   <DefaultLayout>
     <div class="p-6">
-      <h2 class="text-2xl font-bold mb-6">Zalo OA Template List</h2>
+      <h2 class="text-2xl font-bold mb-6">{{ t('zaloTemplate.title') }}</h2>
 
       <!-- Filters -->
       <div class="mb-6 bg-white p-4 rounded shadow">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('zaloTemplate.filters.status.label') }}</label>
             <a-select
               v-model:value="filters.status"
               style="width: 100%"
-              placeholder="Select status"
+              :placeholder="t('zaloTemplate.filters.status.placeholder')"
               @change="handleSearch"
             >
-              <a-select-option value="0">All templates</a-select-option>
-              <a-select-option value="1">Approved (Enable)</a-select-option>
-              <a-select-option value="2">Pending Review</a-select-option>
-              <a-select-option value="3">Rejected</a-select-option>
-              <a-select-option value="4">Disabled</a-select-option>
+              <a-select-option value="0">{{ t('zaloTemplate.filters.status.options.all') }}</a-select-option>
+              <a-select-option value="1">{{ t('zaloTemplate.filters.status.options.approved') }}</a-select-option>
+              <a-select-option value="2">{{ t('zaloTemplate.filters.status.options.pending') }}</a-select-option>
+              <a-select-option value="3">{{ t('zaloTemplate.filters.status.options.rejected') }}</a-select-option>
+              <a-select-option value="4">{{ t('zaloTemplate.filters.status.options.disabled') }}</a-select-option>
             </a-select>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('zaloTemplate.filters.search.label') }}</label>
             <a-input
               v-model:value="filters.search"
-              placeholder="Enter template name"
+              :placeholder="t('zaloTemplate.filters.search.placeholder')"
               @pressEnter="handleSearch"
               allowClear
             >
@@ -38,8 +38,8 @@
         </div>
 
         <div class="flex justify-end mt-4 space-x-2">
-          <a-button @click="handleReset">Reset</a-button>
-          <a-button type="primary" @click="handleSearch">Search</a-button>
+          <a-button @click="handleReset">{{ t('zaloTemplate.filters.buttons.reset') }}</a-button>
+          <a-button type="primary" @click="handleSearch">{{ t('zaloTemplate.filters.buttons.search') }}</a-button>
         </div>
       </div>
 
@@ -81,11 +81,11 @@
                 
               <a-button type="link" size="small" @click="viewTemplate(template)">
                 <template #icon><EyeOutlined /></template>
-                Xem
+                {{ t('zaloTemplate.template.actions.view') }}
               </a-button>
               <a-button type="link" size="small" @click="editTemplate(template)">
                 <template #icon><EditOutlined /></template>
-                Sửa
+                {{ t('zaloTemplate.template.actions.edit') }}
               </a-button>
                             <!-- <a-button 
                 type="link" 
@@ -102,7 +102,7 @@
                 @click="sendTemplate(template)"
               >
                 <template #icon><SendOutlined /></template>
-                Gửi
+                {{ t('zaloTemplate.template.actions.send') }}
               </a-button>
             </div>
           </div>
@@ -143,7 +143,7 @@
     <!-- Send Template Drawer -->
     <a-drawer
       v-model:visible="showSendDrawer"
-      title="Select Recipients for Zalo Template"
+      title="{{ t('zaloTemplate.drawer.title') }}"
       placement="right"
       width="80%"
       :destroyOnClose="true"
@@ -152,8 +152,8 @@
       <div class="flex items-center justify-between border-gray-200 mb-4">
         <div class="flex-1">
           <a-tabs v-model:activeKey="activeKey">
-            <a-tab-pane key="campaign" tab="Send by Campaign" />
-            <a-tab-pane key="membership" tab="Send by Membership" />
+            <a-tab-pane key="campaign" tab="{{ t('zaloTemplate.drawer.tabs.campaign') }}" />
+            <a-tab-pane key="membership" tab="{{ t('zaloTemplate.drawer.tabs.membership') }}" />
           </a-tabs>
         </div>
 
@@ -165,7 +165,7 @@
           >
             <a-button class="flex items-center">
               <FileExcelOutlined class="flex-shrink-0" />
-              <span class="ml-2">Upload Excel</span>
+              <span class="ml-2">{{ t('zaloTemplate.drawer.upload.button') }}</span>
             </a-button>
           </a-upload>
         </div>

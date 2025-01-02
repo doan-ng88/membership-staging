@@ -1,0 +1,24 @@
+{
+  "levelAnalysis": {
+    "title": "Level Analysis",
+    "brand": {
+      "label": "Select Brand:",
+      "options": {
+        "sky007": "Sky007",
+        "bbia": "Bbia",
+        "hince": "Hince",
+        "mixsoon": "Mixsoon"
+      }
+    },
+    "levels": {
+      "diamond": "Diamond",
+      "gold": "Gold",
+      "silver": "Silver"
+    },
+    "messages": {
+      "error": {
+        "loadStats": "Unable to load member rank statistics"
+      }
+    }
+  }
+} 

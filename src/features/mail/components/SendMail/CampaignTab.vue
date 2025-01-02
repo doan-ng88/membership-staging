@@ -3,22 +3,31 @@
     <a-form layout="vertical" :model="filterForm">
       <a-row :gutter="16">
         <a-col :span="8">
-          <a-form-item label="Campaign Name">
-            <a-input v-model:value="filterForm.name" placeholder="Search campaign name" />
+          <a-form-item :label="t('campaignTab.form.name.label')">
+            <a-input 
+              v-model:value="filterForm.name" 
+              :placeholder="t('campaignTab.form.name.placeholder')" 
+            />
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item label="Status">
-            <a-select v-model:value="filterForm.status" placeholder="Select status">
-              <a-select-option value="Active">Active</a-select-option>
-              <a-select-option value="Inactive">Inactive</a-select-option>
-              <a-select-option value="Completed">Completed</a-select-option>
+          <a-form-item :label="t('campaignTab.form.status.label')">
+            <a-select 
+              v-model:value="filterForm.status" 
+              :placeholder="t('campaignTab.form.status.placeholder')"
+            >
+              <a-select-option value="Active">{{ t('campaignTab.form.status.options.active') }}</a-select-option>
+              <a-select-option value="Inactive">{{ t('campaignTab.form.status.options.inactive') }}</a-select-option>
+              <a-select-option value="Completed">{{ t('campaignTab.form.status.options.completed') }}</a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item label="Website">
-            <a-select v-model:value="filterForm.website" placeholder="Select website">
+          <a-form-item :label="t('campaignTab.form.website.label')">
+            <a-select 
+              v-model:value="filterForm.website" 
+              :placeholder="t('campaignTab.form.website.placeholder')"
+            >
               <a-select-option value="hince">Hince</a-select-option>
               <a-select-option value="bbia">BBIA</a-select-option>
               <a-select-option value="mixsoon">Mixsoon</a-select-option>
@@ -30,14 +39,14 @@
 
     <div class="mb-4 flex justify-between items-center">
       <span class="text-gray-600">
-        Selected: {{ selectedCampaigns.length }} campaigns
+        {{ t('campaignTab.selection.count', { count: selectedCampaigns.length }) }}
       </span>
       <a-button 
         v-if="selectedCampaigns.length > 0"
         type="link" 
         @click="clearSelection"
       >
-        Clear Selection
+        {{ t('campaignTab.selection.clear') }}
       </a-button>
     </div>
 
@@ -61,12 +70,12 @@
 
     <div class="flex justify-end py-4">
       <a-space>
-        <a-button @click="handleCancel">Cancel</a-button>
+        <a-button @click="handleCancel">{{ t('campaignTab.buttons.cancel') }}</a-button>
         <a-button 
           type="primary" 
           @click="handleSendMail"
         >
-          Send by Campaign
+          {{ t('campaignTab.buttons.send') }}
         </a-button>
       </a-space>
     </div>
@@ -74,10 +83,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { message } from 'ant-design-vue'
+import { useI18n } from 'vue-i18n'
 import type { TablePaginationConfig } from 'ant-design-vue'
 import { mailCampaignService } from '@/services/mailCampaignService'
+
+const { t } = useI18n()
 
 interface Campaign {
   id: string
@@ -113,35 +125,35 @@ const filterForm = reactive({
   website: undefined
 })
 
-// Table columns
-const columns = [
+// Table columns as computed property
+const columns = computed(() => [
   {
-    title: 'Campaign Name',
+    title: t('campaignTab.table.columns.name'),
     dataIndex: 'name',
     width: 200
   },
   {
-    title: 'Website',
+    title: t('campaignTab.table.columns.website'),
     dataIndex: 'websiteId',
     slots: { customRender: 'websiteName' },
     width: 120
   },
   {
-    title: 'Start Date',
+    title: t('campaignTab.table.columns.startDate'),
     dataIndex: 'startDate',
     width: 120
   },
   {
-    title: 'End Date',
+    title: t('campaignTab.table.columns.endDate'),
     dataIndex: 'endDate',
     width: 120
   },
   {
-    title: 'Status',
+    title: t('campaignTab.table.columns.status'),
     dataIndex: 'status',
     width: 120
   }
-]
+])
 
 // Handlers
 const handleSelectionChange = (keys: string[], rows: Campaign[]) => {
@@ -177,7 +189,7 @@ const handleCancel = () => {
 
 const handleSendMail = () => {
   if (!selectedCampaigns.value.length) {
-    return message.error('Please select at least one campaign')
+    return message.error(t('campaignTab.messages.error.noSelection'))
   }
   emit('send', selectedCampaigns.value)
 }
@@ -212,7 +224,7 @@ const fetchCampaigns = async () => {
     }
   } catch (error) {
     console.error('Error fetching campaigns:', error)
-    message.error('Failed to load campaigns')
+    message.error(t('campaignTab.messages.error.fetchFailed'))
   } finally {
     loading.value = false
   }

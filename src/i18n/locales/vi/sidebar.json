@@ -1,0 +1,151 @@
+{
+  "sidebar": {
+    "company": "ACTSONE VIỆT NAM",
+    "logo": {
+      "alt": "ACTSONE VIỆT NAM"
+    },
+    "groups": {
+      "membershipManagement": {
+        "name": "Quản lý thành viên",
+        "items": {
+          "memberLevelDefinition": {
+            "label": "Định nghĩa cấp độ thành viên",
+            "children": {
+              "benefitSettings": "Cài đặt quyền lợi",
+              "levelUpDownRules": "Quy tắc lên/xuống hạng",
+              "automaticLevelAdjustment": "Tự động điều chỉnh cấp độ"
+            }
+          },
+          "memberInformation": {
+            "label": "Thông tin thành viên",
+            "children": {
+              "profileManagement": "Quản lý hồ sơ",
+              "purchaseHistory": "Lịch sử mua hàng",
+              "pointRewardManagement": "Quản lý điểm thưởng"
+            }
+          },
+          "appPush": {
+            "label": "Thông báo đẩy",
+            "children": {
+              "templatesZaloOA": "Mẫu Zalo OA",
+              "campaignsZaloOA": "Chiến dịch Zalo OA"
+            }
+          }
+        }
+      },
+      "promotionManagement": {
+        "name": "Quản lý khuyến mãi",
+        "items": {
+          "campaignManagement": {
+            "label": "Quản lý chiến dịch",
+            "children": {
+              "regularCampaigns": "Chiến dịch thường xuyên",
+              "specialPromotions": "Khuyến mãi đặc biệt"
+            }
+          },
+          "couponVoucherManagement": {
+            "label": "Coupon & Voucher",
+            "children": {
+              "createCoupon": "Tạo Coupon",
+              "usageHistory": "Lịch sử sử dụng"
+            }
+          }
+        }
+      },
+      "analysis": {
+        "name": "Phân tích",
+        "items": {
+          "memberAnalysis": {
+            "label": "Phân tích thành viên",
+            "children": {
+              "levelAnalysis": "Phân tích cấp độ",
+              "purchasePatternAnalysis": "Phân tích mẫu mua hàng"
+            }
+          },
+          "marketingPerformance": {
+            "label": "Hiệu quả marketing",
+            "children": {
+              "channelPerformance": "Hiệu quả kênh"
+            }
+          },
+          "salesAnalysis": {
+            "label": "Phân tích bán hàng",
+            "children": {
+              "productSales": "Doanh số sản phẩm"
+            }
+          }
+        }
+      },
+      "callCampaign": {
+        "name": "Chiến dịch gọi",
+        "items": {
+          "callCampaignManagement": {
+            "label": "Quản lý chiến dịch gọi",
+            "children": {
+              "createCampaign": "Tạo chiến dịch",
+              "campaignList": "Danh sách chiến dịch",
+              "campaignHistory": "Lịch sử chiến dịch"
+            }
+          }
+        }
+      },
+      "systemManagement": {
+        "name": "Quản lý hệ thống",
+        "items": {
+          "adminSettings": {
+            "label": "Cài đặt quản trị",
+            "children": {
+              "permissionManagement": "Quản lý quyền"
+            }
+          }
+        }
+      },
+      "communicationManagement": {
+        "name": "Quản lý truyền thông",
+        "items": {
+          "mailIntergration": {
+            "label": "Tích hợp Email",
+            "children": {
+              "apiConfiguration": "Cấu hình API",
+              "memberDataSync": "Đồng bộ dữ liệu thành viên",
+              "mailCampaign": "Chiến dịch Email",
+              "templateMailManagement": "Quản lý mẫu Email",
+              "performanceAnalysis": "Phân tích hiệu suất"
+            }
+          },
+          "appPush": {
+            "label": "Thông báo đẩy",
+            "children": {
+              "templatesZaloOA": "Mẫu Zalo OA",
+              "campaignsZaloOA": "Chiến dịch Zalo OA"
+            }
+          }
+        }
+      },
+      "analysisReporting": {
+        "name": "Phân tích & Báo cáo",
+        "items": {
+          "memberAnalysis": {
+            "label": "Phân tích thành viên",
+            "children": {
+              "levelAnalysis": "Phân tích cấp độ",
+              "purchasePatternAnalysis": "Phân tích mẫu mua hàng"
+            }
+          },
+          "marketingPerformance": {
+            "label": "Hiệu quả marketing",
+            "children": {
+              "channelPerformance": "Hiệu quả kênh"
+            }
+          },
+          "salesAnalysis": {
+            "label": "Phân tích bán hàng",
+            "children": {
+              "productSales": "Doanh số sản phẩm"
+            }
+          }
+        }
+      }
+    }
+  }
+} 

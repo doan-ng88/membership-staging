@@ -1,0 +1,18 @@
+{
+  "templateMail": {
+    "title": "Email Templates List",
+    "buttons": {
+      "create": "Create Template"
+    },
+    "messages": {
+      "duplicate": {
+        "success": "Template duplicated successfully",
+        "error": "An error occurred while duplicating the template"
+      },
+      "delete": {
+        "success": "Template deleted successfully",
+        "error": "An error occurred while deleting the template"
+      }
+    }
+  }
+} 

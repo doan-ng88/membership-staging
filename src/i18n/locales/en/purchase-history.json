@@ -1,0 +1,25 @@
+{
+  "purchaseHistory": {
+    "title": "Purchase History",
+    "loading": "Loading purchase history...",
+    "error": "Failed to load purchase history",
+    "table": {
+      "headers": {
+        "orderId": "Order ID",
+        "date": "Date",
+        "items": "Items",
+        "totalAmount": "Total Amount",
+        "status": "Status"
+      }
+    },
+    "pagination": {
+      "total": "Total {count} orders"
+    },
+    "status": {
+      "completed": "completed",
+      "pending": "pending",
+      "cancelled": "cancelled",
+      "processing": "processing"
+    }
+  }
+} 

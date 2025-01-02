@@ -25,13 +25,6 @@ export default defineConfig({
         target: 'https://actsone.vercel.app',
         changeOrigin: true,
         secure: false,
-        // Nếu cần rewrite path
-        // rewrite: (path) => path.replace(/^\/api/, '')
-      },
-      '/public': {
-        target: 'https://actsone.vercel.app',
-        changeOrigin: true,
-        secure: false,
       }
     }
   },

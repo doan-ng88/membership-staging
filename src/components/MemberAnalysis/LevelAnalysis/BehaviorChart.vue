@@ -1,11 +1,11 @@
 <template>
   <div class="mb-12">
-    <h3 class="text-2xl font-semibold mb-4">Behavior Patterns by Level</h3>
+    <h3 class="text-2xl font-semibold mb-4">{{ t('behaviorChart.title') }}</h3>
     <div class="mb-4 flex items-center">
-      <label class="text-gray-700 font-medium mr-4">Select Criteria:</label>
+      <label class="text-gray-700 font-medium mr-4">{{ t('behaviorChart.filter.label') }}</label>
       <div class="flex space-x-4">
         <label 
-          v-for="metric in BEHAVIOR_METRICS"
+          v-for="metric in behaviorMetrics"
           :key="metric.value"
           class="inline-flex items-center"
         >
@@ -28,78 +28,87 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, computed, watch } from 'vue'
-import { BEHAVIOR_METRICS } from '@/data/analysisMemberData'
+<script setup lang="ts">
+import { ref, computed, watch } from 'vue'
+import { useI18nGlobal } from '@/i18n'
 import type { BehaviorMetric } from '@/types/memberAnalysis'
 
-export default defineComponent({
-  name: 'BehaviorChart',
+const { t } = useI18nGlobal()
 
-  props: {
-    brand: {
-      type: String,
-      required: true
+const props = defineProps<{
+  brand: string
+}>()
+
+// Convert BEHAVIOR_METRICS to computed property for i18n support
+const behaviorMetrics = computed(() => [
+  {
+    value: 'averagePurchase',
+    label: t('behaviorChart.metrics.averagePurchase')
+  },
+  {
+    value: 'purchaseFrequency',
+    label: t('behaviorChart.metrics.purchaseFrequency')
+  },
+  {
+    value: 'returnRate',
+    label: t('behaviorChart.metrics.returnRate')
+  }
+])
+
+const selectedMetrics = ref<BehaviorMetric[]>(['averagePurchase'])
+
+const series = computed(() => 
+  selectedMetrics.value.map(metric => ({
+    name: behaviorMetrics.value.find(m => m.value === metric)?.label || '',
+    data: metric === 'averagePurchase' ? [50, 150, 300] :
+          metric === 'purchaseFrequency' ? [5, 10, 20] : [2, 3, 5]
+  }))
+)
+
+const chartOptions = computed(() => ({
+  chart: {
+    type: 'bar',
+    stacked: false,
+    toolbar: {
+      show: true
     }
   },
-
-  setup(props) {
-    const selectedMetrics = ref<BehaviorMetric[]>(['averagePurchase'])
-
-    const series = computed(() => 
-      selectedMetrics.value.map(metric => ({
-        name: BEHAVIOR_METRICS.find(m => m.value === metric)?.label || '',
-        data: metric === 'averagePurchase' ? [50, 150, 300] :
-              metric === 'purchaseFrequency' ? [5, 10, 20] : [2, 3, 5]
-      }))
-    )
-
-    const chartOptions = computed(() => ({
-      chart: {
-        type: 'bar',
-        stacked: false,
-        toolbar: {
-          show: true
-        }
-      },
-      plotOptions: {
-        bar: {
-          horizontal: false,
-          columnWidth: '55%',
-          borderRadius: 5
-        }
-      },
-      xaxis: {
-        categories: ['Silver', 'Gold', 'Diamond']
-      },
-      yaxis: {
-        min: 0,
-        tickAmount: 5
-      },
-      colors: ['#4FD1C5', '#9F7AEA', '#F6AD55'],
-      title: {
-        text: 'Behavior Patterns by Level',
-        align: 'center'
-      },
-      legend: {
-        position: 'top'
-      },
-      dataLabels: {
-        enabled: true
-      }
-    }))
-
-    watch(() => props.brand, () => {
-      // Implement API call when brand changes
-      console.log('Brand changed:', props.brand)
-    })
-
-    return {
-      selectedMetrics,
-      BEHAVIOR_METRICS,
-      series,
-      chartOptions
+  plotOptions: {
+    bar: {
+      horizontal: false,
+      columnWidth: '55%',
+      borderRadius: 5
     }
+  },
+  xaxis: {
+    categories: [
+      t('behaviorChart.levels.silver'),
+      t('behaviorChart.levels.gold'),
+      t('behaviorChart.levels.diamond')
+    ]
+  },
+  yaxis: {
+    min: 0,
+    tickAmount: 5,
+    title: {
+      text: t('behaviorChart.chart.yaxis')
+    }
+  },
+  colors: ['#4FD1C5', '#9F7AEA', '#F6AD55'],
+  title: {
+    text: t('behaviorChart.chart.title'),
+    align: 'center'
+  },
+  legend: {
+    position: 'top'
+  },
+  dataLabels: {
+    enabled: true
   }
+}))
+
+watch(() => props.brand, () => {
+  // Implement API call when brand changes
+  console.log('Brand changed:', props.brand)
 })
 </script>

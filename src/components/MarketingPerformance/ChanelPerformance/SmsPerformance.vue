@@ -1,14 +1,14 @@
 <template>
   <div class="bg-white rounded-lg shadow-sm p-6">
     <div class="mb-6">
-      <h3 class="text-xl font-semibold text-gray-600">SMS Marketing Performance</h3>
-      <p class="text-sm text-gray-600 mt-1">Analysis of SMS marketing campaign effectiveness</p>
+      <h3 class="text-xl font-semibold text-gray-600">{{ t('marketingPerformance.sms.title') }}</h3>
+      <p class="text-sm text-gray-600 mt-1">{{ t('marketingPerformance.sms.subtitle') }}</p>
     </div>
 
     <!-- Campaign Selection -->
     <div class="mb-6">
       <label for="smsCampaignSelection" class="block text-sm font-medium text-gray-700 mb-2">
-        Select SMS Campaign
+        {{ t('marketingPerformance.sms.campaign.label') }}
       </label>
       <div class="relative">
         <select 
@@ -17,7 +17,7 @@
           class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 pl-3 pr-10 py-2"
         >
           <option v-for="campaign in campaigns" :key="campaign.value" :value="campaign.value">
-            {{ campaign.label }}
+            {{ t(`marketingPerformance.sms.campaign.options.${campaign.key}`) }}
           </option>
         </select>
       </div>
@@ -29,8 +29,8 @@
       <div class="bg-gray-50 rounded-lg p-4">
         <div class="flex justify-between items-start mb-4">
           <div>
-            <h4 class="text-sm font-medium text-gray-700">SMS Delivery Success Rate</h4>
-            <p class="text-xs text-gray-500 mt-1">Total SMS successfully delivered</p>
+            <h4 class="text-sm font-medium text-gray-700">{{ t('marketingPerformance.sms.metrics.deliveryRate.title') }}</h4>
+            <p class="text-xs text-gray-500 mt-1">{{ t('marketingPerformance.sms.metrics.deliveryRate.subtitle') }}</p>
           </div>
           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
             +3.2%
@@ -46,7 +46,7 @@
           />
           <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
             <div class="text-2xl font-bold text-gray-800">{{ deliveryRateData[0] }}%</div>
-            <div class="text-xs text-gray-500">Delivery rate</div>
+            <div class="text-xs text-gray-500">{{ t('marketingPerformance.sms.metrics.deliveryRate.label') }}</div>
           </div>
         </div>
       </div>
@@ -55,8 +55,8 @@
       <div class="bg-gray-50 rounded-lg p-4">
         <div class="flex justify-between items-start mb-4">
           <div>
-            <h4 class="text-sm font-medium text-gray-700">SMS Response Rate</h4>
-            <p class="text-xs text-gray-500 mt-1">Total responses from SMS</p>
+            <h4 class="text-sm font-medium text-gray-700">{{ t('marketingPerformance.sms.metrics.responseRate.title') }}</h4>
+            <p class="text-xs text-gray-500 mt-1">{{ t('marketingPerformance.sms.metrics.responseRate.subtitle') }}</p>
           </div>
           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
             +1.8%
@@ -72,7 +72,7 @@
           />
           <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
             <div class="text-2xl font-bold text-gray-800">{{ responseRateData[0] }}%</div>
-            <div class="text-xs text-gray-500">Response rate</div>
+            <div class="text-xs text-gray-500">{{ t('marketingPerformance.sms.metrics.responseRate.label') }}</div>
           </div>
         </div>
       </div>
@@ -83,6 +83,9 @@
 <script setup>
 import { ref, watch } from 'vue'
 import VueApexCharts from 'vue3-apexcharts'
+import { useI18nGlobal } from '@/i18n'
+
+const { t } = useI18nGlobal()
 
 const props = defineProps({
   selectedBrand: String,
@@ -93,9 +96,9 @@ const emit = defineEmits(['update:campaign'])
 
 const selectedCampaign = ref('smsCampaign1')
 const campaigns = [
-  { value: 'smsCampaign1', label: 'SMS Campaign 1' },
-  { value: 'smsCampaign2', label: 'SMS Campaign 2' },
-  { value: 'smsCampaign3', label: 'SMS Campaign 3' }
+  { value: 'smsCampaign1', key: 'campaign1' },
+  { value: 'smsCampaign2', key: 'campaign2' },
+  { value: 'smsCampaign3', key: 'campaign3' }
 ]
 
 // Chart Data

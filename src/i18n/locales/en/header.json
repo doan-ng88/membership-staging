@@ -1,0 +1,11 @@
+{
+  "header": {
+    "title": "Membership Management",
+    "buttons": {
+      "toggleSidebar": "Toggle Sidebar"
+    },
+    "logo": {
+      "alt": "Logo"
+    }
+  }
+} 

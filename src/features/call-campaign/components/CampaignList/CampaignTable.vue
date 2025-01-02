@@ -10,7 +10,11 @@
       showSizeChanger: true,
       showQuickJumper: true,
       pageSizeOptions: ['10', '20', '50', '100'],
-      showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} campaigns`,
+      showTotal: (total, range) => t('callCampaign.table.pagination.total', {
+        start: range[0],
+        end: range[1],
+        total: total
+      }),
     }"
     @change="handleTableChange"
     :row-key="(record) => record.id"
@@ -50,6 +54,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useI18nGlobal } from '@/i18n';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import type { TableColumnsType, TablePaginationConfig } from 'ant-design-vue';
 import type { Campaign } from '../../types/campaign.types';
@@ -81,43 +86,45 @@ const router = useRouter();
 
 const selectedCampaign = ref<Campaign | null>(null);
 
-const columns: TableColumnsType = [
+const { t } = useI18nGlobal();
+
+const columns = computed<TableColumnsType>(() => [
   {
-    title: 'Campaign Name',
+    title: t('callCampaign.table.columns.name'),
     dataIndex: 'name',
     key: 'name',
     width: '25%',
   },
   {
-    title: 'Website',
+    title: t('callCampaign.table.columns.website'),
     dataIndex: 'websiteId',
     slots: { customRender: 'websiteName' },
     width: 120,
   },
   {
-    title: 'Start Time',
+    title: t('callCampaign.table.columns.startTime'),
     dataIndex: 'startDate',
     key: 'startDate',
     width: '20%',
   },
   {
-    title: 'End Time',
+    title: t('callCampaign.table.columns.endTime'),
     dataIndex: 'endDate',
     key: 'endDate',
     width: '20%',
   },
   {
-    title: 'Status',
+    title: t('callCampaign.table.columns.status'),
     dataIndex: 'status',
     key: 'status',
     width: '10%',
   },
   {
-    title: 'Actions',
+    title: t('callCampaign.table.columns.actions'),
     key: 'action',
     width: '10%',
   },
-];
+]);
 
 const handleTableChange = (pagination: TablePaginationConfig) => {
   emit('pageChange', pagination.current || 1, pagination.pageSize || 10);
@@ -133,13 +140,12 @@ const handleDelete = (campaign: Campaign) => {
 
 const getStatusColor = (status: string) => {
   const statusColors: Record<string, string> = {
-    'active': 'green',
-    'inactive': 'red',
-    'pending': 'orange',
-    'completed': 'blue',
-    'created': 'geekblue',
-    'in progress': 'gold',
-    // Thêm màu sắc cho các trạng thái khác nếu cần
+    [t('callCampaign.table.status.active').toLowerCase()]: 'green',
+    [t('callCampaign.table.status.inactive').toLowerCase()]: 'red',
+    [t('callCampaign.table.status.pending').toLowerCase()]: 'orange',
+    [t('callCampaign.table.status.completed').toLowerCase()]: 'blue',
+    [t('callCampaign.table.status.created').toLowerCase()]: 'geekblue',
+    [t('callCampaign.table.status.inProgress').toLowerCase()]: 'gold',
   };
   return statusColors[status.toLowerCase()] || 'default';
 };

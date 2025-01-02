@@ -1,0 +1,13 @@
+{
+  "campaignActions": {
+    "buttons": {
+      "addCampaign": "Add campaign",
+      "refresh": "Refresh",
+      "exportExcel": "Export Excel"
+    },
+    "messages": {
+      "exportSuccess": "File exported successfully",
+      "exportError": "Failed to export file"
+    }
+  }
+} 

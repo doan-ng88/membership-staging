@@ -10,7 +10,7 @@
       ]"
       @click="$emit('update:modelValue', tab.id)"
     >
-      {{ tab.label }}
+      {{ t(`membershipTable.tabs.${tab.id}`) }}
     </button>
   </div>
 </template>
@@ -18,6 +18,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import type { TabType } from '@/types/profile'
+import { useI18nGlobal } from '@/i18n'
 
 export default defineComponent({
   name: 'ProfileTabs',
@@ -32,12 +33,14 @@ export default defineComponent({
   emits: ['update:modelValue'],
 
   setup() {
+    const { t } = useI18nGlobal()
+    
     const tabs = [
-      { id: 'date-join-member', label: 'Date Join Member' },
-      { id: 'date-of-birth', label: 'Date of Birth' }
+      { id: 'date-join-member', label: t('membershipTable.tabs.date-join-member') },
+      { id: 'date-of-birth', label: t('membershipTable.tabs.date-of-birth') }
     ]
 
-    return { tabs }
+    return { tabs, t }
   }
 })
 </script>

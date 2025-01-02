@@ -1,0 +1,11 @@
+{
+  "header": {
+    "title": "Quản lý thành viên",
+    "buttons": {
+      "toggleSidebar": "Ẩn/Hiện thanh bên"
+    },
+    "logo": {
+      "alt": "Logo"
+    }
+  }
+} 

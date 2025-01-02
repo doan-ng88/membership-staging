@@ -1,0 +1,66 @@
+{
+  "pointReward": {
+    "title": "Point Reward Management",
+    "manualAdjustment": {
+      "title": "Manual point adjustment",
+      "fields": {
+        "customerId": {
+          "label": "Customer ID",
+          "placeholder": "Enter customer ID"
+        },
+        "points": {
+          "label": "Points",
+          "placeholder": "Enter points"
+        },
+        "type": {
+          "label": "Adjustment Type",
+          "options": {
+            "add": "Add Points",
+            "subtract": "Subtract Points"
+          }
+        },
+        "reason": {
+          "label": "Adjustment Reason"
+        }
+      },
+      "button": "Apply Adjustment",
+      "success": "Points adjusted successfully"
+    },
+    "history": {
+      "title": "Point Earning Usage History",
+      "filters": {
+        "type": {
+          "label": "Transaction Type",
+          "options": {
+            "all": "All",
+            "earn": "Earned",
+            "use": "Used",
+            "expire": "Expired",
+            "adjust": "Adjusted"
+          }
+        },
+        "startDate": {
+          "label": "From Date"
+        },
+        "endDate": {
+          "label": "To Date"
+        },
+        "button": "Filter"
+      },
+      "table": {
+        "headers": {
+          "date": "Date",
+          "type": "Type",
+          "points": "Points",
+          "description": "Description",
+          "expiry": "Expiry"
+        }
+      },
+      "pagination": {
+        "showing": "Showing {from}-{to} of {total} results",
+        "previous": "Previous",
+        "next": "Next"
+      }
+    }
+  }
+} 

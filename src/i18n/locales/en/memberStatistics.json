@@ -1,0 +1,13 @@
+{
+  "memberStatistics": {
+    "title": "Member Statistics by Level",
+    "table": {
+      "headers": {
+        "level": "Level",
+        "count": "Member Count",
+        "percentage": "Percentage (%)"
+      }
+    },
+    "total": "Total Members: {count}"
+  }
+} 

@@ -2,7 +2,7 @@
   <div class="search-wrapper">
     <a-input-search
       v-model:value="searchValue"
-      placeholder="Search by campaign name"
+      :placeholder="t('mailCampaign.search.placeholder')"
       enter-button
       :loading="loading"
       @search="onSearch"
@@ -18,6 +18,9 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { SearchOutlined } from '@ant-design/icons-vue';
+import { useI18nGlobal } from '@/i18n';
+
+const { t } = useI18nGlobal();
 
 const props = defineProps<{
   loading?: boolean;

@@ -1,10 +1,10 @@
 <template>
   <div class="mb-12 bg-white p-6 rounded shadow">
-    <h3 class="text-2xl font-semibold mb-4">Product Preference Analysis</h3>
+    <h3 class="text-2xl font-semibold mb-4">{{ t('purchasePattern.productPreference.title') }}</h3>
     <div class="mb-4 flex items-center gap-4">
       <!-- Website Selection -->
       <div class="flex items-center">
-        <label for="websiteSelect" class="text-gray-700 font-medium mr-4">Website:</label>
+        <label for="websiteSelect" class="text-gray-700 font-medium mr-4">{{ t('purchasePattern.productPreference.website') }}:</label>
         <a-select
           v-model:value="selectedWebsiteId"
           style="width: 200px"
@@ -18,7 +18,7 @@
 
       <!-- Date Range -->
       <div class="flex items-center">
-        <label for="dateRange" class="text-gray-700 font-medium mr-4">Date Range:</label>
+        <label for="dateRange" class="text-gray-700 font-medium mr-4">{{ t('purchasePattern.productPreference.dateRange') }}:</label>
         <a-range-picker
           v-model:value="dateRange"
           class="w-2/3"
@@ -31,19 +31,19 @@
     <!-- Overview Statistics -->
     <div class="grid grid-cols-3 gap-4 mb-6">
       <div class="bg-blue-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-blue-700">Total Products</h5>
+        <h5 class="text-sm font-medium text-blue-700">{{ t('purchasePattern.productPreference.stats.totalProducts') }}</h5>
         <p class="text-2xl font-bold text-blue-900 mt-2">
           {{ totalProducts }}
         </p>
       </div>
       <div class="bg-green-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-green-700">Total Orders</h5>
+        <h5 class="text-sm font-medium text-green-700">{{ t('purchasePattern.productPreference.stats.totalOrders') }}</h5>
         <p class="text-2xl font-bold text-green-900 mt-2">
           {{ totalOrders }}
         </p>
       </div>
       <div class="bg-purple-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-purple-700">Average Quantity/Order</h5>
+        <h5 class="text-sm font-medium text-purple-700">{{ t('purchasePattern.productPreference.stats.avgQuantityPerOrder') }}</h5>
         <p class="text-2xl font-bold text-purple-900 mt-2">
           {{ avgQuantityPerOrder }}
         </p>
@@ -67,6 +67,7 @@ import { message } from 'ant-design-vue'
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
 import { websites } from '@/api/types/website'
+import { useI18nGlobal } from '@/i18n'
 
 interface ProductPreference {
   product_id: number;
@@ -85,6 +86,7 @@ export default defineComponent({
   },
 
   setup() {
+    const { t } = useI18nGlobal()
     const authStore = useAuthStore()
     const loading = ref(false)
     const productData = ref<ProductPreference[]>([])
@@ -108,7 +110,7 @@ export default defineComponent({
     })
 
     const series = computed(() => [{
-      name: 'Sales Quantity',
+      name: t('purchasePattern.productPreference.chart.series.salesQuantity'),
       data: productData.value.map(item => item.total_quantity)
     }])
 
@@ -132,27 +134,27 @@ export default defineComponent({
       xaxis: {
         categories: productData.value.map(item => item.product_name),
         title: {
-          text: 'Products'
+          text: t('purchasePattern.productPreference.chart.xaxis')
         }
       },
       yaxis: {
         title: {
-          text: 'Sales Quantity'
+          text: t('purchasePattern.productPreference.chart.yaxis')
         }
       },
       colors: ['#4299E1'],
       title: {
-        text: 'Top 10 Best-Selling Products',
+        text: t('purchasePattern.productPreference.chart.title'),
         align: 'center'
       },
       tooltip: {
         y: {
           formatter: function(value: number, { dataPointIndex }: any) {
             const item = productData.value[dataPointIndex]
-            return `Quantity: ${value}
-Orders: ${item.total_orders}
-Avg/Order: ${item.avg_quantity}
-Percentage: ${item.percentage}%`
+            return `${t('purchasePattern.productPreference.chart.tooltip.quantity')}: ${value}
+${t('purchasePattern.productPreference.chart.tooltip.orders')}: ${item.total_orders}
+${t('purchasePattern.productPreference.chart.tooltip.avgOrder')}: ${item.avg_quantity}
+${t('purchasePattern.productPreference.chart.tooltip.percentage')}: ${item.percentage}%`
           }
         }
       }
@@ -219,7 +221,8 @@ Percentage: ${item.percentage}%`
       disabledDate,
       selectedWebsiteId,
       websites,
-      handleWebsiteChange
+      handleWebsiteChange,
+      t
     }
   }
 })

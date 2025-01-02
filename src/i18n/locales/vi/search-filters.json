@@ -1,0 +1,28 @@
+{
+  "searchFilters": {
+    "dateJoinMember": {
+      "label": "Ngày tham gia",
+      "validation": "Vui lòng chọn thời gian tham gia",
+      "placeholder": {
+        "start": "Ngày bắt đầu",
+        "end": "Ngày kết thúc"
+      }
+    },
+    "birthday": {
+      "label": "Chọn tháng sinh nhật"
+    },
+    "platform": {
+      "label": "Nền tảng Website",
+      "placeholder": "Chọn nền tảng",
+      "allPlatforms": "Tất cả nền tảng"
+    },
+    "memberLevel": {
+      "label": "Cấp độ thành viên",
+      "allLevels": "Tất cả cấp độ"
+    },
+    "buttons": {
+      "filter": "Lọc",
+      "reset": "Đặt lại"
+    }
+  }
+} 

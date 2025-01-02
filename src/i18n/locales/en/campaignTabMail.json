@@ -1,0 +1,46 @@
+{
+  "campaignTabMail": {
+    "form": {
+      "name": {
+        "label": "Campaign Name",
+        "placeholder": "Search campaign name"
+      },
+      "status": {
+        "label": "Status",
+        "placeholder": "Select status",
+        "options": {
+          "active": "Active",
+          "inactive": "Inactive",
+          "completed": "Completed"
+        }
+      },
+      "website": {
+        "label": "Website",
+        "placeholder": "Select website"
+      }
+    },
+    "table": {
+      "columns": {
+        "name": "Campaign Name",
+        "website": "Website",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "status": "Status"
+      }
+    },
+    "selection": {
+      "count": "Selected: {count} campaigns",
+      "clear": "Clear Selection"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "send": "Send by Campaign"
+    },
+    "messages": {
+      "error": {
+        "noSelection": "Please select at least one campaign",
+        "fetchFailed": "Failed to load campaigns"
+      }
+    }
+  }
+} 

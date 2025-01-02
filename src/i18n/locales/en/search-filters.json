@@ -1,0 +1,28 @@
+{
+  "searchFilters": {
+    "dateJoinMember": {
+      "label": "Date Join Member",
+      "validation": "Please select join date range",
+      "placeholder": {
+        "start": "Start date",
+        "end": "End date"
+      }
+    },
+    "birthday": {
+      "label": "Select Birthday Month"
+    },
+    "platform": {
+      "label": "Platform Website",
+      "placeholder": "Select Platform",
+      "allPlatforms": "All Platforms"
+    },
+    "memberLevel": {
+      "label": "Member Level",
+      "allLevels": "All Levels"
+    },
+    "buttons": {
+      "filter": "Filter",
+      "reset": "Reset"
+    }
+  }
+} 

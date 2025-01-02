@@ -1,0 +1,98 @@
+{
+  "couponTypes": {
+    "title": "Create New Discount Code",
+    "form": {
+      "basicInfo": {
+        "title": "Basic Information",
+        "website": {
+          "label": "Website",
+          "placeholder": "Select website"
+        },
+        "code": {
+          "label": "Discount code",
+          "placeholder": "Enter discount code"
+        },
+        "description": {
+          "label": "Description",
+          "placeholder": "Describe the discount code"
+        }
+      },
+      "discountType": {
+        "title": "Discount Type",
+        "type": {
+          "label": "Discount form",
+          "options": {
+            "percent": "Percentage discount",
+            "fixed_cart": "Fixed amount discount on cart",
+            "fixed_product": "Fixed amount discount on product"
+          }
+        },
+        "value": {
+          "label": "Discount value"
+        }
+      },
+      "conditions": {
+        "title": "Usage Conditions",
+        "minAmount": {
+          "label": "Minimum order value"
+        },
+        "maxAmount": {
+          "label": "Maximum order value"
+        },
+        "usageLimit": {
+          "label": "Maximum usage times"
+        },
+        "usageLimitPerUser": {
+          "label": "Limit per customer"
+        },
+        "individualUse": "Cannot be used with other discount codes",
+        "excludesSale": "Not applicable to discounted products"
+      },
+      "validity": {
+        "title": "Validity Period",
+        "startDate": {
+          "label": "Start date"
+        },
+        "expiryDate": {
+          "label": "Expiry date"
+        }
+      },
+      "scope": {
+        "title": "Application Scope",
+        "products": {
+          "label": "Applicable products",
+          "placeholder": "Search and select products"
+        },
+        "categories": {
+          "label": "Applicable categories",
+          "placeholder": "Search and select categories"
+        },
+        "excludeProducts": {
+          "label": "Excluded products",
+          "placeholder": "Search and select excluded products"
+        },
+        "excludeCategories": {
+          "label": "Excluded categories",
+          "placeholder": "Search and select excluded categories"
+        }
+      }
+    },
+    "buttons": {
+      "create": "Create discount code"
+    },
+    "messages": {
+      "error": {
+        "websiteRequired": "Please select a website",
+        "codeRequired": "Please enter discount code",
+        "expiryDateRequired": "Please select expiry date",
+        "createFailed": "Cannot create discount code",
+        "loadProducts": "Cannot load product list",
+        "loadCategories": "Cannot load category list",
+        "loadWebsites": "Cannot load website list"
+      },
+      "success": {
+        "created": "Discount code created successfully"
+      }
+    }
+  }
+} 

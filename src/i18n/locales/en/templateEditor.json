@@ -1,0 +1,79 @@
+{
+  "templateEditor": {
+    "title": "Template Editor",
+    "tabs": {
+      "campaign": "Send by Campaign",
+      "membership": "Send by Membership"
+    },
+    "buttons": {
+      "uploadWord": "Upload Word",
+      "sendMail": "Select Campaigns/Members to Send Mail",
+      "save": "Save Template",
+      "create": "Create Template",
+      "uploadExcel": "Upload Excel"
+    },
+    "form": {
+      "name": {
+        "label": "Template Name",
+        "placeholder": "Enter template name",
+        "required": "Please enter template name"
+      },
+      "type": {
+        "label": "Type",
+        "placeholder": "Select template type"
+      },
+      "category": {
+        "label": "Category",
+        "placeholder": "Select category"
+      },
+      "elasticMail": {
+        "checked": "Save to ElasticMail",
+        "unchecked": "Not save"
+      }
+    },
+    "drawer": {
+      "title": "Choose Campaign/Membership to send Mail Template"
+    },
+    "messages": {
+      "save": {
+        "success": {
+          "update": "Update template successfully",
+          "create": "Create new template successfully"
+        },
+        "error": "An error occurred, please try again later"
+      },
+      "upload": {
+        "success": "Upload successfully",
+        "error": "Cannot process Word file"
+      },
+      "validation": {
+        "content": "Please enter template content",
+        "login": "Please login again",
+        "noTemplate": "No template content",
+        "noMergeFields": "No merge fields found in template"
+      },
+      "image": {
+        "loading": "Loading images...",
+        "error": {
+          "process": "Cannot process image at position {position}",
+          "load": "Cannot load image: {src}",
+          "zip": "Cannot create zip file"
+        }
+      },
+      "template": {
+        "error": "Cannot load template information"
+      }
+    },
+    "mapping": {
+      "fields": {
+        "customerName": "Customer Name",
+        "email": "Email",
+        "phone": "Phone",
+        "address": "Address",
+        "campaignName": "Campaign Name",
+        "startDate": "Start Date",
+        "endDate": "End Date"
+      }
+    }
+  }
+} 

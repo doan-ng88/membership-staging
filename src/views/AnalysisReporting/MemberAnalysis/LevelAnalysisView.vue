@@ -2,10 +2,10 @@
 <template>
   <DefaultLayout>
     <div class="flex-1 p-6 overflow-auto">
-      <h2 class="text-3xl font-bold mb-6">Level Analysis</h2>
+      <h2 class="text-3xl font-bold mb-6">{{ t('levelAnalysis.title') }}</h2>
 
       <div class="mb-8 flex items-center">
-        <label class="text-gray-700 font-medium mr-4">Select Brand:</label>
+        <label class="text-gray-700 font-medium mr-4">{{ t('levelAnalysis.brand.label') }}</label>
         <select 
           v-model="selectedBrand"
           class="block w-1/3 bg-white border border-gray-300 rounded px-4 py-2"
@@ -27,16 +27,18 @@
   </DefaultLayout>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, onMounted, watch } from 'vue'
+<script setup lang="ts">
+import { ref, onMounted, watch } from 'vue'
+import { useI18nGlobal } from '@/i18n'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
-import { initialMemberStats } from '@/data/analysisMemberData'
 import MemberStatistics from '@/components/MemberAnalysis/LevelAnalysis/MemberStatistic.vue'
 import TransitionChart from '@/components/MemberAnalysis/LevelAnalysis/TransitionChart.vue'
 import BehaviorChart from '@/components/MemberAnalysis/LevelAnalysis/BehaviorChart.vue'
 import { levelService as rankService } from '@/api/services/levelService'
 import { message } from 'ant-design-vue'
 import dayjs, { type Dayjs } from 'dayjs'
+
+const { t } = useI18nGlobal()
 
 // Define interface and constant for websites
 interface Website {
@@ -47,19 +49,19 @@ interface Website {
 const WEBSITES: Website[] = [
   {
     WebsiteId: "1",
-    Name: "Sky007",
+    Name: t('levelAnalysis.brand.options.sky007'),
   },
   {
     WebsiteId: "2",
-    Name: "Bbia",
+    Name: t('levelAnalysis.brand.options.bbia'),
   },
   {
     WebsiteId: "3",
-    Name: "Hince",
+    Name: t('levelAnalysis.brand.options.hince'),
   },
   {
     WebsiteId: "4",
-    Name: "Mixsoon",
+    Name: t('levelAnalysis.brand.options.mixsoon'),
   }
 ]
 
@@ -69,77 +71,59 @@ const dateRange = ref<[Dayjs, Dayjs]>([
   dayjs().endOf('year')
 ])
 
-export default defineComponent({
-  name: 'LevelAnalysis',
+// Initialize selectedBrand with the first website as default value
+const selectedBrand = ref(WEBSITES[0].WebsiteId)
+const memberStats = ref({
+  [t('levelAnalysis.levels.diamond')]: 0,
+  [t('levelAnalysis.levels.gold')]: 0,
+  [t('levelAnalysis.levels.silver')]: 0
+})
 
-  components: {
-    DefaultLayout,
-    MemberStatistics,
-    TransitionChart,
-    BehaviorChart
-  },
+const fetchRankStatistics = async () => {
+  try {
+    loading.value = true
+    const [startDate, endDate] = dateRange.value
 
-  setup() {
-    // Initialize selectedBrand with the first website as default value
-    const selectedBrand = ref(WEBSITES[0].WebsiteId)
-    const memberStats = ref({
-      'Diamond': 0,
-      'Gold': 0,
-      'Silver': 0
+    const response = await rankService.getRankStatistics(selectedBrand.value, {
+      startDate: startDate.format('YYYY-MM-DD'),
+      endDate: endDate.format('YYYY-MM-DD')
     })
 
-    const fetchRankStatistics = async () => {
-      try {
-        loading.value = true
-        const [startDate, endDate] = dateRange.value
-
-        const response = await rankService.getRankStatistics(selectedBrand.value, {
-          startDate: startDate.format('YYYY-MM-DD'),
-          endDate: endDate.format('YYYY-MM-DD')
-        })
-
-        // Reset to 0
-        memberStats.value = {
-          'Diamond': 0,
-          'Gold': 0, 
-          'Silver': 0
-        }
-
-        // Update values from API
-        if (response && Array.isArray(response)) {
-          response.forEach(item => {
-            if (item.level_name === 'Diamond') {
-              memberStats.value.Diamond = item.total_members
-            } else if (item.level_name === 'Silver') {
-              memberStats.value.Silver = item.total_members
-            } else
-              memberStats.value.Gold = item.total_members
-          })
-        }
-
-      } catch (error) {
-        console.error('Error fetching rank statistics:', error)
-        message.error('Unable to load member rank statistics')
-      } finally {
-        loading.value = false
-      }
+    // Reset to 0
+    memberStats.value = {
+      [t('levelAnalysis.levels.diamond')]: 0,
+      [t('levelAnalysis.levels.gold')]: 0,
+      [t('levelAnalysis.levels.silver')]: 0
     }
 
-    // Add watchers
-    watch([selectedBrand, dateRange], () => {
-      fetchRankStatistics()
-    })
-
-    // Add mounted hook
-    onMounted(() => {
-      fetchRankStatistics()
-    })
-
-    return {
-      selectedBrand,
-      memberStats,
-      WEBSITES
+    // Update values from API
+    if (response && Array.isArray(response)) {
+      response.forEach(item => {
+        if (item.level_name === t('levelAnalysis.levels.diamond')) {
+          memberStats.value[t('levelAnalysis.levels.diamond')] = item.total_members
+        } else if (item.level_name === t('levelAnalysis.levels.silver')) {
+          memberStats.value[t('levelAnalysis.levels.silver')] = item.total_members
+        } else {
+          memberStats.value[t('levelAnalysis.levels.gold')] = item.total_members
+        }
+      })
     }
+
+  } catch (error) {
+    console.error('Error fetching rank statistics:', error)
+    message.error(t('levelAnalysis.messages.error.loadStats'))
+  } finally {
+    loading.value = false
   }
+}
+
+// Add watchers
+watch([selectedBrand, dateRange], () => {
+  fetchRankStatistics()
+})
+
+// Add mounted hook
+onMounted(() => {
+  fetchRankStatistics()
 })
 </script>

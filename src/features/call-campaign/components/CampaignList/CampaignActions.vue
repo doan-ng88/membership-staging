@@ -8,7 +8,7 @@
       <template #icon>
         <PlusOutlined />
       </template>
-      Add campaign
+      {{ t('campaignActions.buttons.addCampaign') }}
     </a-button>
 
     <a-button
@@ -18,7 +18,7 @@
       <template #icon>
         <ReloadOutlined />
       </template>
-      Refresh
+      {{ t('campaignActions.buttons.refresh') }}
     </a-button>
 
     <a-button
@@ -29,7 +29,7 @@
       <template #icon>
         <DownloadOutlined />
       </template>
-      Export Excel
+      {{ t('campaignActions.buttons.exportExcel') }}
     </a-button>
   </div>
 </template>
@@ -42,6 +42,9 @@ import {
   ReloadOutlined,
   DownloadOutlined 
 } from '@ant-design/icons-vue';
+import { useI18nGlobal } from '@/i18n';
+
+const { t } = useI18nGlobal();
 
 const props = defineProps<{
   loading?: boolean
@@ -60,9 +63,9 @@ const handleExport = async () => {
     exporting.value = true;
     // Perform file export
     emit('export');
-    message.success('File exported successfully');
+    message.success(t('campaignActions.messages.exportSuccess'));
   } catch (error) {
-    message.error('Failed to export file');
+    message.error(t('campaignActions.messages.exportError'));
   } finally {
     exporting.value = false;
   }

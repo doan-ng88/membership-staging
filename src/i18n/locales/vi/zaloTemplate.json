@@ -1,0 +1,68 @@
+{
+  "zaloTemplate": {
+    "title": "Danh sách Template Zalo OA",
+    "filters": {
+      "status": {
+        "label": "Trạng thái",
+        "placeholder": "Chọn trạng thái",
+        "options": {
+          "all": "Tất cả template",
+          "approved": "Đã duyệt (Kích hoạt)",
+          "pending": "Đang chờ duyệt",
+          "rejected": "Từ chối",
+          "disabled": "Vô hiệu hóa"
+        }
+      },
+      "search": {
+        "label": "Tìm kiếm",
+        "placeholder": "Nhập tên template"
+      },
+      "buttons": {
+        "reset": "Đặt lại",
+        "search": "Tìm kiếm"
+      }
+    },
+    "template": {
+      "id": "ID",
+      "status": {
+        "approved": "Đã duyệt",
+        "pending": "Đang chờ duyệt",
+        "rejected": "Từ chối",
+        "disabled": "Vô hiệu hóa"
+      },
+      "actions": {
+        "view": "Xem",
+        "edit": "Sửa",
+        "send": "Gửi"
+      }
+    },
+    "drawer": {
+      "title": "Chọn người nhận cho Template Zalo",
+      "tabs": {
+        "campaign": "Gửi theo chiến dịch",
+        "membership": "Gửi theo thành viên"
+      },
+      "upload": {
+        "button": "Tải lên Excel",
+        "error": "Chỉ hỗ trợ file Excel!"
+      },
+      "buttons": {
+        "cancel": "Hủy",
+        "continue": "Tiếp tục"
+      }
+    },
+    "messages": {
+      "noPreview": "Không có link xem trước cho template này",
+      "loadError": "Không thể tải danh sách template",
+      "sendError": "Không thể chuẩn bị gửi template",
+      "selectRecipients": "Vui lòng chọn người nhận",
+      "sendSuccess": "Gửi template thành công",
+      "sendFailed": "Gửi template thất bại",
+      "selectCampaign": "Vui lòng chọn ít nhất một chiến dịch",
+      "sendMessageSuccess": "Gửi tin nhắn thành công"
+    },
+    "pagination": {
+      "total": "{range0}-{range1} của {total} mục"
+    }
+  }
+} 

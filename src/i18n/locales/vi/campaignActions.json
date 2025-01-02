@@ -1,0 +1,13 @@
+{
+  "campaignActions": {
+    "buttons": {
+      "addCampaign": "Thêm chiến dịch",
+      "refresh": "Làm mới",
+      "exportExcel": "Xuất Excel"
+    },
+    "messages": {
+      "exportSuccess": "Xuất file thành công",
+      "exportError": "Không thể xuất file"
+    }
+  }
+} 

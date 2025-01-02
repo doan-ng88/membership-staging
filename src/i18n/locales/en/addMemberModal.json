@@ -1,0 +1,24 @@
+{
+  "addMemberModal": {
+    "title": "Add Members",
+    "search": {
+      "placeholder": "Search members..."
+    },
+    "table": {
+      "columns": {
+        "customerName": "Customer Name",
+        "phoneNumber": "Phone Number",
+        "website": "Platform Website",
+        "registeredTime": "Registered Time",
+        "birthday": "Birthday"
+      },
+      "pagination": {
+        "total": "Total {total} items"
+      }
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "add": "Add ({count})"
+    }
+  }
+} 

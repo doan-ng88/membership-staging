@@ -1,0 +1,32 @@
+{
+  "permissionManagement": {
+    "title": "Permission Management",
+    "warningMessage": "You don't have permission to access this page. Please contact an administrator.",
+    "table": {
+      "columns": {
+        "id": "ID",
+        "fullName": "Full Name",
+        "email": "Email",
+        "permission": "Permission"
+      },
+      "notUpdated": "Not updated"
+    },
+    "roles": {
+      "admin": "Admin",
+      "manager": "Manager",
+      "staff": "Staff",
+      "reporter": "Reporter",
+      "notAssign": "Not Assign"
+    },
+    "buttons": {
+      "saveChanges": "Save Changes"
+    },
+    "messages": {
+      "noPermission": "You don't have permission to access this page",
+      "noChanges": "No changes to save",
+      "updateSuccess": "Permissions updated successfully",
+      "updateError": "Unable to update permissions",
+      "loadError": "Unable to load user list"
+    }
+  }
+} 

@@ -1,0 +1,24 @@
+{
+  "levelAnalysis": {
+    "title": "Phân Tích Cấp Độ",
+    "brand": {
+      "label": "Chọn Thương Hiệu:",
+      "options": {
+        "sky007": "Sky007",
+        "bbia": "Bbia",
+        "hince": "Hince",
+        "mixsoon": "Mixsoon"
+      }
+    },
+    "levels": {
+      "diamond": "Kim Cương",
+      "gold": "Vàng",
+      "silver": "Bạc"
+    },
+    "messages": {
+      "error": {
+        "loadStats": "Không thể tải thống kê cấp độ thành viên"
+      }
+    }
+  }
+} 

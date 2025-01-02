@@ -1,0 +1,103 @@
+{
+  "marketingPerformance": {
+    "channelPerformance": {
+      "title": "Channel Performance Analytics",
+      "subtitle": "Track and analyze your marketing channels performance",
+      "filters": {
+        "website": "Website Selection",
+        "dateRange": "Date Range"
+      },
+      "cards": {
+        "email": {
+          "title": "Email Performance"
+        },
+        "sms": {
+          "title": "SMS Performance"
+        },
+        "overall": {
+          "title": "Overall Performance"
+        }
+      },
+      "sections": {
+        "email": {
+          "title": "Email Marketing Performance"
+        },
+        "sms": {
+          "title": "SMS Marketing Performance"
+        },
+        "channel": {
+          "title": "Channel Contribution Analysis"
+        }
+      },
+      "errors": {
+        "loadFailed": "Unable to load channel statistics"
+      }
+    },
+    "email": {
+      "title": "Email Marketing Performance",
+      "subtitle": "Analysis of email marketing campaign effectiveness",
+      "metrics": {
+        "openRate": {
+          "title": "Email Open Rate",
+          "subtitle": "Total emails opened",
+          "label": "Open rate"
+        },
+        "deliveryRate": {
+          "title": "Delivery Success Rate",
+          "subtitle": "Total emails sent",
+          "label": "Delivery rate"
+        },
+        "clickRate": {
+          "title": "Click Rate",
+          "subtitle": "Total emails clicked",
+          "label": "Click rate"
+        }
+      }
+    },
+    "sms": {
+      "title": "SMS Marketing Performance",
+      "subtitle": "Analysis of SMS marketing campaign effectiveness",
+      "campaign": {
+        "label": "Select SMS Campaign",
+        "options": {
+          "campaign1": "SMS Campaign 1",
+          "campaign2": "SMS Campaign 2",
+          "campaign3": "SMS Campaign 3"
+        }
+      },
+      "metrics": {
+        "deliveryRate": {
+          "title": "SMS Delivery Success Rate",
+          "subtitle": "Total SMS successfully delivered",
+          "label": "Delivery rate"
+        },
+        "responseRate": {
+          "title": "SMS Response Rate",
+          "subtitle": "Total responses from SMS",
+          "label": "Response rate"
+        }
+      }
+    },
+    "channelContribution": {
+      "title": "Channel Contribution Analysis",
+      "timeRange": {
+        "label": "Select Time Range:",
+        "options": {
+          "6months": "Last 6 Months",
+          "12months": "Last 12 Months",
+          "24months": "Last 24 Months"
+        }
+      },
+      "chart": {
+        "title": "Marketing Channel Contribution",
+        "labels": {
+          "email": "Email",
+          "sms": "SMS",
+          "social": "Social Media",
+          "direct": "Direct Mail",
+          "other": "Other"
+        }
+      }
+    }
+  }
+} 

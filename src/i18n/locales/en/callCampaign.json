@@ -1,0 +1,29 @@
+{
+  "callCampaign": {
+    "title": "Call Campaign Management",
+    "styles": {
+      "paginationInfo": "Pagination information"
+    },
+    "table": {
+      "columns": {
+        "name": "Campaign Name",
+        "website": "Website",
+        "startTime": "Start Time",
+        "endTime": "End Time",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "pagination": {
+        "total": "{start}-{end} of {total} campaigns"
+      },
+      "status": {
+        "active": "active",
+        "inactive": "inactive",
+        "pending": "pending",
+        "completed": "completed",
+        "created": "created",
+        "inProgress": "in progress"
+      }
+    }
+  }
+} 

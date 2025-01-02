@@ -1,0 +1,41 @@
+{
+  "transitionAnalysis": {
+    "title": "Level Transition Analysis",
+    "datePicker": {
+      "placeholder": ["From date", "To date"]
+    },
+    "stats": {
+      "upgrades": {
+        "title": "Upgrades",
+        "tooltip": "Total number of level upgrades"
+      },
+      "extensions": {
+        "title": "Extensions",
+        "tooltip": "Total number of level extensions"
+      },
+      "downgrades": {
+        "title": "Downgrades",
+        "tooltip": "Total number of level downgrades"
+      }
+    },
+    "charts": {
+      "transition": {
+        "title": "Transition Details",
+        "series": "Number of Downgrades",
+        "labels": {
+          "goldToSilver": "Gold → Silver",
+          "diamondToGold": "Diamond → Gold"
+        }
+      },
+      "extension": {
+        "title": "Extension Details",
+        "series": "Number of Extensions"
+      }
+    },
+    "messages": {
+      "error": {
+        "loadData": "Unable to load level transition data"
+      }
+    }
+  }
+} 

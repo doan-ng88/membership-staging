@@ -1,0 +1,22 @@
+{
+  "behaviorChart": {
+    "title": "Mô Hình Hành Vi Theo Cấp Độ",
+    "filter": {
+      "label": "Chọn Tiêu Chí:"
+    },
+    "metrics": {
+      "averagePurchase": "Giá Trị Mua Trung Bình",
+      "purchaseFrequency": "Tần Suất Mua Hàng",
+      "returnRate": "Tỷ Lệ Hoàn Trả"
+    },
+    "levels": {
+      "silver": "Bạc",
+      "gold": "Vàng",
+      "diamond": "Kim Cương"
+    },
+    "chart": {
+      "title": "Mô Hình Hành Vi Theo Cấp Độ",
+      "yaxis": "Giá Trị"
+    }
+  }
+} 

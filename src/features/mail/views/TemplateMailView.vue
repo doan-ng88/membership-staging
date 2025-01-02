@@ -3,7 +3,7 @@
     <div class="p-6">
       <PageHeader>
         <template #title>
-          <h2 class="text-2xl font-bold">Email Templates List</h2>
+          <h2 class="text-2xl font-bold">{{ t('templateMail.title') }}</h2>
         </template>
         <template #extra>
           <a-space>
@@ -11,7 +11,7 @@
               <template #icon>
                 <plus-outlined />
               </template>
-              Create Template
+              {{ t('templateMail.buttons.create') }}
             </a-button>
           </a-space>
         </template>
@@ -58,6 +58,7 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
 import { PlusOutlined, MailOutlined } from '@ant-design/icons-vue';
+import { useI18n } from 'vue-i18n';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import PageHeader from '@/shared/components/PageHeader.vue';
 import TemplateFilters from '../components/template/TemplateFilters.vue';
@@ -66,6 +67,7 @@ import { useMailTemplate } from '../composables/useMailTemplate';
 import type { MailTemplate } from '../types/MailTemplate';
 // import SendMailModal from '../components/SendTemplateMailModal.vue';
 
+const { t } = useI18n();
 const router = useRouter();
 const {
   templates,
@@ -105,20 +107,20 @@ const handleEdit = (template: MailTemplate) => {
 const handleDuplicate = async (template: MailTemplate) => {
   try {
     await duplicateTemplate(template.mailTemplateID);
-    message.success('Template duplicated successfully');
+    message.success(t('templateMail.messages.duplicate.success'));
     fetchTemplates();
   } catch (error) {
-    message.error('An error occurred while duplicating the template');
+    message.error(t('templateMail.messages.duplicate.error'));
   }
 };
 
 const handleDelete = async (template: MailTemplate) => {
   try {
     await deleteTemplate(template.mailTemplateID);
-    message.success('Template deleted successfully');
+    message.success(t('templateMail.messages.delete.success'));
     fetchTemplates();
   } catch (error) {
-    message.error('An error occurred while deleting the template');
+    message.error(t('templateMail.messages.delete.error'));
   }
 };
 

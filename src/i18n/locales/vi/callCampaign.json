@@ -1,0 +1,29 @@
+{
+  "callCampaign": {
+    "title": "Quản Lý Chiến Dịch Gọi",
+    "styles": {
+      "paginationInfo": "Thông tin phân trang"
+    },
+    "table": {
+      "columns": {
+        "name": "Tên Chiến Dịch",
+        "website": "Trang Web",
+        "startTime": "Thời Gian Bắt Đầu",
+        "endTime": "Thời Gian Kết Thúc",
+        "status": "Trạng Thái",
+        "actions": "Thao Tác"
+      },
+      "pagination": {
+        "total": "{start}-{end} của {total} chiến dịch"
+      },
+      "status": {
+        "active": "đang hoạt động",
+        "inactive": "không hoạt động",
+        "pending": "đang chờ",
+        "completed": "hoàn thành",
+        "created": "đã tạo",
+        "inProgress": "đang thực hiện"
+      }
+    }
+  }
+} 

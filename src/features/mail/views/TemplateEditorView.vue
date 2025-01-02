@@ -3,7 +3,7 @@
     <div class="p-6">
       <PageHeader>
         <template #title>
-          <h2 class="text-2xl font-bold">Template Editor</h2>
+          <h2 class="text-2xl font-bold">{{ t('templateEditor.title') }}</h2>
         </template>
         <template #extra>
           <a-space>
@@ -12,7 +12,7 @@
                 <template #icon>
                   <upload-outlined />
                 </template>
-                Upload Word
+                {{ t('templateEditor.buttons.uploadWord') }}
               </a-button>
             </a-upload>
 
@@ -20,14 +20,14 @@
               <template #icon>
                 <mail-outlined />
               </template>
-              Select Campaigns/Members to Send Mail
+              {{ t('templateEditor.buttons.sendMail') }}
             </a-button>
 
             <a-button class="flex items-center" type="primary" @click="handleCreateOrSaveTemplate" :disabled="isSaving">
               <template #icon>
                 <SaveOutlined />
               </template>
-              {{ isEdit ? 'Save Template' : 'Create Template' }}
+              {{ t(isEdit ? 'templateEditor.buttons.save' : 'templateEditor.buttons.create') }}
             </a-button>
           </a-space>
         </template>
@@ -36,9 +36,13 @@
       <div class="bg-white rounded-lg shadow p-6">
         <a-form-item class="mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2">
-            Template Name
+            {{ t('templateEditor.form.name.label') }}
           </label>
-          <a-input v-model:value="templateName" placeholder="Enter template name" :rules="[{ required: true, message: 'Please input template name' }]"/>
+          <a-input 
+            v-model:value="templateName" 
+            :placeholder="t('templateEditor.form.name.placeholder')"
+            :rules="[{ required: true, message: t('templateEditor.form.name.required') }]"
+          />
         </a-form-item>
 
         <!-- <a-form-item class="mb-4">
@@ -50,7 +54,7 @@
 
         <a-form-item class="mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2">
-            Type
+            {{ t('templateEditor.form.type.label') }}
           </label>
           <a-select
             v-model:value="templateType"
@@ -65,7 +69,7 @@
 
         <a-form-item class="mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2">
-            Category
+            {{ t('templateEditor.form.category.label') }}
           </label>
           <a-select
             v-model:value="templateCategory" 
@@ -81,14 +85,14 @@
         <a-form-item class="mb-4">
           <a-switch 
             :checked="saveToElasticMail" 
-            checked-children="Save to ElasticMail"
-            un-checked-children="Not save" 
+            :checked-children="t('templateEditor.form.elasticMail.checked')"
+            :un-checked-children="t('templateEditor.form.elasticMail.unchecked')"
             @change="handleElasticMailChange"
           />
         </a-form-item>
 
         <div class="editor-container">
-          <a-spin :spinning="isLoadingImages" tip="Loading images...">
+          <a-spin :spinning="isLoadingImages" :tip="t('templateEditor.messages.image.loading')">
             <QuillEditor v-model:content="editorData" contentType="html" toolbar="full" theme="snow" @paste="handlePaste"
               @drop="handleDrop" />
           </a-spin>
@@ -100,7 +104,7 @@
     <a-drawer
       v-model:visible="showSendMailDrawer"
       @update:visible="handleCloseSendMailDrawer"
-      title="Choose Campaign/Membership to send Mail Template"
+      :title="t('templateEditor.drawer.title')"
       placement="right"
       width="80%"
       :footer="true"
@@ -108,8 +112,8 @@
       <div class="flex items-center justify-between border-gray-200 mb-4">
         <div class="flex-1">
           <a-tabs v-model:activeKey="activeTab">
-            <a-tab-pane key="campaign" tab="Send by Campaign" />
-            <a-tab-pane key="membership" tab="Send by Membership" />
+            <a-tab-pane key="campaign" :tab="t('templateEditor.tabs.campaign')" />
+            <a-tab-pane key="membership" :tab="t('templateEditor.tabs.membership')" />
           </a-tabs>
         </div>
 
@@ -121,7 +125,7 @@
           >
             <a-button class="flex items-center">
               <FileExcelOutlined class="flex-shrink-0" />
-              <span class="ml-2">Upload Excel</span>
+              <span class="ml-2">{{ t('templateEditor.buttons.uploadExcel') }}</span>
             </a-button>
           </a-upload>
         </div>
@@ -189,6 +193,9 @@ import CampaignTab from '../components/SendMail/CampaignTab.vue'
 import MembershipTab from '../components/SendMail/MembershipTab.vue'
 import SendTemplateMailModal from '../components/SendTemplateMailModal.vue'
 import type { Campaign } from '@/types/campaign'  // Import interface
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n();
 
 const route = useRoute()
 const router = useRouter()
@@ -304,6 +311,7 @@ const fetchTemplateCategories = async () => {
 const fetchTemplateById = async (id: number) => {
   try {
     const response = await api.get(`/membership/mail/templates/${id}`)
+    console.log('Response:3242', response)
     if (response.data.result === 'Success') {
       const mailTemplate = response.data.data
       templateId.value = mailTemplate.mailTemplateID
@@ -474,11 +482,14 @@ const processTemplateContent = async (html: string): Promise<{
 const handleCreateOrSaveTemplate = async () => {
   try {
     await handleSave()
-    message.success(isEdit.value ? 'Update template successfully' : 'Create new template successfully')
+    message.success(isEdit.value 
+      ? t('templateEditor.messages.save.success.update') 
+      : t('templateEditor.messages.save.success.create')
+    )
     router.push('/mail/template-mail')
   } catch (error) {
     console.error('Lỗi khi xử lý template:', error)
-    message.error('An error occurred, please try again later')
+    message.error(t('templateEditor.messages.save.error'))
   }
 }
 
@@ -487,7 +498,7 @@ const handleCreateOrSaveTemplate = async () => {
 const handleSave = async () => {
   try {
     if (!templateName.value.trim()) {
-      return message.error('Please enter template name')
+      return message.error(t('templateEditor.form.name.required'))
     }
 
     // if (!subject.value.trim()) {
@@ -495,14 +506,14 @@ const handleSave = async () => {
     // }
 
     if (!editorData.value.trim()) {
-      return message.error('Please enter template content')
+      return message.error(t('templateEditor.form.content.required'))
     }
 
     const authStore = useAuthStore()
     const token = authStore.token
 
     if (!token) {
-        return message.error('Please login again')
+        return message.error(t('templateEditor.messages.login.error'))
     }
 
     // Set trạng thái đang save
@@ -870,19 +881,45 @@ const loadAllImages = async (content: string): Promise<string> => {
 }
 
 // Sửa lại fetchTemplateData
-const fetchTemplateData = async (bodyPath: string): Promise<string> => {
+const fetchTemplateData = async (url: string) => {
   try {
-    const response = await fetch(`/public/${bodyPath}`)
-    if (!response.ok) throw new Error('Failed to fetch HTML content')
-    const content = await response.text()
-    // Load tất cả ảnh trước khi trả về nội dung
-    return await loadAllImages(content)
+    // Lấy template ID từ URL gốc
+    const templateId = url.split('/').pop();
+    if (!templateId) {
+      throw new Error('Invalid template ID');
+    }
+
+    // Tạo URL mới sử dụng proxy
+    const proxyUrl = `/api/membership/public/mailtemplate/templates/${templateId}`;
+    console.log('Fetching template from:', proxyUrl);
+
+    const response = await fetch(proxyUrl, {
+      method: 'GET',
+      headers: {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Content-Type': 'text/html',
+      }
+    });
+
+    if (!response.ok) {
+      console.error('Response not OK:', response.status, response.statusText);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const content = await response.text();
+    if (!content) {
+      throw new Error('Empty template content');
+    }
+
+    editorData.value = content;
+    console.log('Template loaded successfully');
+
   } catch (error) {
-    console.error('Error fetching template:', error)
-    message.error('Cannot load template information')
-    return ''
+    console.error('Error fetching template:', error);
+    message.error(t('templateEditor.messages.template.error'));
   }
-}
+};
+
 
 // Initial send mail handler - shows first drawer
 const handleSendMail = async () => {

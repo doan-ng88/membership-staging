@@ -2,9 +2,9 @@
 <template>
   <div class="space-y-4">
     <div class="flex justify-between items-center">
-      <h4 class="text-lg font-medium">Members</h4>
+      <h4 class="text-lg font-medium">{{ t('membershipList.title') }}</h4>
       <a-button type="primary" @click="showMemberModal = true">
-        Add Members
+        {{ t('membershipList.addButton') }}
       </a-button>
     </div>
 
@@ -16,7 +16,7 @@
     >
       <template #action="{ record }">
         <a-button type="link" danger @click="removeMember(record)">
-          Remove
+          {{ t('membershipList.actions.remove') }}
         </a-button>
       </template>
     </a-table>
@@ -30,9 +30,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import type { CampaignMember } from '../../types/campaign.types';
 import CustomerSelectionModal from '../CustomerSelection/CustomerSelectionModal.vue';
+
+const { t } = useI18n();
 
 const props = defineProps<{
   campaignId: string;
@@ -45,13 +48,29 @@ const emit = defineEmits<{
 
 const showMemberModal = ref(false);
 
-const columns = [
-  { title: 'Name', dataIndex: 'name' },
-  { title: 'Phone', dataIndex: 'phone' },
-  { title: 'Level', dataIndex: 'level' },
-  { title: 'Website', dataIndex: 'website' },
-  { title: 'Action', key: 'action', slots: { customRender: 'action' } }
-];
+const columns = computed(() => [
+  { 
+    title: t('membershipList.table.name'), 
+    dataIndex: 'name' 
+  },
+  { 
+    title: t('membershipList.table.phone'), 
+    dataIndex: 'phone' 
+  },
+  { 
+    title: t('membershipList.table.level'), 
+    dataIndex: 'level' 
+  },
+  { 
+    title: t('membershipList.table.website'), 
+    dataIndex: 'website' 
+  },
+  { 
+    title: t('membershipList.table.action'), 
+    key: 'action', 
+    slots: { customRender: 'action' } 
+  }
+]);
 
 const handleMemberSelection = (selectedMembers: CampaignMember[]) => {
   emit('update:members', selectedMembers);

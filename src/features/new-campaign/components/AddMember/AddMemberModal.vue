@@ -1,7 +1,7 @@
 <template>
   <a-modal
     :visible="visible"
-    title="Add Members"
+    :title="t('addMemberModal.title')"
     @ok="handleOk"
     @cancel="handleCancel"
     width="800px"
@@ -21,7 +21,7 @@
         <div class="mb-4">
           <a-input
             v-model:value="searchText"
-            placeholder="Search members..."
+            :placeholder="t('addMemberModal.search.placeholder')"
             style="width: 300px"
             @input="onSearch"
             allowClear
@@ -46,7 +46,9 @@
       </div>
     </div>
     <template #footer>
-      <a-button key="back" @click="handleCancel">Cancel</a-button>
+      <a-button key="back" @click="handleCancel">
+        {{ t('addMemberModal.buttons.cancel') }}
+      </a-button>
       <a-button 
         key="submit" 
         type="primary" 
@@ -54,7 +56,7 @@
         :disabled="!selectedRows.length"
         @click="handleOk"
       >
-        Add ({{ selectedRows.length }})
+        {{ t('addMemberModal.buttons.add', { count: selectedRows.length }) }}
       </a-button>
     </template>
   </a-modal>
@@ -62,6 +64,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import type { TabType, FilterParams, Member } from '@/types/profile';
 import type { CampaignMember } from '../../types/mail.types';
 import ProfileTabs from '@/components/MemberInfomation/ProfileTabs.vue';
@@ -70,6 +73,8 @@ import { membershipAPI } from '@/api/services/membershipApi';
 import { formatDate } from '@/utils/date';
 import { getWebsiteName } from '@/api/types/website';
 import { SearchOutlined } from '@ant-design/icons-vue';
+
+const { t } = useI18n();
 
 const emit = defineEmits<{
   (e: 'update:visible', visible: boolean): void;
@@ -94,19 +99,19 @@ const selectedRows = ref<CampaignMember[]>([]);
 const columns = computed(() => {
   const baseColumns = [
     {
-      title: 'Customer Name',
+      title: t('addMemberModal.table.columns.customerName'),
       dataIndex: 'fullName',
       key: 'fullName',
       width: '22%',
     },
     {
-      title: 'Phone Number',
+      title: t('addMemberModal.table.columns.phoneNumber'),
       dataIndex: 'mainPhoneNumber',
       key: 'mainPhoneNumber',
       width: '22%',
     },
     {
-      title: 'Platform Website',
+      title: t('addMemberModal.table.columns.website'),
       dataIndex: 'websiteName',
       key: 'websiteName',
       width: '22%',
@@ -116,7 +121,7 @@ const columns = computed(() => {
   const dateColumns = activeTab.value === 'date-join-member' 
     ? [
         {
-          title: 'Registered Time',
+          title: t('addMemberModal.table.columns.registeredTime'),
           dataIndex: 'registeredTime',
           key: 'registeredTime',
           width: '22%',
@@ -124,7 +129,7 @@ const columns = computed(() => {
       ]
     : [
         {
-          title: 'Birthday',
+          title: t('addMemberModal.table.columns.birthday'),
           dataIndex: 'birthday',
           key: 'birthday',
           width: '22%',
@@ -140,7 +145,7 @@ const tableConfig = computed(() => ({
   total: totalCount.value,
   pageSizeOptions: ['5', '10', '20'],
   showSizeChanger: true,
-  showTotal: (total: number) => `Total ${total} items`,
+  showTotal: (total: number) => t('addMemberModal.table.pagination.total', { total }),
   onChange: (page: number, size: number) => {
     pageSize.value = size;
     handlePageChange(page);

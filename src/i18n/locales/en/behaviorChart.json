@@ -1,0 +1,22 @@
+{
+  "behaviorChart": {
+    "title": "Behavior Patterns by Level",
+    "filter": {
+      "label": "Select Criteria:"
+    },
+    "metrics": {
+      "averagePurchase": "Average Purchase Value",
+      "purchaseFrequency": "Purchase Frequency",
+      "returnRate": "Return Rate"
+    },
+    "levels": {
+      "silver": "Silver",
+      "gold": "Gold",
+      "diamond": "Diamond"
+    },
+    "chart": {
+      "title": "Behavior Patterns by Level",
+      "yaxis": "Value"
+    }
+  }
+} 

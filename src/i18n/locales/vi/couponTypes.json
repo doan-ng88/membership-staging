@@ -1,0 +1,98 @@
+{
+  "couponTypes": {
+    "title": "Tạo Mã Giảm Giá Mới",
+    "form": {
+      "basicInfo": {
+        "title": "Thông tin cơ bản",
+        "website": {
+          "label": "Trang web",
+          "placeholder": "Chọn trang web"
+        },
+        "code": {
+          "label": "Mã giảm giá",
+          "placeholder": "Nhập mã giảm giá"
+        },
+        "description": {
+          "label": "Mô tả",
+          "placeholder": "Mô tả mã giảm giá"
+        }
+      },
+      "discountType": {
+        "title": "Loại giảm giá",
+        "type": {
+          "label": "Hình thức giảm giá",
+          "options": {
+            "percent": "Giảm theo phần trăm",
+            "fixed_cart": "Giảm số tiền cố định trên giỏ hàng",
+            "fixed_product": "Giảm số tiền cố định trên sản phẩm"
+          }
+        },
+        "value": {
+          "label": "Giá trị giảm"
+        }
+      },
+      "conditions": {
+        "title": "Điều kiện sử dụng",
+        "minAmount": {
+          "label": "Giá trị đơn hàng tối thiểu"
+        },
+        "maxAmount": {
+          "label": "Giá trị đơn hàng tối đa"
+        },
+        "usageLimit": {
+          "label": "Số lần sử dụng tối đa"
+        },
+        "usageLimitPerUser": {
+          "label": "Giới hạn mỗi khách hàng"
+        },
+        "individualUse": "Không được dùng chung với mã giảm giá khác",
+        "excludesSale": "Không áp dụng cho sản phẩm đang giảm giá"
+      },
+      "validity": {
+        "title": "Thời gian hiệu lực",
+        "startDate": {
+          "label": "Ngày bắt đầu"
+        },
+        "expiryDate": {
+          "label": "Ngày hết hạn"
+        }
+      },
+      "scope": {
+        "title": "Phạm vi áp dụng",
+        "products": {
+          "label": "Sản phẩm được áp dụng",
+          "placeholder": "Tìm và chọn sản phẩm"
+        },
+        "categories": {
+          "label": "Danh mục được áp dụng",
+          "placeholder": "Tìm và chọn danh mục"
+        },
+        "excludeProducts": {
+          "label": "Sản phẩm loại trừ",
+          "placeholder": "Tìm và chọn sản phẩm loại trừ"
+        },
+        "excludeCategories": {
+          "label": "Danh mục loại trừ",
+          "placeholder": "Tìm và chọn danh mục loại trừ"
+        }
+      }
+    },
+    "buttons": {
+      "create": "Tạo mã giảm giá"
+    },
+    "messages": {
+      "error": {
+        "websiteRequired": "Vui lòng chọn website",
+        "codeRequired": "Vui lòng nhập mã giảm giá",
+        "expiryDateRequired": "Vui lòng chọn ngày hết hạn",
+        "createFailed": "Không thể tạo mã giảm giá",
+        "loadProducts": "Không thể tải danh sách sản phẩm",
+        "loadCategories": "Không thể tải danh sách danh mục",
+        "loadWebsites": "Không thể tải danh sách website"
+      },
+      "success": {
+        "created": "Tạo mã giảm giá thành công"
+      }
+    }
+  }
+} 

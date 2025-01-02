@@ -1,0 +1,30 @@
+{
+  "campaignFilters": {
+    "search": {
+      "placeholder": "Search by campaign name"
+    },
+    "status": {
+      "placeholder": "Status",
+      "options": {
+        "all": "All",
+        "draft": "Draft",
+        "scheduled": "Scheduled",
+        "inProgress": "In Progress",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      }
+    },
+    "pic": {
+      "placeholder": "PIC",
+      "options": {
+        "all": "All",
+        "user1": "User 1",
+        "user2": "User 2"
+      }
+    },
+    "buttons": {
+      "filter": "Filter",
+      "reset": "Reset"
+    }
+  }
+} 

@@ -4,7 +4,7 @@
       <div class="p-6">
         <PageHeader>
         <template #title>
-          <h2 class="text-2xl font-bold text-gray-800">Email Campaign Management</h2>
+          <h2 class="text-2xl font-bold text-gray-800">{{ t('mailCampaign.title') }}</h2>
         </template>
         <template #extra>
           <CampaignActions 
@@ -49,6 +49,7 @@
   import DefaultLayout from '@/layouts/DefaultLayout.vue';
   import { message } from 'ant-design-vue';
   import { mailCampaignService } from '@/services/mailCampaignService';
+  import { useI18nGlobal } from '@/i18n';
 
   // Import components
   import PageHeader from '@/shared/components/PageHeader.vue';
@@ -60,6 +61,7 @@
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
   
+  const { t } = useI18nGlobal();
   const router = useRouter();
 
   // Reactive state
@@ -68,7 +70,7 @@ import { useAuthStore } from '@/stores/auth';
   const filters = ref<CampaignFiltersType>({});
   const pagination = ref({
     current: 1,
-    pageSize: 10,
+    pageSize: Number(t('mailCampaign.table.pagination.pageSize')),
     total: 0
   });
 
@@ -76,7 +78,6 @@ import { useAuthStore } from '@/stores/auth';
   const fetchCampaignList = async () => {
     try {
       loading.value = true;
-      console.log('Fetching with pagination:', pagination.value);
       
       const params = {
         pageIndex: pagination.value.current,
@@ -84,41 +85,37 @@ import { useAuthStore } from '@/stores/auth';
         searchParams: filters.value.searchParams || []
       };
 
+      if (filters.value.searchText) {
+        params.searchParams.push({
+          key: t('mailCampaign.filters.searchParams.search'),
+          value: filters.value.searchText
+        })
+      }
 
-    // TODO: refactor
-    if (filters.value.searchText) {
-      params.searchParams.push({
-        key: 'search',
-        value: filters.value.searchText
-      })
-    }
+      if (filters.value.status) {
+        params.searchParams.push({
+          key: t('mailCampaign.filters.searchParams.status'),
+          value: filters.value.status
+        })
+      }
 
-    if (filters.value.status) {
-      params.searchParams.push({
-        key: 'status',
-        value: filters.value.status
-      })
-    }
-
-    if (filters.value.dateRange) {
-      params.searchParams.push({
-        key: 'startDateFrom',
-        value: filters.value.dateRange.start,
-      })
-      params.searchParams.push({
-        key: 'dueDateTo',
-        value: filters.value.dateRange.end,
-      })
-    }
+      if (filters.value.dateRange) {
+        params.searchParams.push({
+          key: t('mailCampaign.filters.searchParams.startDateFrom'),
+          value: filters.value.dateRange.start,
+        })
+        params.searchParams.push({
+          key: t('mailCampaign.filters.searchParams.dueDateTo'),
+          value: filters.value.dateRange.end,
+        })
+      }
 
       params.searchParams.push({
-        key: 'isServiceEmail',
+        key: t('mailCampaign.filters.searchParams.isServiceEmail'),
         value: 'true'
       })
 
       const result = await mailCampaignService.getCampaignList(params);
-      console.log('API Response:', result);
-      
       campaigns.value = result.data;
       pagination.value = {
         ...pagination.value,
@@ -127,11 +124,9 @@ import { useAuthStore } from '@/stores/auth';
         total: Number(result.pagination.totalCount)
       };
       
-      console.log('Updated campaigns:', campaigns.value);
-      console.log('Updated pagination:', pagination.value);
     } catch (error) {
       console.error('Error fetching campaigns:', error);
-      message.error('Unable to load campaign list');
+      message.error(t('mailCampaign.messages.loadError'));
     } finally {
       loading.value = false;
     }
@@ -169,11 +164,11 @@ import { useAuthStore } from '@/stores/auth';
   const handleDelete = async (campaign) => {
     try {
       // TODO: Implement delete API
-      message.success('Campaign deleted successfully');
+      message.success(t('mailCampaign.messages.deleteSuccess'));
       await fetchCampaignList();
     } catch (error) {
       console.error('Error deleting campaign:', error);
-      message.error('Failed to delete campaign');
+      message.error(t('mailCampaign.messages.deleteError'));
     }
   };
 

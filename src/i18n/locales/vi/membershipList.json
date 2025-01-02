@@ -1,0 +1,16 @@
+{
+  "membershipList": {
+    "title": "Thành viên",
+    "addButton": "Thêm thành viên",
+    "table": {
+      "name": "Tên",
+      "phone": "Số điện thoại",
+      "level": "Cấp độ",
+      "website": "Website",
+      "action": "Thao tác"
+    },
+    "actions": {
+      "remove": "Xóa"
+    }
+  }
+} 

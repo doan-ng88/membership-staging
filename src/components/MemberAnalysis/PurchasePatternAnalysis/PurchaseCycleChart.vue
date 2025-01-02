@@ -1,9 +1,9 @@
 <template>
   <div class="mb-12 bg-white p-6 rounded shadow">
-    <h3 class="text-2xl font-semibold mb-4">Purchase Cycle Analysis</h3>
+    <h3 class="text-2xl font-semibold mb-4">{{ t('purchasePattern.purchaseCycle.title') }}</h3>
     <div class="mb-4 flex items-center gap-4">
       <div class="flex items-center">
-        <label for="websiteSelect" class="text-gray-700 font-medium mr-4">Website:</label>
+        <label for="websiteSelect" class="text-gray-700 font-medium mr-4">{{ t('purchasePattern.purchaseCycle.website') }}:</label>
         <a-select
           v-model:value="selectedWebsiteId"
           style="width: 200px"
@@ -15,7 +15,7 @@
         </a-select>
       </div>
       <div class="flex items-center">
-        <label for="cycleTimeRange" class="text-gray-700 font-medium mr-4">Select Time Range:</label>
+        <label for="cycleTimeRange" class="text-gray-700 font-medium mr-4">{{ t('purchasePattern.purchaseCycle.timeRange') }}:</label>
         <a-range-picker
           v-model:value="dateRange"
           class="w-1/3"
@@ -28,19 +28,19 @@
     <!-- Overview Statistics -->
     <div class="grid grid-cols-3 gap-4 mb-6">
       <div class="bg-blue-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-blue-700">Total Orders</h5>
+        <h5 class="text-sm font-medium text-blue-700">{{ t('purchasePattern.purchaseCycle.stats.totalOrders') }}</h5>
         <p class="text-2xl font-bold text-blue-900 mt-2">
           {{ totalOrders }}
         </p>
       </div>
       <div class="bg-green-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-green-700">Total Products</h5>
+        <h5 class="text-sm font-medium text-green-700">{{ t('purchasePattern.purchaseCycle.stats.totalProducts') }}</h5>
         <p class="text-2xl font-bold text-green-900 mt-2">
           {{ totalQuantity }}
         </p>
       </div>
       <div class="bg-purple-50 p-4 rounded-lg">
-        <h5 class="text-sm font-medium text-purple-700">Average Orders/Month</h5>
+        <h5 class="text-sm font-medium text-purple-700">{{ t('purchasePattern.purchaseCycle.stats.avgOrdersPerMonth') }}</h5>
         <p class="text-2xl font-bold text-purple-900 mt-2">
           {{ avgOrdersPerMonth }}
         </p>
@@ -64,6 +64,7 @@ import { message } from 'ant-design-vue'
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
 import { websites } from '@/api/types/website'
+import { useI18nGlobal } from '@/i18n'
 
 export default defineComponent({
   name: 'PurchaseCycleChart',
@@ -80,6 +81,7 @@ export default defineComponent({
   },
 
   setup(props) {
+    const { t } = useI18nGlobal()
     const authStore = useAuthStore()
     const loading = ref(false)
     const purchaseData = ref<any[]>([])
@@ -115,7 +117,7 @@ export default defineComponent({
     })
 
     const series = computed(() => [{
-      name: 'Number of Orders',
+      name: t('purchasePattern.purchaseCycle.series.frequency'),
       data: Array.from(monthlyStats.value.values()).map(stat => stat.orders)
     }])
 
@@ -139,19 +141,19 @@ export default defineComponent({
       xaxis: {
         categories: Array.from(monthlyStats.value.keys())
           .sort((a, b) => a - b)
-          .map(month => `Month ${month}`),
+          .map(month => `${t('purchasePattern.purchaseCycle.chart.month')} ${month}`),
         title: {
-          text: 'Month'
+          text: t('purchasePattern.purchaseCycle.chart.xaxis')
         }
       },
       yaxis: {
         title: {
-          text: 'Number of Orders'
+          text: t('purchasePattern.purchaseCycle.chart.yaxis')
         }
       },
       colors: ['#4299E1'],
       title: {
-        text: 'Monthly Purchase Cycle Analysis',
+        text: t('purchasePattern.purchaseCycle.chart.title'),
         align: 'center'
       },
       tooltip: {
@@ -253,7 +255,8 @@ export default defineComponent({
       disabledDate,
       selectedWebsiteId,
       websites,
-      handleWebsiteChange
+      handleWebsiteChange,
+      t
     }
   }
 })

@@ -4,7 +4,7 @@
     <div class="flex gap-4">
       <a-input-search
         v-model:value="searchText"
-        placeholder="Search by campaign name"
+        :placeholder="t('campaignFilters.search.placeholder')"
         style="width: 300px"
         allow-clear
         @search="handleSearch"
@@ -13,29 +13,31 @@
 
       <a-select
         v-model:value="localFilters.status"
-        placeholder="Status"
+        :placeholder="t('campaignFilters.status.placeholder')"
         class="w-32"
         @change="emitFilters"
       >
-        <a-select-option v-for="status in CAMPAIGN_STATUS_OPTIONS" 
+        <a-select-option 
+          v-for="status in CAMPAIGN_STATUS_OPTIONS" 
           :key="status.value" 
           :value="status.value"
         >
-          {{ status.label }}
+          {{ t(`campaignFilters.status.options.${status.value}`) }}
         </a-select-option>
       </a-select>
 
       <a-select
         v-model:value="localFilters.pic"
-        placeholder="PIC"
+        :placeholder="t('campaignFilters.pic.placeholder')"
         class="w-48"
         @change="emitFilters"
       >
-        <a-select-option v-for="pic in PIC_OPTIONS" 
+        <a-select-option 
+          v-for="pic in PIC_OPTIONS" 
           :key="pic.value" 
           :value="pic.value"
         >
-          {{ pic.label }}
+          {{ t(`campaignFilters.pic.options.${pic.value}`) }}
         </a-select-option>
       </a-select>
 
@@ -45,10 +47,10 @@
       />
 
       <a-button type="primary" @click="emitFilters">
-        Filter
+        {{ t('campaignFilters.buttons.filter') }}
       </a-button>
       <a-button @click="resetFilters">
-        Reset
+        {{ t('campaignFilters.buttons.reset') }}
       </a-button>
     </div>
   </div>
@@ -59,6 +61,9 @@ import { ref, watch, onUnmounted } from 'vue';
 import { SearchOutlined } from '@ant-design/icons-vue';
 import type { CampaignFilters } from '../../types/campaign.types';
 import { CAMPAIGN_STATUS_OPTIONS, PIC_OPTIONS } from '../../constants/campaign.constants';
+import { useI18nGlobal } from '@/i18n';
+
+const { t } = useI18nGlobal();
 
 const props = defineProps<{
   filters: CampaignFilters;

@@ -1,0 +1,91 @@
+{
+  "membershipTable": {
+    "title": "Membership Data",
+    "search": {
+      "placeholder": "Search Customer Name..."
+    },
+    "export": {
+      "button": "Export Excel",
+      "loading": "Exporting..."
+    },
+    "filter": {
+      "level": {
+        "placeholder": "Select Level"
+      }
+    },
+    "table": {
+      "headers": {
+        "customerName": "Customer Name",
+        "phoneNumber": "Phone Number",
+        "dateJoinMember": "Date Join Member",
+        "birthday": "Birthday",
+        "platformWebsite": "Platform Website",
+        "memberLevel": "Member Level",
+        "actions": "Actions"
+      }
+    },
+    "pagination": {
+      "total": "Total {count} members",
+      "perPage": "{count}/page"
+    },
+    "levels": {
+      "silver": "Silver",
+      "gold": "Gold",
+      "platinum": "Platinum"
+    },
+    "actions": {
+      "edit": "Edit",
+      "history": "History"
+    },
+    "modal": {
+      "details": {
+        "title": "Customer Details",
+        "basicInfo": {
+          "title": "Basic Information",
+          "fullName": "Full Name",
+          "phoneNumber": "Phone Number",
+          "address": "Address"
+        },
+        "membershipInfo": {
+          "title": "Membership Information",
+          "orderPoint": "Order Point"
+        },
+        "birthInfo": {
+          "title": "Birth Information",
+          "dateOfBirth": "Date of Birth"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "save": "Save Changes",
+          "close": "Close"
+        }
+      },
+      "history": {
+        "title": "Order History",
+        "headers": {
+          "date": "Date",
+          "orderId": "Order ID",
+          "products": "Products",
+          "total": "Total",
+          "status": "Status"
+        },
+        "noData": "No orders found"
+      }
+    },
+    "pointHistory": {
+      "title": "Point History",
+      "headers": {
+        "date": "Date",
+        "orderId": "Order ID",
+        "action": "Action",
+        "points": "Points",
+        "totalPoints": "Total Points"
+      },
+      "noData": "No point transactions found"
+    },
+    "tabs": {
+      "date-join-member": "Date Join Member",
+      "date-of-birth": "Date of Birth"
+    }
+  }
+} 

@@ -1,0 +1,27 @@
+{
+  "mailCampaign": {
+    "title": "Quản lý chiến dịch Email",
+    "messages": {
+      "loadError": "Không thể tải danh sách chiến dịch",
+      "deleteSuccess": "Xóa chiến dịch thành công",
+      "deleteError": "Không thể xóa chiến dịch"
+    },
+    "table": {
+      "pagination": {
+        "pageSize": 10
+      }
+    },
+    "filters": {
+      "searchParams": {
+        "search": "tìm kiếm",
+        "status": "trạng thái",
+        "startDateFrom": "từ ngày",
+        "dueDateTo": "đến ngày",
+        "isServiceEmail": "true"
+      }
+    },
+    "search": {
+      "placeholder": "Tìm kiếm theo tên chiến dịch"
+    }
+  }
+} 

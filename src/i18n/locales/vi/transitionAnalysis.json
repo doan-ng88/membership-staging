@@ -1,0 +1,41 @@
+{
+  "transitionAnalysis": {
+    "title": "Phân Tích Chuyển Đổi Cấp Độ",
+    "datePicker": {
+      "placeholder": ["Từ ngày", "Đến ngày"]
+    },
+    "stats": {
+      "upgrades": {
+        "title": "Nâng Cấp",
+        "tooltip": "Tổng số lần nâng cấp"
+      },
+      "extensions": {
+        "title": "Gia Hạn",
+        "tooltip": "Tổng số lần gia hạn"
+      },
+      "downgrades": {
+        "title": "Hạ Cấp",
+        "tooltip": "Tổng số lần hạ cấp"
+      }
+    },
+    "charts": {
+      "transition": {
+        "title": "Chi Tiết Chuyển Đổi",
+        "series": "Số Lần Hạ Cấp",
+        "labels": {
+          "goldToSilver": "Vàng → Bạc",
+          "diamondToGold": "Kim Cương → Vàng"
+        }
+      },
+      "extension": {
+        "title": "Chi Tiết Gia Hạn",
+        "series": "Số Lần Gia Hạn"
+      }
+    },
+    "messages": {
+      "error": {
+        "loadData": "Không thể tải dữ liệu chuyển đổi cấp độ"
+      }
+    }
+  }
+} 

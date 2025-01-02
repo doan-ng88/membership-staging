@@ -1,0 +1,18 @@
+{
+  "templateMail": {
+    "title": "Danh sách mẫu Email",
+    "buttons": {
+      "create": "Tạo mẫu mới"
+    },
+    "messages": {
+      "duplicate": {
+        "success": "Sao chép mẫu thành công",
+        "error": "Đã xảy ra lỗi khi sao chép mẫu"
+      },
+      "delete": {
+        "success": "Xóa mẫu thành công",
+        "error": "Đã xảy ra lỗi khi xóa mẫu"
+      }
+    }
+  }
+} 

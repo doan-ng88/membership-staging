@@ -1,8 +1,8 @@
 <template>
   <div class="bg-white rounded-lg shadow-sm p-6 w-full">
     <div class="mb-6">
-      <h3 class="text-xl font-semibold text-gray-600">Email Marketing Performance</h3>
-      <p class="text-sm text-gray-600 mt-1">Analysis of email marketing campaign effectiveness</p>
+      <h3 class="text-xl font-semibold text-gray-600">{{ t('marketingPerformance.email.title') }}</h3>
+      <p class="text-sm text-gray-600 mt-1">{{ t('marketingPerformance.email.subtitle') }}</p>
     </div>
 
     <!-- Performance Metrics Grid -->
@@ -11,8 +11,8 @@
       <div class="bg-gray-50 rounded-lg p-4">
         <div class="flex justify-between items-start mb-4">
           <div>
-            <h4 class="text-sm font-medium text-gray-700">Email Open Rate</h4>
-            <p class="text-xs text-gray-500 mt-1">Total emails opened</p>
+            <h4 class="text-sm font-medium text-gray-700">{{ t('marketingPerformance.email.metrics.openRate.title') }}</h4>
+            <p class="text-xs text-gray-500 mt-1">{{ t('marketingPerformance.email.metrics.openRate.subtitle') }}</p>
           </div>
           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
             {{ ((statistics?.opened / statistics?.delivered) * 100).toFixed(1) }}%
@@ -28,7 +28,7 @@
           />
           <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
             <div class="text-2xl font-bold text-gray-800">{{ ((statistics?.opened / statistics?.delivered) * 100).toFixed(1) }}%</div>
-            <div class="text-xs text-gray-500">Open rate</div>
+            <div class="text-xs text-gray-500">{{ t('marketingPerformance.email.metrics.openRate.label') }}</div>
           </div>
         </div>
       </div>
@@ -37,8 +37,8 @@
       <div class="bg-gray-50 rounded-lg p-4">
         <div class="flex justify-between items-start mb-4">
           <div>
-            <h4 class="text-sm font-medium text-gray-700">Delivery Success Rate</h4>
-            <p class="text-xs text-gray-500 mt-1">Total emails sent</p>
+            <h4 class="text-sm font-medium text-gray-700">{{ t('marketingPerformance.email.metrics.deliveryRate.title') }}</h4>
+            <p class="text-xs text-gray-500 mt-1">{{ t('marketingPerformance.email.metrics.deliveryRate.subtitle') }}</p>
           </div>
           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
             {{ ((statistics?.delivered / statistics?.recipients) * 100).toFixed(1) }}%
@@ -54,7 +54,7 @@
           />
           <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
             <div class="text-2xl font-bold text-gray-800">{{ ((statistics?.delivered / statistics?.recipients) * 100).toFixed(1) }}%</div>
-            <div class="text-xs text-gray-500">Delivery rate</div>
+            <div class="text-xs text-gray-500">{{ t('marketingPerformance.email.metrics.deliveryRate.label') }}</div>
           </div>
         </div>
       </div>
@@ -63,8 +63,8 @@
       <div class="bg-gray-50 rounded-lg p-4">
         <div class="flex justify-between items-start mb-4">
           <div>
-            <h4 class="text-sm font-medium text-gray-700">Click Rate</h4>
-            <p class="text-xs text-gray-500 mt-1">Total emails clicked</p>
+            <h4 class="text-sm font-medium text-gray-700">{{ t('marketingPerformance.email.metrics.clickRate.title') }}</h4>
+            <p class="text-xs text-gray-500 mt-1">{{ t('marketingPerformance.email.metrics.clickRate.subtitle') }}</p>
           </div>
           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
             {{ ((statistics?.clicked / statistics?.delivered) * 100).toFixed(1) }}%
@@ -80,7 +80,7 @@
           />
           <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
             <div class="text-2xl font-bold text-gray-800">{{ ((statistics?.clicked / statistics?.delivered) * 100).toFixed(1) }}%</div>
-            <div class="text-xs text-gray-500">Click rate</div>
+            <div class="text-xs text-gray-500">{{ t('marketingPerformance.email.metrics.clickRate.label') }}</div>
           </div>
         </div>
       </div>
@@ -91,6 +91,9 @@
 <script setup>
 import { ref } from 'vue'
 import VueApexCharts from 'vue3-apexcharts'
+import { useI18nGlobal } from '@/i18n'    
+
+const { t } = useI18nGlobal()
 
 const props = defineProps({
   selectedBrand: String,

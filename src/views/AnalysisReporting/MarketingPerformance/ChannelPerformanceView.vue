@@ -4,8 +4,8 @@
       <a-spin :spinning="loading">
         <!-- Header Section -->
         <div class="mb-8">
-          <h2 class="text-2xl font-bold text-gray-800">Channel Performance Analytics</h2>
-          <p class="text-gray-600 mt-2">Track and analyze your marketing channels performance</p>
+          <h2 class="text-2xl font-bold text-gray-800">{{ t('marketingPerformance.channelPerformance.title') }}</h2>
+          <p class="text-gray-600 mt-2">{{ t('marketingPerformance.channelPerformance.subtitle') }}</p>
         </div>
 
         <!-- Filters Section -->
@@ -14,7 +14,7 @@
             <!-- Website Selection -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                Website Selection
+                {{ t('marketingPerformance.channelPerformance.filters.website') }}
               </label>
               <a-select
                 v-model:value="selectedWebsiteId"
@@ -27,7 +27,7 @@
             <!-- Date Range -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                Date Range
+                {{ t('marketingPerformance.channelPerformance.filters.dateRange') }}
               </label>
               <a-range-picker
                 v-model:value="dateRange"
@@ -42,19 +42,19 @@
         <!-- Performance Cards -->
         <div v-if="statistics" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <PerformanceCard
-            title="Email Performance"
+            :title="t('marketingPerformance.channelPerformance.cards.email.title')"
             :value="statistics.emailTotal"
             :change="calculatePercentageChange(statistics.delivered, previousStatistics.delivered)"
             icon="mail"
           />
           <PerformanceCard
-            title="SMS Performance"
+            :title="t('marketingPerformance.channelPerformance.cards.sms.title')"
             :value="statistics.smsTotal"
             :change="calculatePercentageChange(statistics.smsTotal, previousStatistics.smsTotal)"
             icon="message"
           />
           <PerformanceCard
-            title="Overall Performance"
+            :title="t('marketingPerformance.channelPerformance.cards.overall.title')"
             :value="statistics.recipients"
             :change="calculatePercentageChange(statistics.opened, previousStatistics.opened)"
             icon="chart"
@@ -66,7 +66,7 @@
           <div class="p-6 border-b border-gray-100">
             <h3 class="text-lg font-semibold text-gray-800 flex items-center">
               <mail-outlined class="mr-2 text-blue-500" />
-              Email Marketing Performance
+              {{ t('marketingPerformance.channelPerformance.sections.email.title') }}
             </h3>
           </div>
           <div class="p-6">
@@ -84,7 +84,7 @@
             <div class="p-6 border-b border-gray-100">
               <h3 class="text-lg font-semibold text-gray-800 flex items-center">
                 <message-outlined class="mr-2 text-green-500" />
-                SMS Marketing Performance
+                {{ t('marketingPerformance.channelPerformance.sections.sms.title') }}
               </h3>
             </div>
             <div class="p-6">
@@ -100,7 +100,7 @@
             <div class="p-6 border-b border-gray-100">
               <h3 class="text-lg font-semibold text-gray-800 flex items-center">
                 <pie-chart-outlined class="mr-2 text-purple-500" />
-                Channel Contribution Analysis
+                {{ t('marketingPerformance.channelPerformance.sections.channel.title') }}
               </h3>
             </div>
             <div class="p-6">
@@ -120,6 +120,7 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { message } from 'ant-design-vue'
 import dayjs from 'dayjs'
+import { useI18nGlobal } from '@/i18n'
 import { 
   MailOutlined, 
   MessageOutlined, 
@@ -132,6 +133,8 @@ import SmsPerformanceSection from '@/components/MarketingPerformance/ChanelPerfo
 import ChannelContributionSection from '@/components/MarketingPerformance/ChanelPerformance/ChannelContribution.vue'
 import { marketingPerformanceService } from '@/services/marketingPerformance'
 import { websites } from '@/api/types/website'
+
+const { t } = useI18nGlobal()
 
 // State Management
 const loading = ref(false)
@@ -186,7 +189,7 @@ const fetchChannelStats = async () => {
     }
   } catch (error) {
     console.error('Error fetching channel stats:', error)
-    message.error('Không thể tải dữ liệu thống kê kênh')
+    message.error(t('marketingPerformance.channelPerformance.errors.loadFailed'))
   } finally {
     loading.value = false
   }
