@@ -23,6 +23,7 @@
           "label": "Adjustment Reason"
         }
       },
+      "reset": "Reset",
       "button": "Apply Adjustment",
       "success": "Points adjusted successfully"
     },
@@ -39,11 +40,15 @@
             "adjust": "Adjusted"
           }
         },
+        "reset": "Reset",
         "startDate": {
           "label": "From Date"
         },
         "endDate": {
           "label": "To Date"
+        },
+        "date": {
+          "label": "Date Record"
         },
         "button": "Filter"
       },

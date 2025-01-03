@@ -192,7 +192,17 @@ const routes = [
     name: 'pointRewardManagement',
     component: PointRewardView,
     meta: {
-      title: 'Point/Reward Management'
+      title: 'Point/Reward Management',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/member-information/point-reward-management/:id',
+    name: 'point-reward-management-detail',
+    component: PointRewardView,
+    meta: {
+      title: 'Point/Reward Management Detail',
+      requiresAuth: true
     }
   },
   {

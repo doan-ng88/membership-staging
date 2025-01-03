@@ -69,6 +69,27 @@
       "error": {
         "fetch": "Failed to load order history"
       }
+    },
+    "filter": {
+      "dateJoinMember": "Date Join Member",
+      "dateOfBirth": "Date of Birth",
+      "platformWebsite": "Platform Website",
+      "memberLevel": "Member Level",
+      "allWebsites": "All Websites",
+      "allLevels": "All Levels",
+      "reset": "Reset",
+      "filterButtonText": "Filter",
+      "websites": {
+        "sky007": "Sky007",
+        "bbia": "Bbia",
+        "hince": "Hince",
+        "mixsoon": "Mixsoon"
+      },
+      "levels": {
+        "silver": "Silver",
+        "gold": "Gold",
+        "diamond": "Diamond"
+      }
     }
   }
 } 

@@ -23,6 +23,7 @@
           "label": "Lý do điều chỉnh"
         }
       },
+      "reset": "Làm mới",
       "button": "Áp dụng điều chỉnh",
       "success": "Đã điều chỉnh điểm thành công"
     },
@@ -30,7 +31,7 @@
       "title": "Lịch sử sử dụng điểm thưởng",
       "filters": {
         "type": {
-          "label": "Transaction Type",
+          "label": "Loại giao dịch",
           "options": {
             "all": "Tất cả",
             "earn": "Nhận điểm",
@@ -39,11 +40,15 @@
             "adjust": "Điều chỉnh"
           }
         },
+        "reset": "Làm mới",
         "startDate": {
           "label": "Từ ngày"
         },
         "endDate": {
           "label": "Đến ngày"
+        },
+        "date": {
+          "label": "Ngày ghi nhận"
         },
         "button": "Lọc"
       },

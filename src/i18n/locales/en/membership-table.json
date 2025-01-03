@@ -16,11 +16,13 @@
     "table": {
       "headers": {
         "customerName": "Customer Name",
+        "email": "Email",
         "phoneNumber": "Phone Number",
         "dateJoinMember": "Date Join Member",
         "birthday": "Birthday",
-        "platformWebsite": "Platform Website",
+        "platformWebsite": "Website",
         "memberLevel": "Member Level",
+        "defaultAddress": "Address",
         "actions": "Actions"
       }
     },
@@ -35,7 +37,8 @@
     },
     "actions": {
       "edit": "Edit",
-      "history": "History"
+      "history": "History",
+      "pointReward": "Point Reward"
     },
     "modal": {
       "details": {

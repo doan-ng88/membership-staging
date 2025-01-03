@@ -149,6 +149,19 @@ export const membershipAPI = {
         data: []
       }
     }
+  },
+
+  updateMembershipPoint: async (data: {
+    membershipWebsiteId: number
+    points: number
+    reason: string
+  }) => {
+    try {
+      const response = await axiosClient.post('/api/membership/update/update-point-membership', data)
+      return response.data
+    } catch (error) {
+      throw error
+    }
   }
 
   

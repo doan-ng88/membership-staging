@@ -1,122 +1,134 @@
 <template>
     <DefaultLayout>
       <div class="point-reward mx-auto max-w-1200 px-4">
-        <!-- <BreadcrumbDefault :pageTitle="pageTitle" /> -->
-        <h1 class="text-2xl font-bold mb-6">{{ t('pointReward.title') }}</h1>
+        <h1 class="text-2xl font-bold text-center mb-6">{{ t('pointReward.title') }}</h1>
   
-        <!-- Thông tin tổng quan -->
-        <!-- <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <div class="bg-white p-4 rounded-lg shadow">
-            <h3 class="text-lg font-semibold text-gray-700">Total Current Points</h3>
-            <p class="text-2xl font-bold text-green-600">{{ totalPoints }}</p>
-          </div>
-          <div class="bg-white p-4 rounded-lg shadow">
-            <h3 class="text-lg font-semibold text-gray-700">Points Expiring Soon</h3>
-            <p class="text-2xl font-bold text-red-600">{{ expiringPoints }}</p>
-            <p class="text-sm text-gray-500">In next 30 days</p>
-          </div>
-          <div class="bg-white p-4 rounded-lg shadow">
-            <h3 class="text-lg font-semibold text-gray-700">Points Used</h3>
-            <p class="text-2xl font-bold text-blue-600">{{ usedPoints }}</p>
-            <p class="text-sm text-gray-500">This month</p>
-          </div>
-        </div> -->
+        <!-- Manual Point Adjustment Card -->
+        <div class="bg-white rounded-lg shadow-lg mb-6">
+          <div class="p-4">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">{{ t('pointReward.manualAdjustment.title') }}</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Membership Website ID -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  {{ t('pointReward.manualAdjustment.fields.customerId.label') }} <span class="text-red-500">*</span>
+                </label>
+                <input
+                  v-model="adjustment.membershipWebsiteId"
+                  type="text"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  :placeholder="t('pointReward.manualAdjustment.fields.customerId.placeholder')"
+                />
+              </div>
   
-        <!-- Điều chỉnh điểm thủ công -->
-        <div class="bg-white p-4 rounded-lg shadow mb-6">
-          <h2 class="text-xl font-semibold mb-4">{{ t('pointReward.manualAdjustment.title') }}</h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700">{{ t('pointReward.manualAdjustment.fields.customerId.label') }}</label>
-              <input
-                v-model="adjustment.customerId"
-                type="text"
-                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                :placeholder="t('pointReward.manualAdjustment.fields.customerId.placeholder')"
-              />
+              <!-- Points -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  {{ t('pointReward.manualAdjustment.fields.points.label') }} <span class="text-red-500">*</span>
+                </label>
+                <input
+                  v-model.number="adjustment.points"
+                  type="number"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  :placeholder="t('pointReward.manualAdjustment.fields.points.placeholder')"
+                />
+              </div>
+  
+              <!-- Reason -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  {{ t('pointReward.manualAdjustment.fields.reason.label') }} <span class="text-red-500">*</span>
+                </label>
+                <input
+                  v-model="adjustment.reason"
+                  type="text"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">{{ t('pointReward.manualAdjustment.fields.points.label') }}</label>
-              <input
-                v-model="adjustment.points"
-                type="number"
-                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                :placeholder="t('pointReward.manualAdjustment.fields.points.placeholder')"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">{{ t('pointReward.manualAdjustment.fields.type.label') }}</label>
-              <select
-                v-model="adjustment.type"
-                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+  
+            <!-- Action Buttons -->
+            <div class="mt-4 flex justify-end space-x-2">
+              <button
+                @click="resetForm"
+                type="button"
+                class="px-3 py-1.5 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50"
               >
-                <option value="add">{{ t('pointReward.manualAdjustment.fields.type.options.add') }}</option>
-                <option value="subtract">{{ t('pointReward.manualAdjustment.fields.type.options.subtract') }}</option>
-              </select>
+                {{ t('pointReward.manualAdjustment.reset') }}
+              </button>
+              <button
+                @click="adjustPoints"
+                :disabled="loading"
+                class="px-3 py-1.5 bg-blue-600 text-sm text-white rounded hover:bg-blue-700 disabled:bg-blue-400 flex items-center"
+              >
+                <a-spin v-if="loading" :size="small" class="mr-1" />
+                <span>{{ t('pointReward.manualAdjustment.button') }}</span>
+              </button>
             </div>
           </div>
-          <div class="mt-4">
-            <label class="block text-sm font-medium text-gray-700">{{ t('pointReward.manualAdjustment.fields.reason.label') }}</label>
-            <textarea
-              v-model="adjustment.reason"
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-              rows="2"
-            ></textarea>
-          </div>
-          <button
-            @click="adjustPoints"
-            class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-          >
-            {{ t('pointReward.manualAdjustment.button') }}
-          </button>
         </div>
   
         <!-- Lịch sử điểm thưởng -->
         <div class="bg-white rounded-lg shadow">
-          <div class="p-4 border-b">
-            <h2 class="text-xl font-semibold">{{ t('pointReward.history.title') }}</h2>
-            <!-- Bộ lọc -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700">{{ t('pointReward.history.filters.type.label') }}</label>
-                <select
-                  v-model="filters.type"
-                  class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          <div class="p-4 border-b border-gray-200">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-semibold text-gray-800">{{ t('pointReward.history.title') }}</h2>
+            </div>
+
+            <!-- Filters Section -->
+            <div class="flex flex-wrap items-end gap-4">
+              <!-- Transaction Type Filter -->
+              <div class="min-w-[200px]">
+                <label class="block text-sm font-medium text-gray-600 mb-1.5">
+                  {{ t('pointReward.history.filters.type.label') }}
+                </label>
+                <a-select
+                  v-model:value="filters.type"
+                  class="w-full"
+                  :options="Object.entries(transactionTypes).map(([key, value]) => ({
+                    value: key,
+                    label: t(`pointReward.history.filters.type.options.${key}`)
+                  }))"
+                  :placeholder="t('pointReward.history.filters.type.placeholder')"
+                />
+              </div>
+
+              <!-- Date Range Filter -->
+              <div class="flex-grow max-w-[350px]">
+                <label class="block text-sm font-medium text-gray-600 mb-1.5">
+                  {{ t('pointReward.history.filters.date.label') }}
+                </label>
+                <a-range-picker
+                  v-model:value="dateRange"
+                  class="w-full"
+                  :placeholder="['Start date', 'End date']"
+                  format="DD/MM/YYYY"
+                  :allowClear="true"
+                />
+              </div>
+
+              <!-- Filter Buttons -->
+              <div class="flex gap-2">
+                <a-button
+                  @click="resetFilters"
+                  class="border-gray-300 text-gray-600 hover:text-gray-800"
                 >
-                  <option value="all">{{ t('pointReward.history.filters.type.options.all') }}</option>
-                  <option value="earn">{{ t('pointReward.history.filters.type.options.earn') }}</option>
-                  <option value="use">{{ t('pointReward.history.filters.type.options.use') }}</option>
-                  <option value="expire">{{ t('pointReward.history.filters.type.options.expire') }}</option>
-                  <option value="adjust">{{ t('pointReward.history.filters.type.options.adjust') }}</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700">
-                  {{ t('pointReward.history.filters.startDate.label') }}
-                </label>
-                <input
-                  type="date"
-                  v-model="filters.startDate"
-                  class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700">
-                  {{ t('pointReward.history.filters.endDate.label') }}
-                </label>
-                <input
-                  type="date"
-                  v-model="filters.endDate"
-                  class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                />
-              </div>
-              <div class="flex items-end">
-                <button
+                  <template #icon>
+                    <reload-outlined />
+                  </template>
+                  {{ t('pointReward.history.filters.reset') }}
+                </a-button>
+                <a-button
+                  type="primary"
                   @click="applyFilters"
-                  class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 w-full"
+                  :loading="loading"
                 >
+                  <template #icon>
+                    <search-outlined />
+                  </template>
                   {{ t('pointReward.history.filters.button') }}
-                </button>
+                </a-button>
               </div>
             </div>
           </div>
@@ -192,21 +204,64 @@
   import { message } from 'ant-design-vue'
   import DefaultLayout from '@/layouts/DefaultLayout.vue'
   import { useI18nGlobal } from '@/i18n'
+  import { membershipAPI } from '@/api/services/membershipApi'
+  import type { Dayjs } from 'dayjs'
+  import { SearchOutlined, ReloadOutlined } from '@ant-design/icons-vue'
   
   const { t } = useI18nGlobal()
   
-  // State
-  const adjustment = reactive({
-    customerId: '',
+  // State for point adjustment
+  interface PointAdjustment {
+    membershipWebsiteId: string
+    points: number
+    type: 'add' | 'subtract'
+    reason: string
+  }
+  
+  const adjustment = reactive<PointAdjustment>({
+    membershipWebsiteId: '',
     points: 0,
     type: 'add',
     reason: ''
   })
   
+  const loading = ref(false)
+  
+  const adjustPoints = async () => {
+    if (!adjustment.membershipWebsiteId || !adjustment.points || !adjustment.reason) {
+      message.error('Please fill in all required fields')
+      return
+    }
+  
+    try {
+      loading.value = true
+      await membershipAPI.updateMembershipPoint({
+        membershipWebsiteId: Number(adjustment.membershipWebsiteId),
+        points: adjustment.points,
+        reason: adjustment.reason
+      })
+      message.success(t('pointReward.manualAdjustment.success'))
+      resetForm()
+    } catch (error) {
+      console.error('Error adjusting points:', error)
+      message.error('Failed to adjust points')
+    } finally {
+      loading.value = false
+    }
+  }
+  
+  // Define transaction types
+  const transactionTypes = {
+    all: 'All',
+    earn: 'Earned',
+    use: 'Used',
+    expire: 'Expired',
+    adjust: 'Adjusted'
+  }
+  
+  // Define filters state
   const filters = reactive({
-    type: 'all',
-    startDate: '',
-    endDate: ''
+    type: 'all'
   })
   
   const pagination = reactive({
@@ -260,19 +315,43 @@
     return t(`pointReward.history.filters.type.options.${type}`)
   }
   
-  const adjustPoints = () => {
-    message.success(t('pointReward.manualAdjustment.success'))
-    adjustment.customerId = ''
-    adjustment.points = 0
-    adjustment.reason = ''
+  // Date range state
+  const dateRange = ref<[Dayjs, Dayjs]>()
+  
+  const resetFilters = () => {
+    filters.type = 'all'
+    dateRange.value = undefined
   }
   
-  const applyFilters = () => {
-    console.log('Applying filters:', filters)
+  const applyFilters = async () => {
+    try {
+      loading.value = true
+      const [startDate, endDate] = dateRange.value || [null, null]
+      
+      console.log('Applying filters:', {
+        type: filters.type,
+        startDate: startDate?.format('YYYY-MM-DD'),
+        endDate: endDate?.format('YYYY-MM-DD')
+      })
+      
+      await new Promise(resolve => setTimeout(resolve, 500)) // Simulated API call
+    } catch (error) {
+      message.error('Failed to apply filters')
+    } finally {
+      loading.value = false
+    }
   }
   
   const changePage = (page: number) => {
     pagination.currentPage = page
+  }
+  
+  const resetForm = () => {
+    Object.assign(adjustment, {
+      membershipWebsiteId: '',
+      points: 0,
+      reason: ''
+    })
   }
   </script>
   
@@ -283,8 +362,45 @@
     padding: 20px;
   }
   
-  .point-reward h1 {
-    text-align: center;
+  input:focus {
+    outline: none;
+  }
+
+  /* Add these styles to match the design */
+  .ant-picker {
+    padding: 4px 11px;
+    border-radius: 6px;
+  }
+
+  .ant-picker:hover {
+    border-color: #1890ff;
+  }
+
+  .ant-picker-focused {
+    border-color: #1890ff;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  }
+
+  :deep(.ant-select-selector) {
+    height: 32px !important;
+    padding: 0 11px !important;
+  }
+
+  :deep(.ant-picker) {
+    height: 32px;
+    padding: 0 11px;
+  }
+
+  :deep(.ant-select:not(.ant-select-disabled):hover .ant-select-selector),
+  :deep(.ant-picker:hover),
+  :deep(.ant-btn:hover) {
+    border-color: #1890ff;
+  }
+
+  :deep(.ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector),
+  :deep(.ant-picker-focused) {
+    border-color: #1890ff;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
   }
   </style> 
   

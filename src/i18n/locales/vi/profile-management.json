@@ -69,6 +69,27 @@
       "error": {
         "fetch": "Không thể tải lịch sử đơn hàng"
       }
+    },
+    "filter": {
+      "dateJoinMember": "Ngày Tham Gia",
+      "dateOfBirth": "Ngày Sinh",
+      "platformWebsite": "Nền Tảng Website",
+      "memberLevel": "Cấp Độ Thành Viên",
+      "allWebsites": "Tất Cả Website",
+      "allLevels": "Tất Cả Cấp Độ",
+      "reset": "Đặt Lại",
+      "filterButtonText": "Lọc",
+      "websites": {
+        "sky007": "Sky007",
+        "bbia": "Bbia",
+        "hince": "Hince",
+        "mixsoon": "Mixsoon"
+      },
+      "levels": {
+        "silver": "Bạc",
+        "gold": "Vàng",
+        "diamond": "Kim Cương"
+      }
     }
   }
 } 

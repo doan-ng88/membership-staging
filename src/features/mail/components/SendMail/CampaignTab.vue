@@ -3,30 +3,30 @@
     <a-form layout="vertical" :model="filterForm">
       <a-row :gutter="16">
         <a-col :span="8">
-          <a-form-item :label="t('campaignTab.form.name.label')">
+          <a-form-item :label="t('campaignTabMail.form.name.label')">
             <a-input 
               v-model:value="filterForm.name" 
-              :placeholder="t('campaignTab.form.name.placeholder')" 
+              :placeholder="t('campaignTabMail.form.name.placeholder')" 
             />
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item :label="t('campaignTab.form.status.label')">
+            <a-form-item :label="t('campaignTabMail.form.status.label')">
             <a-select 
               v-model:value="filterForm.status" 
-              :placeholder="t('campaignTab.form.status.placeholder')"
+              :placeholder="t('campaignTabMail.form.status.placeholder')"
             >
-              <a-select-option value="Active">{{ t('campaignTab.form.status.options.active') }}</a-select-option>
-              <a-select-option value="Inactive">{{ t('campaignTab.form.status.options.inactive') }}</a-select-option>
-              <a-select-option value="Completed">{{ t('campaignTab.form.status.options.completed') }}</a-select-option>
+              <a-select-option value="Active">{{ t('campaignTabMail.form.status.options.active') }}</a-select-option>
+              <a-select-option value="Inactive">{{ t('campaignTabMail.form.status.options.inactive') }}</a-select-option>
+              <a-select-option value="Completed">{{ t('campaignTabMail.form.status.options.completed') }}</a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item :label="t('campaignTab.form.website.label')">
+          <a-form-item :label="t('campaignTabMail.form.website.label')">
             <a-select 
               v-model:value="filterForm.website" 
-              :placeholder="t('campaignTab.form.website.placeholder')"
+              :placeholder="t('campaignTabMail.form.website.placeholder')"
             >
               <a-select-option value="hince">Hince</a-select-option>
               <a-select-option value="bbia">BBIA</a-select-option>
@@ -39,14 +39,14 @@
 
     <div class="mb-4 flex justify-between items-center">
       <span class="text-gray-600">
-        {{ t('campaignTab.selection.count', { count: selectedCampaigns.length }) }}
+        {{ t('campaignTabMail.selection.count', { count: selectedCampaigns.length }) }}
       </span>
       <a-button 
         v-if="selectedCampaigns.length > 0"
         type="link" 
         @click="clearSelection"
       >
-        {{ t('campaignTab.selection.clear') }}
+        {{ t('campaignTabMail.selection.clear') }}
       </a-button>
     </div>
 
@@ -70,12 +70,12 @@
 
     <div class="flex justify-end py-4">
       <a-space>
-        <a-button @click="handleCancel">{{ t('campaignTab.buttons.cancel') }}</a-button>
+        <a-button @click="handleCancel">{{ t('campaignTabMail.buttons.cancel') }}</a-button>
         <a-button 
           type="primary" 
           @click="handleSendMail"
         >
-          {{ t('campaignTab.buttons.send') }}
+            {{ t('campaignTabMail.buttons.send') }}
         </a-button>
       </a-space>
     </div>
@@ -85,11 +85,11 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { message } from 'ant-design-vue'
-import { useI18n } from 'vue-i18n'
+import { useI18nGlobal } from '@/i18n'
 import type { TablePaginationConfig } from 'ant-design-vue'
 import { mailCampaignService } from '@/services/mailCampaignService'
 
-const { t } = useI18n()
+const { t } = useI18nGlobal()
 
 interface Campaign {
   id: string
@@ -128,28 +128,28 @@ const filterForm = reactive({
 // Table columns as computed property
 const columns = computed(() => [
   {
-    title: t('campaignTab.table.columns.name'),
+    title: t('campaignTabMail.table.columns.name'),
     dataIndex: 'name',
     width: 200
   },
   {
-    title: t('campaignTab.table.columns.website'),
+    title: t('campaignTabMail.table.columns.website'),
     dataIndex: 'websiteId',
     slots: { customRender: 'websiteName' },
     width: 120
   },
   {
-    title: t('campaignTab.table.columns.startDate'),
+    title: t('campaignTabMail.table.columns.startDate'),
     dataIndex: 'startDate',
     width: 120
   },
   {
-    title: t('campaignTab.table.columns.endDate'),
+    title: t('campaignTabMail.table.columns.endDate'),
     dataIndex: 'endDate',
     width: 120
   },
   {
-    title: t('campaignTab.table.columns.status'),
+    title: t('campaignTabMail.table.columns.status'),
     dataIndex: 'status',
     width: 120
   }
@@ -189,7 +189,7 @@ const handleCancel = () => {
 
 const handleSendMail = () => {
   if (!selectedCampaigns.value.length) {
-    return message.error(t('campaignTab.messages.error.noSelection'))
+    return message.error(t('campaignTabMail.messages.error.noSelection'))
   }
   emit('send', selectedCampaigns.value)
 }
@@ -224,7 +224,7 @@ const fetchCampaigns = async () => {
     }
   } catch (error) {
     console.error('Error fetching campaigns:', error)
-    message.error(t('campaignTab.messages.error.fetchFailed'))
+    message.error(t('campaignTabMail.messages.error.fetchFailed'))
   } finally {
     loading.value = false
   }

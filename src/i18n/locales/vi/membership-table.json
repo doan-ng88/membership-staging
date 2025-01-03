@@ -16,17 +16,20 @@
     "table": {
       "headers": {
         "customerName": "Tên Khách hàng",
+        "email": "Email",
         "phoneNumber": "Số điện thoại",
         "dateJoinMember": "Ngày tham gia",
         "birthday": "Ngày sinh",
-        "platformWebsite": "Nền tảng Website",
-        "memberLevel": "Cấp độ thành viên",
+        "platformWebsite": "Website",
+        "memberLevel": "Cấp độ",
+        "defaultAddress": "Địa chỉ",
         "actions": "Thao tác"
       }
     },
     "actions": {
       "edit": "Sửa",
-      "history": "Lịch sử"
+      "history": "Lịch sử",
+      "pointReward": "Điểm thưởng"
     },
     "modal": {
       "details": {
