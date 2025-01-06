@@ -45,8 +45,9 @@
         "required": "Level name is required",
         "minLength": "Level name must be at least 3 characters",
         "maxLength": "Level name cannot exceed 50 characters",
-        "exists": "Level name \"{name}\" already exists for this website",
-        "specialChars": "Level name cannot contain special characters"
+        "specialChars": "Level name cannot contain special characters",
+        "exists": "Level '{name}' already exists",
+        "duplicateError": "This level already exists. Please enter a different level name."
       },
       "rank": {
         "required": "Rank is required",
@@ -68,6 +69,12 @@
       "discount": {
         "range": "Discount must be between 0-100%"
       }
+    },
+    "messages": {
+      "addSuccess": "Level added successfully",
+      "updateSuccess": "Level updated successfully",
+      "addError": "Failed to add level",
+      "updateError": "Failed to update level"
     }
   }
 } 

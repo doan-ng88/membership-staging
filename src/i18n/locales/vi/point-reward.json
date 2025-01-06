@@ -32,6 +32,7 @@
       "filters": {
         "type": {
           "label": "Loại giao dịch",
+          "placeholder": "Chọn loại giao dịch",
           "options": {
             "all": "Tất cả",
             "earn": "Nhận điểm",
@@ -58,7 +59,10 @@
           "type": "Loại",
           "points": "Điểm",
           "description": "Mô tả",
-          "expiry": "Hết hạn"
+          "expiry": "Hết hạn",
+          "totalPoints": "Tổng điểm",
+          "orderId": "Mã đơn hàng",
+          "productId": "Mã sản phẩm"
         }
       },
       "pagination": {

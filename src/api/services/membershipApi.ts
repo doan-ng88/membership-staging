@@ -1,5 +1,5 @@
 // src/api/membershipAPI.ts
-import axiosClient from '../axiosClient';
+import axiosInstance from '../config/axios'
 
 interface LevelInfo {
   levelId: number
@@ -50,7 +50,7 @@ interface SearchParam {
 }
 
 export const membershipAPI = {
-  getList(
+  async getList(
     sortField: string = 'MembershipsWebsitesId', 
     sortType: string = 'ASC', 
     pageSize: number = 10, 
@@ -62,21 +62,22 @@ export const membershipAPI = {
       value: param.value.toString()
     }))
 
-    return axiosClient.post<MemberResponse>('/membership/get/get-membership-list', {
+    const response = await axiosInstance.post<MemberResponse>('membership/get/get-membership-list', {
       sortField,
       sortType,
       pageSize,
       pageIndex,
       searchParams: formattedParams,
     })
+    return response.data
   },
 
-  getMemberDetail(userId: number) {
-    return axiosClient.get(`/membership/get/member-information-detail?user_id=${userId}`);
+  async getMemberDetail(userId: number) {
+    return axiosInstance.get(`membership/get/member-information-detail?user_id=${userId}`)
   },
 
-  getCoupons(websiteId:number,pageIndex?: number,pageSize?: number,search?: string,from?: string,to?: string) {
-    return axiosClient.get(`/membership/get/coupons/${websiteId}`, {
+  async getCoupons(websiteId: number, pageIndex?: number, pageSize?: number, search?: string, from?: string, to?: string) {
+    return axiosInstance.get(`membership/get/coupons/${websiteId}`, {
       params: {
         ...(pageIndex ? {pageIndex} : {}),
         ...(pageSize ? {pageSize} : {}),
@@ -84,34 +85,27 @@ export const membershipAPI = {
         ...(from ? {from} : {}),
         ...(to ? {to} : {}),
       }
-    });
+    })
   },
   
-  getAdminUsers() {
-    return axiosClient.get(`/membership/get/admin-role`);
+  async getAdminUsers() {
+    return axiosInstance.get('membership/get/admin-role')
   },
 
-
-  updateMembership(data: any) {
-    return axiosClient.post('/membership/update/membership', data);
+  async updateMembership(data: any) {
+    return axiosInstance.post('membership/update/membership', data)
   },
 
-  updateAddress(data: any) {
-    return axiosClient.post('/membership/update/address', data);
+  async updateAddress(data: any) {
+    return axiosInstance.post('membership/update/address', data)
   },
 
   getLevelInfo: async () => {
     try {
-      const url = '/membership/get/get-level-infor'
-      console.log('Fetching levels from:', url)
-      
-      const response = await axiosClient.get<LevelResponse>(url)
-      console.log('Raw API Response:', response)
+      const response = await axiosInstance.get<LevelResponse>('membership/get/get-level-infor')
       
       if (Array.isArray(response.data)) {
         const sortedData = response.data.sort((a, b) => a.rank - b.rank)
-        console.log('Sorted Levels:', sortedData)
-        
         return {
           code: 200,
           status: 'success',
@@ -122,8 +116,6 @@ export const membershipAPI = {
       
       if (response.data.code === 200) {
         const sortedData = response.data.data.sort((a, b) => a.rank - b.rank)
-        console.log('Sorted Levels:', sortedData)
-        
         return {
           code: 200,
           status: 'success', 
@@ -132,7 +124,6 @@ export const membershipAPI = {
         }
       }
       
-      console.error('Invalid response format:', response.data)
       return {
         code: 500,
         status: 'error',
@@ -157,12 +148,10 @@ export const membershipAPI = {
     reason: string
   }) => {
     try {
-      const response = await axiosClient.post('/api/membership/update/update-point-membership', data)
+      const response = await axiosInstance.post('membership/update/update-point-membership', data)
       return response.data
     } catch (error) {
       throw error
     }
   }
-
-  
-};
+}

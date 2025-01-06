@@ -14,12 +14,20 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">
                   {{ t('pointReward.manualAdjustment.fields.customerId.label') }} <span class="text-red-500">*</span>
                 </label>
-                <input
-                  v-model="adjustment.membershipWebsiteId"
-                  type="text"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                <a-select
+                  v-model:value="adjustment.membershipWebsiteId"
+                  class="w-full"
+                  :loading="loading"
                   :placeholder="t('pointReward.manualAdjustment.fields.customerId.placeholder')"
-                />
+                >
+                  <a-select-option 
+                    v-for="member in pointRewardStore.members" 
+                    :key="member.membershipWebsiteId"
+                    :value="member.membershipWebsiteId"
+                  >
+                    {{ member.membershipWebsiteId }} - {{ member.fullName }}
+                  </a-select-option>
+                </a-select>
               </div>
   
               <!-- Points -->
@@ -62,13 +70,14 @@
                 :disabled="loading"
                 class="px-3 py-1.5 bg-blue-600 text-sm text-white rounded hover:bg-blue-700 disabled:bg-blue-400 flex items-center"
               >
-                <a-spin v-if="loading" :size="small" class="mr-1" />
+                <a-spin v-if="loading" size="small" class="mr-1" />
                 <span>{{ t('pointReward.manualAdjustment.button') }}</span>
               </button>
             </div>
           </div>
         </div>
   
+        
         <!-- Lịch sử điểm thưởng -->
         <div class="bg-white rounded-lg shadow">
           <div class="p-4 border-b border-gray-200">
@@ -133,12 +142,29 @@
             </div>
           </div>
   
-          <!-- Bảng lịch sử -->
+          <!-- Point Earning Usage History Table -->
           <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
+            <!-- Loading state -->
+            <div v-if="loading" class="text-center py-8">
+              <a-spin />
+              <div class="mt-2">Đang tải dữ liệu...</div>
+            </div>
+
+            <!-- Error state -->
+            <div v-else-if="pointRewardStore.error" class="text-center py-8 text-red-500">
+              {{ pointRewardStore.error }}
+            </div>
+
+            <!-- Empty state -->
+            <div v-else-if="!pointRewardStore.earningUsageHistory?.length" class="text-center py-8 text-gray-500">
+              Không có dữ liệu lịch sử điểm
+            </div>
+
+            <!-- Data table -->
+            <table v-else class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
                 <tr>
-                  <th v-for="header in ['date', 'type', 'points', 'description', 'expiry']" 
+                  <th v-for="header in tableHeaders" 
                       :key="header" 
                       class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
@@ -147,18 +173,32 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="history in pointHistory" :key="history.id">
-                  <td class="px-6 py-4 whitespace-nowrap">{{ history.date }}</td>
+                <tr v-for="history in pointRewardStore.earningUsageHistory" 
+                    :key="`${history.orderId}-${history.dateRecord}`"
+                    class="hover:bg-gray-50"
+                >
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <span :class="getTypeClass(history.type)">
-                      {{ getTypeText(history.type) }}
+                    {{ formatDate(history.dateRecord) }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span :class="getTypeClass(history.action)">
+                      {{ history.action }}
                     </span>
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap" :class="history.points > 0 ? 'text-green-600' : 'text-red-600'">
-                    {{ history.points > 0 ? '+' : '' }}{{ history.points }}
+                  <td class="px-6 py-4 whitespace-nowrap" 
+                      :class="history.point > 0 ? 'text-green-600' : 'text-red-600'"
+                  >
+                    {{ history.point > 0 ? '+' : '' }}{{ history.point }}
                   </td>
-                  <td class="px-6 py-4">{{ history.description }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ history.expiryDate || '-' }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ history.totalPoint }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ history.orderId || '-' }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ history.productId || '-' }}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -200,19 +240,22 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, reactive } from 'vue'
+  import { ref, reactive, onMounted, watch, computed } from 'vue'
   import { message } from 'ant-design-vue'
   import DefaultLayout from '@/layouts/DefaultLayout.vue'
   import { useI18nGlobal } from '@/i18n'
   import { membershipAPI } from '@/api/services/membershipApi'
   import type { Dayjs } from 'dayjs'
+  import dayjs from 'dayjs'
   import { SearchOutlined, ReloadOutlined } from '@ant-design/icons-vue'
+  import { usePointRewardStore } from '@/stores/pointReward'
+  import type { Member } from '@/stores/pointReward'
   
   const { t } = useI18nGlobal()
   
   // State for point adjustment
   interface PointAdjustment {
-    membershipWebsiteId: string
+    membershipWebsiteId: string | number
     points: number
     type: 'add' | 'subtract'
     reason: string
@@ -227,28 +270,72 @@
   
   const loading = ref(false)
   
+  const pointRewardStore = usePointRewardStore()
+  const selectedMemberId = ref<number | null>(null)
+  const memberList = ref<Array<{ membershipWebsiteId: number }>>([])
+  
+  // Fetch members
+  const fetchMembers = async () => {
+    try {
+      loading.value = true
+      await pointRewardStore.fetchMembers()
+      memberList.value = pointRewardStore.members
+    } catch (error) {
+      console.error('Error fetching members:', error)
+      message.error('Không thể tải danh sách thành viên')
+    } finally {
+      loading.value = false
+    }
+  }
+  
+  // Handle point adjustment
   const adjustPoints = async () => {
-    if (!adjustment.membershipWebsiteId || !adjustment.points || !adjustment.reason) {
-      message.error('Please fill in all required fields')
+    if (!selectedMemberId.value) {
+      message.error('Vui lòng chọn Customer ID')
       return
     }
   
     try {
       loading.value = true
-      await membershipAPI.updateMembershipPoint({
-        membershipWebsiteId: Number(adjustment.membershipWebsiteId),
-        points: adjustment.points,
-        reason: adjustment.reason
+      // Call API to adjust points
+      await pointRewardStore.adjustMemberPoints({
+        membershipWebsiteId: selectedMemberId.value,
+        points: points.value
       })
-      message.success(t('pointReward.manualAdjustment.success'))
-      resetForm()
+      message.success('Điều chỉnh điểm thành công')
+      points.value = 0 // Reset form
     } catch (error) {
       console.error('Error adjusting points:', error)
-      message.error('Failed to adjust points')
+      message.error('Không thể điều chỉnh điểm')
     } finally {
       loading.value = false
     }
   }
+  
+  // Reset form
+  const resetForm = () => {
+    selectedMemberId.value = null
+    points.value = 0
+  }
+  
+  onMounted(async () => {
+    try {
+      loading.value = true
+      await pointRewardStore.fetchMembers()
+      
+      // Nếu có members, load history cho member đầu tiên
+      if (pointRewardStore.members.length > 0) {
+        const firstMember = pointRewardStore.members[0]
+        adjustment.membershipWebsiteId = firstMember.membershipWebsiteId
+        await loadPointHistory(firstMember.membershipWebsiteId)
+      }
+    } catch (error) {
+      console.error('Error in mounted:', error)
+      message.error('Không thể tải dữ liệu')
+    } finally {
+      loading.value = false
+    }
+  })
   
   // Define transaction types
   const transactionTypes = {
@@ -346,16 +433,56 @@
     pagination.currentPage = page
   }
   
-  const resetForm = () => {
-    Object.assign(adjustment, {
-      membershipWebsiteId: '',
-      points: 0,
-      reason: ''
-    })
-  }
-  </script>
+  // Thêm flag để track loading state
+  const isLoadingHistory = ref(false)
   
-  <style scoped>
+  const loadPointHistory = async (memberId: number) => {
+    // Nếu đang loading thì không gọi API nữa
+    if (isLoadingHistory.value) return
+    
+    try {
+      isLoadingHistory.value = true
+      loading.value = true
+      console.log('Loading history for member:', memberId)
+      await pointRewardStore.fetchEarningUsageHistory(memberId)
+    } catch (error) {
+      console.error('Error loading history:', error)
+      message.error('Không thể tải lịch sử điểm')
+    } finally {
+      loading.value = false
+      isLoadingHistory.value = false
+    }
+  }
+  
+  // Sửa lại watch để tránh gọi nhiều lần
+  watch(() => adjustment.membershipWebsiteId, async (newId, oldId) => {
+    if (newId && newId !== oldId) {
+      await loadPointHistory(Number(newId))
+    }
+  }, { immediate: true })
+  
+  // Fix 7: Thêm watcher để debug khi data thay đổi
+  watch(() => pointRewardStore.earningUsageHistory, (newHistory) => {
+    console.log('History updated in component:', newHistory)
+  }, { deep: true })
+  
+  // Fix 8: Load data khi component mounted nếu có membershipWebsiteId
+  onMounted(() => {
+    if (pointRewardStore.members.length > 0) {
+      const firstMember = pointRewardStore.members[0]
+      pointRewardStore.fetchEarningUsageHistory(firstMember.membershipWebsiteId)
+    }
+  })
+  
+  // Fix 9: Thêm computed để format date
+  const formatDate = (timestamp: string) => {
+    return dayjs(Number(timestamp) * 1000).format('DD/MM/YYYY HH:mm')
+  }
+  
+  // Get type class based on action
+  
+  </script>
+    <style scoped>
   .point-reward {
     max-width: 1200px;
     margin: 0 auto;
@@ -382,13 +509,17 @@
   }
 
   :deep(.ant-select-selector) {
-    height: 32px !important;
-    padding: 0 11px !important;
+    height: 38px !important;
+    padding: 4px 11px !important;
+    border-radius: 6px !important;
   }
 
-  :deep(.ant-picker) {
-    height: 32px;
-    padding: 0 11px;
+  :deep(.ant-select-selection-search-input) {
+    height: 36px !important;
+  }
+
+  :deep(.ant-select-selection-item) {
+    line-height: 28px !important;
   }
 
   :deep(.ant-select:not(.ant-select-disabled):hover .ant-select-selector),

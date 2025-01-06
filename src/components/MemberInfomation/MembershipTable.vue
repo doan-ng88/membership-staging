@@ -13,7 +13,7 @@
             :placeholder="t('membershipTable.search.placeholder')"
           >
           <span v-if="searchLoading" class="absolute right-2 top-1/2 -translate-y-1/2">
-            <a-spin :size="small" />
+            <a-spin size="small" />
           </span>
         </div>
         <button 
@@ -370,6 +370,8 @@ import { useRouter } from 'vue-router'
 import { EditOutlined, HistoryOutlined, GiftOutlined } from '@ant-design/icons-vue'
 
 const { t } = useI18nGlobal()
+// Khai báo router
+const router = useRouter()
 
 // Props
 const props = defineProps<{
@@ -684,12 +686,16 @@ const getLevelStyle = (levelName: string) => {
 }
 
 const handlePointReward = (member: any) => {
-  router.push({
-    name: 'point-reward-management-detail',
-    params: {
-      id: member.membershipWebsiteId
-    }
-  })
+  try {
+    router.push({
+      name: 'point-reward-management-detail',
+      params: {
+        id: member.membershipWebsiteId
+      }
+    })
+  } catch (error) {
+    console.error('Error navigating to point reward:', error)
+  }
 }
 
 // Expose necessary methods and properties

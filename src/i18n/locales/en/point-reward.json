@@ -32,6 +32,7 @@
       "filters": {
         "type": {
           "label": "Transaction Type",
+          "placeholder": "Select transaction type",
           "options": {
             "all": "All",
             "earn": "Earned",
@@ -58,7 +59,10 @@
           "type": "Type",
           "points": "Points",
           "description": "Description",
-          "expiry": "Expiry"
+          "expiry": "Expiry",
+          "totalPoints": "Total Points",
+          "orderId": "Order ID",
+          "productId": "Product ID"
         }
       },
       "pagination": {

@@ -79,6 +79,9 @@ export const levelService = {
 
   async updateLevel(data: LevelSetting): Promise<ApiResponse<LevelSetting>> {
     try {
+      console.log('Updating level with ID:', data.levelId)
+      console.log('Update data:', data)
+
       const [nameExists, rankExists] = await Promise.all([
         this.checkNameExists(data.websiteId, data.Name, data.levelId),
         this.checkRankExists(data.websiteId, data.rank, data.levelId)
@@ -93,7 +96,7 @@ export const levelService = {
       }
 
       const response = await axiosInstance.post(
-        `membership/update/level-setting-update-level/${data.levelId}`, 
+        `membership/update/level-setting-update-level`, 
         {
           levelId: data.levelId,
           Name: data.Name,
