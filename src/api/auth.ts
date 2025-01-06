@@ -2,23 +2,25 @@
 import axios from 'axios';
 import type { LoginCredentials, RegisterCredentials, AuthResponse } from '@/types/auth';
 
-const API_URL = '/api/membership'; // URL API của bạn
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-// Tạo instance axios với base URL
+// Tạo instance axios với base URL và cấu hình phù hợp cho production
 const axiosInstance = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   },
-  withCredentials: true
+  timeout: 30000,
+  withCredentials: false // Tắt withCredentials vì không cần thiết cho API này
 });
 
 export const authApi = {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
+      // Gọi trực tiếp đến endpoint login không cần thêm /api prefix
       const response = await axiosInstance.post<AuthResponse>(
-        '/login',
+        'membership/login',
         credentials
       );
       return response.data;
@@ -31,7 +33,7 @@ export const authApi = {
   async register(credentials: RegisterCredentials): Promise<AuthResponse> {
     try {
       const response = await axiosInstance.post<AuthResponse>(
-        '/register',
+        '/api/membership/register',
         credentials
       );
       return response.data;
@@ -43,10 +45,8 @@ export const authApi = {
 
   async logout(): Promise<void> {
     try {
-      await axiosInstance.post('/logout');
+      await axiosInstance.post('/api/membership/logout');
     } catch (error: any) {
-      // Nếu API logout không tồn tại hoặc gặp lỗi, 
-      // vẫn xóa token ở client side
       console.warn('Logout API failed:', error);
       throw error;
     }
@@ -67,11 +67,9 @@ axiosInstance.interceptors.response.use(
   response => response,
   error => {
     if (error.response?.status === 401) {
-      // Token hết hạn hoặc không hợp lệ
       localStorage.removeItem('token');
       window.location.href = '/login';
     }
-    //fix bug cursor
     return Promise.reject(error);
   }
 );
