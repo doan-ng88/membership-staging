@@ -28,5 +28,5 @@ COPY --from=build-stage /app/node_modules ./node_modules
 # Expose port (nếu ứng dụng của bạn chạy trên cổng khác)
 EXPOSE 3000
 
-# Command to run the application
-CMD ["npm", "run", "start"]
+# Command to run the application directly
+CMD ["npx", "vite", "preview", "--port", "3000", "--host", "0.0.0.0"]
