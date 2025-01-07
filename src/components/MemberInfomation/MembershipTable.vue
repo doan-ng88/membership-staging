@@ -366,12 +366,14 @@ import { membershipAPI } from '@/api/services/membershipApi'
 import { pointHistoryApi, type PointTransaction } from '@/api/services/pointHistoryApi'
 import * as XLSX from 'xlsx'
 import { getWebsiteName } from '@/api/types/website'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { EditOutlined, HistoryOutlined, GiftOutlined } from '@ant-design/icons-vue'
 
 const { t } = useI18nGlobal()
 // Khai báo router
 const router = useRouter()
+const route = useRoute()
+const membershipWebsiteId = ref(route.params.membershipWebsiteId)
 
 // Props
 const props = defineProps<{
@@ -685,17 +687,14 @@ const getLevelStyle = (levelName: string) => {
   return `px-2 py-1 rounded-full text-sm ${styles[levelName] || 'text-gray-600 bg-gray-100'}`
 }
 
-const handlePointReward = (member: any) => {
-  try {
-    router.push({
-      name: 'point-reward-management-detail',
-      params: {
-        id: member.membershipWebsiteId
-      }
-    })
-  } catch (error) {
-    console.error('Error navigating to point reward:', error)
-  }
+const handlePointReward = (member: Member) => {
+  // Chuyển đến trang Point Reward với membershipWebsiteId
+  router.push({
+    name: 'pointRewardManagementDetail',
+    params: { 
+      membershipWebsiteId: member.membershipWebsiteId.toString()
+    }
+  })
 }
 
 // Expose necessary methods and properties

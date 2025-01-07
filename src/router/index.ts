@@ -197,8 +197,8 @@ const routes = [
     }
   },
   {
-    path: '/member-information/point-reward-management/:id',
-    name: 'point-reward-management-detail',
+    path: '/member-information/point-reward-management/:membershipWebsiteId',
+    name: 'pointRewardManagementDetail',
     component: PointRewardView,
     meta: {
       title: 'Point/Reward Management Detail',

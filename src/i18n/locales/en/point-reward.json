@@ -29,6 +29,26 @@
     },
     "history": {
       "title": "Point Earning Usage History",
+      "table": {
+        "headers": {
+          "date": "Date",
+          "type": "Adjustment Reason",
+          "points": "Points",
+          "description": "Description",
+          "totalPoints": "Total Points",
+          "orderId": "Order ID",
+          "productId": "Product ID"
+        }
+      },
+      "types": {
+        "earn": "Earned",
+        "use": "Used",
+        "expire": "Expired",
+        "adjust": "Adjusted",
+        "send points to sky007": "Points Sent",
+        "receive points from sky007": "Points Received"
+      },
+      "noData": "No history found",
       "filters": {
         "type": {
           "label": "Transaction Type",
@@ -52,18 +72,6 @@
           "label": "Date Record"
         },
         "button": "Filter"
-      },
-      "table": {
-        "headers": {
-          "date": "Date",
-          "type": "Type",
-          "points": "Points",
-          "description": "Description",
-          "expiry": "Expiry",
-          "totalPoints": "Total Points",
-          "orderId": "Order ID",
-          "productId": "Product ID"
-        }
       },
       "pagination": {
         "showing": "Showing {from}-{to} of {total} results",

@@ -29,6 +29,15 @@
     },
     "history": {
       "title": "Lịch sử sử dụng điểm thưởng",
+      "types": {
+        "earn": "Nhận điểm",
+        "use": "Sử dụng",
+        "expire": "Hết hạn",
+        "adjust": "Điều chỉnh",
+        "send points to sky007": "Đã gửi điểm",
+        "receive points from sky007": "Đã nhận điểm"
+      },
+      "noData": "Không có dữ liệu",
       "filters": {
         "type": {
           "label": "Loại giao dịch",

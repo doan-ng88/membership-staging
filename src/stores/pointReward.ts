@@ -1,66 +1,40 @@
 import { defineStore } from 'pinia'
-import { membershipAPI } from '@/api/services/membershipApi'
 import { pointEarningUsageHistoryService } from '@/api/services/pointEarningUsageHistoryService'
-import type { PointEarningUsageHistory } from '@/api/services/pointEarningUsageHistoryService'
-
-interface Member {
-  membershipWebsiteId: number;
-  membershipId: number;
-  email: string;
-  birthday: string;
-  fullName: string;
-  mainPhoneNumber: string;
-  points: number;
-  level: number;
-  levelName: string;
-  isJoinSky007: boolean;
-  registeredTime: string;
-  levelUpdateTime: string;
-  websiteId: number;
-  levelId: number;
-  totalOrder: number;
-  amountNextLevel: number;
-  defaultAddress: string;
-}
-
-interface ApiResponse<T> {
-  code: number;
-  status: string;
-  message: string;
-  data: T;
-}
-
-interface ApiError {
-  message: string;
-  code: number;
-}
+import type { PointEarningUsageHistory, PointEarningUsageHistoryResponse } from '@/api/services/pointEarningUsageHistoryService'
+import { membershipAPI } from '@/api/services/membershipApi'
 
 export const usePointRewardStore = defineStore('pointReward', {
   state: () => ({
-    members: [] as Member[],
     earningUsageHistory: [] as PointEarningUsageHistory[],
     loading: false,
     error: null as string | null,
-    pagination: {
-      pageIndex: 1,
-      pageSize: 100,
-      totalCount: 0
-    }
+    members: [] as any[]
   }),
 
   actions: {
     async fetchMembers() {
-      this.loading = true
       try {
-        const response = await membershipAPI.getList() as ApiResponse<Member[]>
+        console.log('Store: Fetching members')
+        const response = await membershipAPI.getList(
+          'MembershipsWebsitesId', 
+          'ASC', 
+          100,
+          1,
+          []
+        )
+        console.log('Store: Members response:', response)
+
         if (response.code === 200) {
-          this.members = response.data
+          this.members = response.data || []
+          // console.log('Store: Updated members list:', this.members)
+        } else {
+          throw new Error(response.message || 'Failed to fetch members')
         }
-      } catch (error: any) {
-        console.error('Error fetching members:', error)
-        this.error = error.message || 'Không thể tải danh sách thành viên'
-      } finally {
-        this.loading = false
+      } catch (error) {
+        console.error('Store: Error fetching members:', error)
+        this.error = error instanceof Error ? error.message : 'Không thể tải danh sách thành viên'
+        this.members = []
+        throw error
       }
     },
 
@@ -69,21 +43,17 @@ export const usePointRewardStore = defineStore('pointReward', {
       try {
         console.log('Store: Fetching history for ID:', membershipWebsiteId)
         const response = await pointEarningUsageHistoryService.getHistory(membershipWebsiteId)
-        console.log('Store: Raw response:', response)
-        
+        console.log('Store: Response from service:', response)
+
         if (response.code === 200) {
-          this.earningUsageHistory = Array.isArray(response.data) ? response.data : []
-          console.log('Store: Updated history:', {
-            length: this.earningUsageHistory.length,
-            data: this.earningUsageHistory
-          })
+          this.earningUsageHistory = response.data || []
+          // console.log('Store: Updated history:', this.earningUsageHistory)
         } else {
-          console.error('Store: Error response:', response)
           throw new Error(response.message || 'Failed to fetch history')
         }
       } catch (error) {
         console.error('Store: Error:', error)
-        this.error = (error as ApiError).message || 'Không thể tải lịch sử điểm'
+        this.error = error instanceof Error ? error.message : 'Không thể tải lịch sử điểm'
         this.earningUsageHistory = []
         throw error
       } finally {
