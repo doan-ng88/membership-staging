@@ -1,19 +1,18 @@
-<!-- // src/features/call-campaign/components/CampaignList/CampaignFilters.vue -->
 <template>
   <div class="mb-6 space-y-4">
     <div class="flex gap-4">
       <a-input-search
         v-model:value="searchText"
-        :placeholder="t('campaignFilters.search.placeholder')"
+        :placeholder="t('campaignMailFilters.search.placeholder')"
         style="width: 300px"
         allow-clear
         @search="handleSearch"
         @change="handleSearchChange"
       />
-
+      
       <a-select
         v-model:value="localFilters.status"
-        :placeholder="t('campaignFilters.status.placeholder')"
+        :placeholder="t('campaignMailFilters.status.placeholder')"
         class="w-32"
         @change="emitFilters"
       >
@@ -22,7 +21,7 @@
           :key="status.value" 
           :value="status.value"
         >
-          {{ t(`campaignFilters.status.options.${status.value}`) }}
+          {{ t(`campaignMailFilters.status.options.${status.value}`) }}
         </a-select-option>
       </a-select>
 
@@ -37,7 +36,7 @@
           :key="pic.value" 
           :value="pic.value"
         >
-          {{ t(`campaignFilters.pic.options.${pic.value}`) }}
+          {{ pic.value }}
         </a-select-option>
       </a-select>
 
@@ -62,6 +61,8 @@ import { SearchOutlined } from '@ant-design/icons-vue';
 import type { CampaignFilters } from '../../types/campaign.types';
 import { CAMPAIGN_STATUS_OPTIONS, PIC_OPTIONS } from '../../constants/campaign.constants';
 import { useI18nGlobal } from '@/i18n';
+import dayjs from 'dayjs'
+import type { Dayjs } from 'dayjs'
 
 const { t } = useI18nGlobal();
 
@@ -75,7 +76,7 @@ const emit = defineEmits<{
 }>();
 
 const localFilters = ref<CampaignFilters>({ ...props.filters });
-const dateRange = ref<[moment.Moment, moment.Moment] | null>(null);
+const dateRange = ref<[Dayjs, Dayjs] | null>(null);
 const searchText = ref('');
 
 // Thêm debounce cho search
@@ -115,7 +116,7 @@ const emitFilters = () => {
   });
 };
 
-const handleDateRangeChange = (dates: [moment.Moment, moment.Moment] | null) => {
+const handleDateRangeChange = (dates: [Dayjs, Dayjs] | null) => {
   if (dates) {
     localFilters.value.dateRange = {
       start: dates[0].format('YYYY-MM-DD'),

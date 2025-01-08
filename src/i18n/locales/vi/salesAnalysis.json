@@ -6,9 +6,11 @@
       "brand": {
         "label": "Chọn Thương Hiệu",
         "options": {
-          "sky007": "Sky007, BBIA",
+          "sky007": "Sky007",
+          "bbia": "Bbia",
+          "mixsoon": "Mixsoon",
           "hince": "Hince",
-          "mixsoon": "Mixsoon"
+          "all": "Tất cả thương hiệu"
         }
       }
     },
@@ -35,7 +37,7 @@
           "title": "Trạng Thái Đơn Hàng Theo Danh Mục",
           "yaxis": "Số Lượng Đơn Hàng",
           "status": {
-            "completed": "Hoàn Thành",
+            "completed": "66Hoàn Thành",
             "processing": "Đang Xử Lý",
             "onHold": "Tạm Giữ",
             "cancelled": "Đã Hủy"
@@ -83,7 +85,7 @@
         "orderStatus": {
           "title": "Trạng Thái Đơn Hàng",
           "labels": {
-            "completed": "Hoàn Thành",
+            "completed": "77Hoàn Thành",
             "processing": "Đang Xử Lý",
             "onHold": "Tạm Giữ",
             "cancelled": "Đã Hủy"
@@ -97,6 +99,41 @@
       "errors": {
         "loadFailed": "Không thể tải dữ liệu thống kê sản phẩm"
       }
+    }
+  },
+  "campaignFilters": {
+    "search": {
+      "placeholder": "Tìm kiếm chiến dịch..."
+    },
+    "status": {
+      "placeholder": "Trạng thái",
+      "options": {
+        "Planning": "Lên kế hoạch",
+        "InProgress": "Đang thực hiện",
+        "Completed": "88Hoàn thành",
+        "Cancelled": "Đã hủy",
+        "OnHold": "Tạm dừng",
+        "Paused": "Tạm dừng",
+        "Expired": "Hết hạn",
+        "Pending": "Chờ duyệt",
+        "Rejected": "Từ chối",
+        "Approved": "Đã duyệt",
+        "Failed": "Thất bại",
+        "Created": "Đã tạo"
+      }
+    },
+    "pic": {
+      "placeholder": "Người phụ trách",
+      "options": {
+        "all": "Tất cả",
+        "user1": "Người dùng 1",
+        "user2": "Người dùng 2",
+        "user3": "Người dùng 3"
+      }
+    },
+    "buttons": {
+      "filter": "Lọc",
+      "reset": "Đặt lại"
     }
   }
 } 

@@ -7,10 +7,18 @@
           <h2 class="text-2xl font-bold text-gray-800">{{ t('mailCampaign.title') }}</h2>
         </template>
         <template #extra>
-          <CampaignActions 
+          <!-- <CampaignActions 
             :loading="loading"
             @add="handleAdd"
             @refresh="fetchCampaignList"
+          /> -->
+          <CampaignActions 
+            :loading="loading"
+            :data="displayCampaigns"
+            fileName="Email-campaigns"
+            @add="handleAdd"
+            @refresh="fetchCampaignList"
+            @export="handleExportSuccess"
           />
         </template>
       </PageHeader>
@@ -63,9 +71,9 @@ import { useAuthStore } from '@/stores/auth';
   
   const { t } = useI18nGlobal();
   const router = useRouter();
-
+  
   // Reactive state
-  const loading = ref(false);
+ const loading = ref(false);
   const campaigns = ref([]);
   const filters = ref<CampaignFiltersType>({});
   const pagination = ref({
@@ -176,13 +184,17 @@ import { useAuthStore } from '@/stores/auth';
     router.push({name: 'NewCampaign'});
   };
 
+  const handleExportSuccess = () => {
+    message.success(t('mailCampaign.messages.exportSuccess'));
+  };
+
   // Lifecycle
   onMounted(() => {
     fetchCampaignList();
   });
 
-  // Thêm computed property
-  const displayCampaigns = computed(() => {
+ // Thêm computed property
+ const displayCampaigns = computed(() => {
     console.log('Computing displayCampaigns:', campaigns.value);
     return campaigns.value || [];
   });

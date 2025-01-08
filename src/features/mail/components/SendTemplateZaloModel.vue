@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    :visible="visible"
+    :open="visible"
     @update:visible="emit('update:visible', $event)"
     :title="'Send Zalo Template'"
     width="800px"

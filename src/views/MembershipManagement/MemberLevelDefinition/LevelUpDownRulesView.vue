@@ -53,7 +53,7 @@
     </div>
 
     <UpDownRulesModal
-      v-model:visible="showModal"
+      v-model:open="showModal"
       :is-edit="isEdit"
       :initial-data="selectedLevel"
       :website-id="selectedWebsiteId"

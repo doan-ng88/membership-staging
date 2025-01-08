@@ -20,9 +20,11 @@
         </select>
       </div>
 
-      <MemberStatistics :statistics="memberStats" />
-      <TransitionChart :brand="selectedBrand" />
-      <BehaviorChart :brand="selectedBrand" />
+      <template v-if="selectedBrand">
+        <MemberStatistics :statistics="memberStats" />
+        <TransitionChart :brand="selectedBrand" :key="selectedBrand" />
+        <BehaviorChart :brand="selectedBrand" :key="selectedBrand" />
+      </template>
     </div>
   </DefaultLayout>
 </template>

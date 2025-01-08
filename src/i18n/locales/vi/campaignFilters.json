@@ -1,5 +1,5 @@
 {
-  "campaignFilters": {
+  "campaignMailFilters": {
     "search": {
       "placeholder": "Tìm theo tên chiến dịch"
     },
@@ -10,8 +10,19 @@
         "draft": "Nháp",
         "scheduled": "Đã lên lịch",
         "inProgress": "Đang thực hiện",
-        "completed": "Hoàn thành",
-        "cancelled": "Đã hủy"
+        "Completed": "Hoàn thành",
+        "Cancelled": "Đã hủy",
+        "paused": "Tạm dừng",
+        "expired": "Hết hạn",
+        "pending": "Chờ duyệt",
+        "rejected": "Từ chối",
+        "approved": "Đã duyệt",
+        "failed": "Thất bại",
+        "Created": "Đã tạo",
+        "Closed": "Đã đóng",
+        "Planning": "Đang lên lịch",
+        "In Progress": "Đang thực hiện",
+        "On Hold": "Tạm dừng"
       }
     },
     "pic": {

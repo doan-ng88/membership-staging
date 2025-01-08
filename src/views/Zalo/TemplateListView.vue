@@ -111,7 +111,7 @@
 
       <!-- Preview Modal -->
       <a-modal
-        v-model:visible="previewModal.visible"
+        v-model:open="previewModal.visible"
         :title="previewModal.template?.templateName"
         :footer="null"
         width="800px"
@@ -142,7 +142,7 @@
 
     <!-- Send Template Drawer -->
     <a-drawer
-      v-model:visible="showSendDrawer"
+      v-model:open="showSendDrawer"
       title="{{ t('zaloTemplate.drawer.title') }}"
       placement="right"
       width="80%"
@@ -198,7 +198,7 @@
 
     <!-- Thêm SendTemplateZaloModal -->
     <SendTemplateZaloModal
-      v-model:visible="showSendZaloModal"
+      v-model:open="showSendZaloModal"
       :template="currentTemplate"
       :selected-campaigns="selectedCampaigns"
       mode="campaign"
@@ -218,6 +218,9 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import CampaignTab from '@/features/mail/components/SendMail/CampaignTab.vue'
 import MembershipTab from '@/features/mail/components/SendMail/MembershipTab.vue'
 import SendTemplateZaloModal from '@/features/mail/components/SendTemplateZaloModel.vue'
+import { useI18nGlobal } from '@/i18n'
+
+const { t } = useI18nGlobal()
 
 interface ZaloTemplate {
   templateId: number

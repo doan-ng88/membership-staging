@@ -33,7 +33,7 @@
       />
 
       <EditCampaignModal
-        v-model:visible="showEditModal"
+        v-model:open="showEditModal"
         :campaignId="selectedCampaign?.CampaignID"
         :campaign-data="selectedCampaign || {}"
         @success="fetchCampaignList"

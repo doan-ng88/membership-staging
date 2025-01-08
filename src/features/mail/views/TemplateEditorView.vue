@@ -102,7 +102,7 @@
 
     <!-- First Drawer: Gửi Mail Template -->
     <a-drawer
-      v-model:visible="showSendMailDrawer"
+      v-model:open="showSendMailDrawer"
       @update:visible="handleCloseSendMailDrawer"
       :title="t('templateEditor.drawer.title')"
       placement="right"
@@ -161,7 +161,7 @@
     <!-- Second Modal: Send Mail Template by Campaign/Membership -->
     <SendTemplateMailModal
       v-if="showSendMailModal && templateData"
-      v-model:visible="showSendMailModal"
+      v-model:open="showSendMailModal"
       :template="templateData"
       :selected-campaigns="selectedCampaign"
       :selected-members="selectedMembers"

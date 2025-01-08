@@ -15,7 +15,10 @@
             class="w-48"
             placeholder="Select brand"
           >
-            <a-select-option v-for="brand in defaultBrands" :key="brand.value" :value="brand.value">
+            <a-select-option v-for="brand in defaultBrands" 
+                             :key="brand.value" 
+                             :value="brand.value"
+            >
               {{ t(`productSales.filters.brand.options.${brand.key}`) }}
             </a-select-option>
           </a-select>
@@ -95,6 +98,7 @@ import { useI18nGlobal } from '@/i18n'
 
 interface Brand {
   value: string;
+  key: string;
   label: string;
 }
 // Props và Emits
@@ -109,12 +113,12 @@ const emit = defineEmits<{
 
 const { t } = useI18nGlobal()
 
-// Định nghĩa brands mặc định
+// Định nghĩa brands mặc định với đầy đủ key
 const defaultBrands: Brand[] = [
-  { value: '1', label: 'Sky007, BBIA' },
-  { value: '2', label: 'Hince' },
-  { value: '3', label: 'Mixsoon' },
-  { value: '4', label: 'Unleashia' }
+  { value: '1', key: 'sky007', label: 'Sky007' },
+  { value: '4', key: 'bbia', label: 'BBIA' },
+  { value: '2', key: 'hince', label: 'Hince' },
+  { value: '3', key: 'mixsoon', label: 'Mixsoon' },
 ]
 
 // Data & State

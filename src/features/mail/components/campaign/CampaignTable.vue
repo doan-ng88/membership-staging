@@ -1,14 +1,8 @@
 <template>
   <a-table
     :columns="columns"
-    :data-source="campaignsWithWebsite"
+    :data-source="campaigns"
     :loading="loading"
-    :pagination="{
-      current: currentPage,
-      pageSize: pageSize,
-      total: total,
-      onChange: onPageChange
-    }"
   >
     <template #bodyCell="{ column, record }">
       <template v-if="column.key === 'action'">
@@ -26,16 +20,6 @@
           {{ record.status }}
         </a-tag>
       </template>
-      <template v-else-if="column.key === 'website'">
-        <template v-if="record.memberships && record.memberships.length">
-          <div v-for="websiteId in getUniqueWebsiteIds(record.memberships)" :key="websiteId">
-            {{ getWebsiteName(websiteId) }}
-          </div>
-        </template>
-        <template v-else>
-          N/A
-        </template>
-      </template>
     </template>
   </a-table>
 </template>
@@ -44,99 +28,23 @@
 import { computed } from 'vue';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import type { TableColumnsType } from 'ant-design-vue';
-import { websites } from '@/api/types/website';
+import { getWebsiteName } from '@/api/types/website';
+import { useI18nGlobal } from '@/i18n';
 
-interface Membership {
-  websiteId: number;
-  // other membership properties...
-}
+const { t } = useI18nGlobal();
 
-interface Campaign {
-  id: number;
-  name: string;
-  startDate: string;
-  endDate: string;
-  status: string;
-  memberships?: Membership[];
-}
-
-const props = defineProps<{
-  campaigns: Campaign[];
-  loading: boolean;
-  currentPage: number;
-  pageSize: number;
-  total: number;
-}>();
-
-const emit = defineEmits<{
-  (e: 'pageChange', page: number): void;
-  (e: 'edit', campaign: Campaign): void;
-  (e: 'delete', campaign: Campaign): void;
-}>();
-
-const getUniqueWebsiteIds = (memberships: Membership[]) => {
-  return [...new Set(memberships.map(m => m.websiteId))];
-};
-
-const getWebsiteName = (websiteId: number) => {
-  const website = websites.find(w => w.websiteId === websiteId);
-  return website?.name || 'N/A';
-};
-
-const campaignsWithWebsite = computed(() => {
-  return props.campaigns;
-});
-
-const columns: TableColumnsType = [
+const columns = computed<TableColumnsType>(() => [
   {
-    title: 'Campaign Name',
+    title: t('mailCampaign.table.columns.name'),
     dataIndex: 'name',
     key: 'name',
   },
   {
-    title: 'Website',
+    title: t('mailCampaign.table.columns.website'),
+    dataIndex: 'website',
     key: 'website',
+    width: 120,
   },
-  {
-    title: 'Start Time',
-    dataIndex: 'startDate',
-    key: 'startDate',
-  },
-  {
-    title: 'End Time',
-    dataIndex: 'endDate',
-    key: 'endDate',
-  },
-  {
-    title: 'Status',
-    dataIndex: 'status',
-    key: 'status',
-  },
-  {
-    title: 'Actions',
-    key: 'action',
-  }
-];
-
-const onPageChange = (page: number) => {
-  emit('pageChange', page);
-};
-
-const handleEdit = (campaign: Campaign) => {
-  emit('edit', campaign);
-};
-
-const handleDelete = (campaign: Campaign) => {
-  emit('delete', campaign);
-};
-
-const getStatusColor = (status: string) => {
-  const statusColors: Record<string, string> = {
-    'active': 'green',
-    'inactive': 'red',
-    'pending': 'orange',
-    'completed': 'blue'
-  };
-  return statusColors[status.toLowerCase()] || 'default';
-};
+  // ... other columns
+]);
 </script> 

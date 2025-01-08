@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { message } from 'ant-design-vue';
 import { useAuthStore } from '@/stores/auth';
+import { getWebsiteName } from '@/api/types/website';
 
 interface Campaign {
   campaignId: string | number;
@@ -20,6 +21,8 @@ interface Campaign {
   createdAt: string;
   updatedAt: string;
   createdBy: string;
+  websiteId: number;
+  website: string;
 }
 
 interface PaginationParams {
@@ -90,17 +93,27 @@ class MailCampaignService {
       
       console.log('Service received response:', response.data); // Debug log
 
+      const transformedData = response.data.data.map(campaign => {
+        const websiteId = Number(campaign.websiteId);
+        return {
+          ...campaign,
+          id: Number(campaign.campaignId),
+          name: campaign.campaignName,
+          websiteId: websiteId,
+          website: getWebsiteName(websiteId),
+        };
+      });
+
       return {
-        data: (response.data.data || []).map(this.transformCampaign.bind(this)), // TODO: fix backend error: return null when no data => return []
+        data: transformedData,
         pagination: {
-          pageIndex: Number(response.data.pageIndex),
-          pageSize: Number(response.data.pageSize),
-          totalCount: Number(response.data.totalCount)
+          pageIndex: response.data.pageIndex,
+          pageSize: response.data.pageSize,
+          totalCount: response.data.totalCount
         }
       };
     } catch (error) {
-      console.error('Error fetching campaigns:', error);
-      message.error('Không thể tải danh sách chiến dịch');
+      console.error('Error:', error);
       throw error;
     }
   }

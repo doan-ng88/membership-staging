@@ -1,7 +1,7 @@
 <!-- // src/features/call-campaign/components/CustomerSelection/CustomerSelectionModal.vue -->
 <template>
   <a-modal
-    :visible="visible"
+    :open="visible"
     title="Select Members"
     width="1000px"
     @cancel="handleCancel"

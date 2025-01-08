@@ -4,11 +4,13 @@
     "subtitle": "Track and analyze your product sales performance",
     "filters": {
       "brand": {
-        "label": "Brand Selection",
+        "label": "Select Brand",
         "options": {
-          "sky007": "Sky007, BBIA",
+          "sky007": "Sky007",
+          "bbia": "Bbia",
+          "mixsoon": "Mixsoon",
           "hince": "Hince",
-          "mixsoon": "Mixsoon"
+          "all": "All brands"
         }
       }
     },
@@ -97,6 +99,41 @@
       "errors": {
         "loadFailed": "Unable to load product statistics"
       }
+    }
+  },
+  "campaignFilters": {
+    "search": {
+      "placeholder": "Search campaigns..."
+    },
+    "status": {
+      "placeholder": "Status",
+      "options": {
+        "Planning": "Planning",
+        "InProgress": "In Progress",
+        "Completed": "Completed",
+        "Cancelled": "Cancelled",
+        "OnHold": "On Hold",
+        "Paused": "Paused",
+        "Expired": "Expired",
+        "Pending": "Pending",
+        "Rejected": "Rejected",
+        "Approved": "Approved",
+        "Failed": "Failed",
+        "Created": "Created"
+      }
+    },
+    "pic": {
+      "placeholder": "Person in charge",
+      "options": {
+        "all": "All",
+        "user1": "User 1",
+        "user2": "User 2",
+        "user3": "User 3"
+      }
+    },
+    "buttons": {
+      "filter": "Filter",
+      "reset": "Reset"
     }
   }
 } 

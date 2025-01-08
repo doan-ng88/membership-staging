@@ -18,6 +18,11 @@ export interface CampaignFilters {
   searchText?: string;
   status?: string;
   createdBy?: string;
+  pic?: string;
+  dateRange?: {
+    start: string;
+    end: string;
+  };
 }
 
 export interface PaginationParams {

@@ -74,7 +74,7 @@
     </a-form>
 
     <MemberSelectionModal
-      v-model:visible="showMemberModal"
+      v-model:open="showMemberModal"
       @select="handleMemberSelect"
     />
   </a-modal>

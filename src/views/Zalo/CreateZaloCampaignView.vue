@@ -121,7 +121,7 @@
     </div>
 
     <AddMemberModal
-      v-model:visible="showMemberModal"
+      v-model:open="showMemberModal"
       :website-id="formState.websiteId"
       @select="handleMemberSelect"
     />

@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    :visible="visible"
+    :open="visible"
     :title="t('addMemberModal.title')"
     @ok="handleOk"
     @cancel="handleCancel"

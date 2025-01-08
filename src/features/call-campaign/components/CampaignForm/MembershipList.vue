@@ -22,7 +22,7 @@
     </a-table>
 
     <CustomerSelectionModal
-      v-model:visible="showMemberModal"
+      v-model:open="showMemberModal"
       :selected-members="members"
       @confirm="handleMemberSelection"
     />

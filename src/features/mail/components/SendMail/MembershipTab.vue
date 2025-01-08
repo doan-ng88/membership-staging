@@ -77,7 +77,7 @@
 
     <!-- Send Mail Modal -->
     <!-- <SendTemplateMailModal
-      v-model:visible="sendMailModalVisible"
+      v-model:open="sendMailModalVisible"
       :template="selectedTemplate"
       :selectedMembers="selectedMembers"
       mode="membership"

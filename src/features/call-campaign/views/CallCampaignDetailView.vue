@@ -70,7 +70,7 @@
 
       <!-- Change Status Modal -->
       <a-modal
-        v-model:visible="isChangeStatusModalVisible"
+        v-model:open="isChangeStatusModalVisible"
         title="Change Status"
         @ok="handleStatusChange"
         @cancel="handleCancel"

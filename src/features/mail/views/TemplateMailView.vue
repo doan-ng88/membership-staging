@@ -45,7 +45,7 @@
 
     <!-- Send Mail Modal Component -->
     <!-- <SendMailModal
-      v-model:visible="showSendModal"
+      v-model:open="showSendModal"
       :template="selectedTemplate"
       @success="handleSendSuccess"
       @cancel="handleSendCancel"

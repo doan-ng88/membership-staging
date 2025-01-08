@@ -65,7 +65,7 @@
 
         <!-- Upload Modal -->
         <a-modal
-          v-model:visible="showUploadModal"
+          v-model:open="showUploadModal"
           title="Upload File Excel"
           @ok="handleUpload"
           :confirmLoading="uploading"

@@ -20,6 +20,12 @@
       "pending": "pending",
       "cancelled": "cancelled",
       "processing": "processing"
+    },
+    "common": {
+      "exportExcel": "Export Excel",
+      "exporting": "Exporting...",
+      "exportSuccess": "Export to Excel successfully",
+      "exportError": "An error occurred while exporting"
     }
   }
 } 

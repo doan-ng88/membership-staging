@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    :visible="visible"
+    :open="visible"
     @update:visible="emit('update:visible', $event)"
     :title="mode === 'campaign' ? 'Send Mail Template by Campaign' : 'Send Mail Template by Membership'"
     width="800px"

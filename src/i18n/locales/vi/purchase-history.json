@@ -20,6 +20,12 @@
       "pending": "chờ xử lý",
       "cancelled": "đã hủy",
       "processing": "đang xử lý"
+    },
+    "common": {
+      "exportExcel": "Xuất Excel",
+      "exporting": "Đang xuất...",
+      "exportSuccess": "Xuất file Excel thành công",
+      "exportError": "Có lỗi xảy ra khi xuất file"
     }
   }
 } 

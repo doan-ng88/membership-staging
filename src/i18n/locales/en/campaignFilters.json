@@ -1,5 +1,5 @@
 {
-  "campaignFilters": {
+  "campaignMailFilters": {
     "search": {
       "placeholder": "Search by campaign name"
     },
@@ -10,8 +10,20 @@
         "draft": "Draft",
         "scheduled": "Scheduled",
         "inProgress": "In Progress",
-        "completed": "Completed",
-        "cancelled": "Cancelled"
+        "Completed": "Completed",
+        "Cancelled": "Cancelled",
+        "paused": "Paused",
+        "expired": "Expired",
+        "pending": "Pending",
+        "rejected": "Rejected",
+        "approved": "Approved",
+        "failed": "Failed",
+        "Created": "Created",
+        "Closed": "Closed",
+        "Planning": "Planning",
+        "In Progress": "In Progress",
+        "On Hold": "On Hold"
+
       }
     },
     "pic": {

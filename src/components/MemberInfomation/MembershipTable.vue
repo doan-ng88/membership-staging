@@ -43,7 +43,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="member in filteredMembers" :key="member.membershipId">
+        <tr v-for="(member, index) in filteredMembers" 
+            :key="`member-${member.membershipId}-${member.websiteId}-${member.email}-${index}`">
           <td class="border border-gray-300 p-2">{{ member.fullName }}</td>
           <td class="border border-gray-300 p-2">{{ member.email }}</td>
           <td class="border border-gray-300 p-2">{{ member.mainPhoneNumber }}</td>
@@ -261,11 +262,13 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="order in orderHistory || []" :key="order.order_id">
+                    <tr v-for="order in orderHistory || []" 
+                        :key="`order-${order.order_id}-${order.dateRecord || Date.now()}`">
                       <td class="border p-2">{{ formatDate(order.order_date) }}</td>
                       <td class="border p-2">#{{ order.order_id }}</td>
                       <td class="border p-2">
-                        <div v-for="item in order.items" :key="item.product_id" class="mb-1">
+                        <div v-for="item in order.items" 
+                             :key="`item-${order.order_id}-${item.product_id}-${item.product_quantity}`">
                           {{ item.order_item_name }} (x{{ item.product_quantity }})
                         </div>
                       </td>
@@ -299,7 +302,8 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="point in pointHistory" :key="`${point.orderId}-${point.productId}`">
+                    <tr v-for="point in pointHistory" 
+                        :key="`point-${point.orderId}-${point.dateRecord}-${point.productId}`">
                       <td class="border p-2">{{ formatDate(new Date(Number(point.dateRecord) * 1000)) }}</td>
                       <td class="border p-2">#{{ point.orderId }}</td>
                       <td class="border p-2">{{ point.action }}</td>
@@ -342,8 +346,8 @@
         :current="currentPage"
         :total="totalCount"
         :page-size="pageSize"
-        :show-total="false"
         :show-size-changer="true"
+        :show-total="showTotal"
         :page-size-options="['10', '20', '50', '100']"
         @change="handlePageChange"
         @showSizeChange="handleSizeChange"
@@ -400,6 +404,7 @@ const emit = defineEmits<{
   }): void
   (e: 'size-change', size: number): void
   (e: 'filter-change', filters: Array<{key: string, value: any}>): void
+  (e: 'view', member: Member): void
 }>()
 
 // State
@@ -508,21 +513,46 @@ const handleView = (member: Member) => {
 }
 
 const handleHistory = async (member: Member) => {
-  selectedMember.value = member
-  activeModal.value = 'history'
-  
-  if (!member.membershipWebsiteId) {
-    message.error('Member Website ID not found')
-    return
-  }
   try {
+    // Kiểm tra membershipWebsiteId trước khi gọi API
+    if (!member?.membershipWebsiteId) {
+      message.error('Member Website ID không tồn tại')
+      return
+    }
+
+    selectedMember.value = member
+    activeModal.value = 'history'
+    
     loading.value = true
-    const [orderResponse, pointResponse] = await Promise.all([
-      orderHistoryApi.getOrderHistory(member.membershipWebsiteId),
-      pointHistoryApi.getPointHistory(member.membershipWebsiteId)
-    ])
-    orderHistory.value = orderResponse.orders
-    pointHistory.value = pointResponse.data
+
+    // Thêm kiểm tra và xử lý lỗi cụ thể cho từng API call
+    try {
+      const [orderResponse, pointResponse] = await Promise.all([
+        orderHistoryApi.getOrderHistory(member.membershipWebsiteId),
+        pointHistoryApi.getPointHistory(member.membershipWebsiteId)
+      ])
+
+      // Kiểm tra response trước khi gán giá trị
+      if (orderResponse?.orders) {
+        orderHistory.value = orderResponse.orders
+      } else {
+        orderHistory.value = []
+      }
+
+      if (pointResponse?.data) {
+        pointHistory.value = pointResponse.data
+      } else {
+        pointHistory.value = []
+      }
+
+    } catch (apiError) {
+      console.error('Lỗi khi gọi API:', apiError)
+      message.error('Không thể tải lịch sử. Vui lòng thử lại sau.')
+      // Reset data khi có lỗi
+      orderHistory.value = []
+      pointHistory.value = []
+    }
+
   } catch (error) {
     console.error('Error fetching history:', error)
     message.error(t('profileManagement.history.error.fetch'))
@@ -694,6 +724,15 @@ const handlePointReward = (member: Member) => {
     params: { 
       membershipWebsiteId: member.membershipWebsiteId.toString()
     }
+  })
+}
+
+// Thêm hàm showTotal vào script setup
+const showTotal = (total: number, range: [number, number]) => {
+  return t('membershipTable.pagination.total', { 
+    start: range[0],
+    end: range[1],
+    total: total 
   })
 }
 
