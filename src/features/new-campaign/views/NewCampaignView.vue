@@ -226,7 +226,6 @@ const rules = computed(() => ({
   name: [{ required: true, message: t('newEmailCampaign.form.name.required') }],
   startDate: [{ required: true, message: t('newEmailCampaign.form.time.required') }],
   pic: [{ required: true, message: t('newEmailCampaign.form.pic.required') }],
-  coupons: [{ required: true, message: t('newEmailCampaign.form.coupon.required') }],
   websiteId: [{ required: true, message: t('newEmailCampaign.form.website.required') }]
 }))
 
@@ -381,7 +380,7 @@ const fetchCoupons = async (search?: string) => {
       search
     )
 
-    couponOptions.value = response.data.map((coupon: any) => ({
+    couponOptions.value = response.data.data.map((coupon: any) => ({
       label: coupon.code,
       value: coupon.code
     }))
