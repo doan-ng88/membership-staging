@@ -1,0 +1,46 @@
+{
+  "editCampaign": {
+    "title": "Edit Campaign",
+    "form": {
+      "name": "Campaign Name",
+      "description": "Description",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "issue": "Issue",
+      "priorityLevel": {
+        "label": "Priority Level",
+        "options": {
+          "high": "High",
+          "medium": "Medium",
+          "low": "Low",
+          "notSet": "Not Set"
+        }
+      },
+      "status": {
+        "label": "Status",
+        "options": {
+          "created": "Created",
+          "planning": "Planning",
+          "inProgress": "In Progress",
+          "onHold": "On Hold",
+          "completed": "Completed",
+          "closed": "Closed",
+          "cancelled": "Cancelled"
+        }
+      },
+      "checkboxes": {
+        "private": "Private",
+        "callService": "Call Service",
+        "appPush": "App Notification",
+        "sendEmail": "Send Email"
+      }
+    },
+    "messages": {
+      "success": "Campaign updated successfully",
+      "error": {
+        "validation": "Please check the information",
+        "update": "Failed to update campaign"
+      }
+    }
+  }
+} 

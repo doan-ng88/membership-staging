@@ -1,7 +1,7 @@
 <template>
   <a-modal
     :open="visible"
-    :title="'Edit Campaign'"
+    :title="t('editCampaign.title')"
     @cancel="handleCancel"
     @ok="handleSubmit"
     :confirmLoading="loading"
@@ -13,16 +13,16 @@
       :rules="rules"
       layout="vertical"
     >
-      <a-form-item label="Campaign Name" name="campaignName">
+      <a-form-item :label="t('editCampaign.form.name')" name="campaignName">
         <a-input v-model:value="formState.CampaignName" />
       </a-form-item>
 
-      <a-form-item label="Description" name="description">
+      <a-form-item :label="t('editCampaign.form.description')" name="description">
         <a-textarea v-model:value="formState.Description" :rows="3" />
       </a-form-item>
 
       <div class="grid grid-cols-2 gap-4">
-        <a-form-item label="Start Date" name="startDate">
+        <a-form-item :label="t('editCampaign.form.startDate')" name="startDate">
           <a-date-picker 
             v-model:value="formState.StartDate" 
             style="width: 100%"
@@ -30,7 +30,7 @@
           />
         </a-form-item>
 
-        <a-form-item label="End Date" name="dueDate">
+        <a-form-item :label="t('editCampaign.form.endDate')" name="dueDate">
           <a-date-picker 
             v-model:value="formState.DueDate" 
             style="width: 100%"
@@ -39,45 +39,45 @@
         </a-form-item>
       </div>
 
-      <a-form-item label="Issue" name="issue">
+      <a-form-item :label="t('editCampaign.form.issue')" name="issue">
         <a-input v-model:value="formState.Issue" />
       </a-form-item>
 
       <div class="grid grid-cols-2 gap-4">
-        <a-form-item label="Priority Level" name="priorityLevel">
+        <a-form-item :label="t('editCampaign.form.priorityLevel.label')" name="priorityLevel">
           <a-select v-model:value="formState.PriorityLevel">
-            <a-select-option value="High">High</a-select-option>
-            <a-select-option value="Medium">Medium</a-select-option>
-            <a-select-option value="Low">Low</a-select-option>
-            <a-select-option value="Not Set">Not Set</a-select-option>
+            <a-select-option value="High">{{ t('editCampaign.form.priorityLevel.options.high') }}</a-select-option>
+            <a-select-option value="Medium">{{ t('editCampaign.form.priorityLevel.options.medium') }}</a-select-option>
+            <a-select-option value="Low">{{ t('editCampaign.form.priorityLevel.options.low') }}</a-select-option>
+            <a-select-option value="Not Set">{{ t('editCampaign.form.priorityLevel.options.notSet') }}</a-select-option>
           </a-select>
         </a-form-item>
 
-        <a-form-item label="Status" name="status">
+        <a-form-item :label="t('editCampaign.form.status.label')" name="status">
           <a-select v-model:value="formState.Status">
-            <a-select-option value="Created">Created</a-select-option>
-            <a-select-option value="Planning">Planning</a-select-option>
-            <a-select-option value="In Progress">In Progress</a-select-option>
-            <a-select-option value="On Hold">On Hold</a-select-option>
-            <a-select-option value="Completed">Completed</a-select-option>
-            <a-select-option value="Closed">Closed</a-select-option>
-            <a-select-option value="Cancelled">Cancelled</a-select-option>
+            <a-select-option value="Created">{{ t('editCampaign.form.status.options.created') }}</a-select-option>
+            <a-select-option value="Planning">{{ t('editCampaign.form.status.options.planning') }}</a-select-option>
+            <a-select-option value="In Progress">{{ t('editCampaign.form.status.options.inProgress') }}</a-select-option>
+            <a-select-option value="On Hold">{{ t('editCampaign.form.status.options.onHold') }}</a-select-option>
+            <a-select-option value="Completed">{{ t('editCampaign.form.status.options.completed') }}</a-select-option>
+            <a-select-option value="Closed">{{ t('editCampaign.form.status.options.closed') }}</a-select-option>
+            <a-select-option value="Cancelled">{{ t('editCampaign.form.status.options.cancelled') }}</a-select-option>
           </a-select>
         </a-form-item>
       </div>
 
       <div class="grid grid-cols-2 gap-4 mt-4">
         <a-form-item>
-          <a-checkbox v-model:checked="formState.IsPrivated">Private</a-checkbox>
+          <a-checkbox v-model:checked="formState.IsPrivated">{{ t('editCampaign.form.checkboxes.private') }}</a-checkbox>
         </a-form-item>
         <a-form-item>
-          <a-checkbox v-model:checked="formState.isServiceCall">Call Service</a-checkbox>
+          <a-checkbox v-model:checked="formState.isServiceCall">{{ t('editCampaign.form.checkboxes.callService') }}</a-checkbox>
         </a-form-item>
         <a-form-item>
-          <a-checkbox v-model:checked="formState.isAppPush">App Notification</a-checkbox>
+          <a-checkbox v-model:checked="formState.isAppPush">{{ t('editCampaign.form.checkboxes.appPush') }}</a-checkbox>
         </a-form-item>
         <a-form-item>
-          <a-checkbox v-model:checked="formState.isServiceEmail">Send Email</a-checkbox>
+          <a-checkbox v-model:checked="formState.isServiceEmail">{{ t('editCampaign.form.checkboxes.sendEmail') }}</a-checkbox>
         </a-form-item>
       </div>
     </a-form>
@@ -89,6 +89,7 @@ import { defineComponent, ref, reactive, watch } from 'vue'
 import { message } from 'ant-design-vue'
 import dayjs from 'dayjs'
 import { useAuthStore } from '@/stores/auth'
+import { useI18n } from 'vue-i18n'
 import type { Campaign } from '../../types/campaign.types'
 
 export default defineComponent({
@@ -110,6 +111,7 @@ export default defineComponent({
   },
   emits: ['update:visible', 'success'],
   setup(props, { emit }) {
+    const { t } = useI18n()
     const authStore = useAuthStore()
     const formRef = ref()
     const loading = ref(false)
@@ -132,13 +134,13 @@ export default defineComponent({
 
     const rules = {
       CampaignName: [
-        { required: true, message: 'Please enter campaign name' }
+        { required: true, message: t('editCampaign.messages.error.validation') }
       ],
       StartDate: [
-        { required: true, message: 'Please select start date' }
+        { required: true, message: t('editCampaign.messages.error.validation') }
       ],
       Issue: [
-        { required: true, message: 'Please enter issue' }
+        { required: true, message: t('editCampaign.messages.error.validation') }
       ],
       DueDate: [
         {
@@ -191,7 +193,7 @@ export default defineComponent({
 
         if (!response.ok) throw new Error('Failed to update campaign')
 
-        message.success('Campaign updated successfully')
+        message.success(t('editCampaign.messages.success'))
         emit('success')
         emit('update:visible', false)
       } catch (error) {
@@ -199,7 +201,7 @@ export default defineComponent({
         if (error instanceof Error) {
           message.error(error.message)
         } else {
-          message.error('Please check the information')
+          message.error(t('editCampaign.messages.error.update'))
         }
       } finally {
         loading.value = false
@@ -218,7 +220,8 @@ export default defineComponent({
       rules,
       dateFormat,
       handleSubmit,
-      handleCancel
+      handleCancel,
+      t
     }
   }
 })
