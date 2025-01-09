@@ -69,8 +69,8 @@ const WEBSITES: Website[] = [
 
 const loading = ref(false)
 const dateRange = ref<[Dayjs, Dayjs]>([
-  dayjs().startOf('year'),
-  dayjs().endOf('year')
+  dayjs().startOf('month'),
+  dayjs().endOf('day')
 ])
 
 // Initialize selectedBrand with the first website as default value

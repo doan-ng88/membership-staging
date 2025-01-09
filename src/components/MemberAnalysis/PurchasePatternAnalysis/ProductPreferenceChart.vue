@@ -93,8 +93,8 @@ export default defineComponent({
     const selectedWebsiteId = ref(2)
     
     const dateRange = ref<[dayjs.Dayjs, dayjs.Dayjs]>([
-      dayjs().startOf('year'),
-      dayjs().endOf('year')
+      dayjs().startOf('month'),
+      dayjs().endOf('day')
     ])
 
     // Computed properties

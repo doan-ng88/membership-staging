@@ -109,8 +109,8 @@ const props = defineProps<{
 const loading = ref(false)
 const levelData = ref<WebsiteData[]>([])
 const dateRange = ref<[dayjs.Dayjs, dayjs.Dayjs]>([
-  dayjs().startOf('year'),
-  dayjs().endOf('year')
+  dayjs().startOf('month'),
+  dayjs().endOf('day')
 ])
 
 // Computed

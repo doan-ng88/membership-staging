@@ -87,8 +87,8 @@ export default defineComponent({
     const purchaseData = ref<any[]>([])
     
     const dateRange = ref<[dayjs.Dayjs, dayjs.Dayjs]>([
-      dayjs().startOf('year'),
-      dayjs().endOf('year')
+      dayjs().startOf('month'),
+      dayjs().endOf('day')
     ])
 
     const selectedWebsiteId = ref(2)
