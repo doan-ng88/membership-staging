@@ -77,7 +77,7 @@ const fetchMembers = async (
     console.log('pageIndex', pageIndex)
     const response = await membershipAPI.getList(
       'MembershipsWebsitesId',
-      'ASC',
+      'DESC',
       pageSizeParam,
       pageIndex,
       searchParams || currentFilters.value

@@ -68,16 +68,24 @@
 
       <div class="grid grid-cols-2 gap-4 mt-4">
         <a-form-item>
-          <a-checkbox v-model:checked="formState.IsPrivated">{{ t('editCampaign.form.checkboxes.private') }}</a-checkbox>
+          <a-checkbox v-model:checked="formState.IsPrivated" :defaultChecked="formState.IsPrivated">
+            {{ t('editCampaign.form.checkboxes.private') }}
+          </a-checkbox>
         </a-form-item>
         <a-form-item>
-          <a-checkbox v-model:checked="formState.isServiceCall">{{ t('editCampaign.form.checkboxes.callService') }}</a-checkbox>
+          <a-checkbox v-model:checked="formState.isServiceCall" :defaultChecked="formState.isServiceCall">
+            {{ t('editCampaign.form.checkboxes.callService') }}
+          </a-checkbox>
         </a-form-item>
         <a-form-item>
-          <a-checkbox v-model:checked="formState.isAppPush">{{ t('editCampaign.form.checkboxes.appPush') }}</a-checkbox>
+          <a-checkbox v-model:checked="formState.isAppPush" :defaultChecked="formState.isAppPush">
+            {{ t('editCampaign.form.checkboxes.appPush') }}
+          </a-checkbox>
         </a-form-item>
         <a-form-item>
-          <a-checkbox v-model:checked="formState.isServiceEmail">{{ t('editCampaign.form.checkboxes.sendEmail') }}</a-checkbox>
+          <a-checkbox v-model:checked="formState.isServiceEmail" :defaultChecked="formState.isServiceEmail">
+            {{ t('editCampaign.form.checkboxes.sendEmail') }}
+          </a-checkbox>
         </a-form-item>
       </div>
     </a-form>

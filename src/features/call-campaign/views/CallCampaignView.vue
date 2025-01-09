@@ -83,6 +83,7 @@ const handleAdd = () => {
   };
 
 const handleEdit = (campaign: any) => {
+  console.log('Campaign before setting:', campaign)
   selectedCampaign.value = {
     Id: campaign.id,
     CampaignName: campaign.name,
@@ -92,13 +93,13 @@ const handleEdit = (campaign: any) => {
     Issue: campaign.issue,
     PriorityLevel: campaign.priorityLevel,
     Status: campaign.status,
-    IsPrivated: campaign.isPrivated,
-    isServiceCall: campaign.isServiceCall,
-    isAppPush: campaign.isAppPush,
-    isServiceEmail: campaign.isServiceEmail
+    IsPrivated: campaign.isPrivated || false,        // Private
+    isServiceCall: campaign.isServiceCall || false,  // Call Service 
+    isAppPush: campaign.isAppPush || false,         // App Notification
+    isServiceEmail: campaign.isServiceEmail || false // Send Email
   }
+  console.log('Campaign after setting:', selectedCampaign.value)
   showEditModal.value = true
-  console.log('Editing campaign:', selectedCampaign.value.Id)
 }
 </script>
 
