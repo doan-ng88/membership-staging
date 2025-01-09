@@ -85,12 +85,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, watch } from 'vue'
+import { defineComponent, ref, reactive, watch, onMounted } from 'vue'
 import { message } from 'ant-design-vue'
 import dayjs from 'dayjs'
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
-import type { Campaign } from '../../types/campaign.types'
+import type { FormInstance } from 'ant-design-vue'
+import axios from 'axios'
 
 export default defineComponent({
   name: 'EditCampaignModal',
@@ -101,127 +102,140 @@ export default defineComponent({
     },
     campaignId: {
       type: Number,
-      default: 1,
-      required: false
-    },
-    campaignData: {
-      type: Object as () => Campaign,
-      required: false
+      required: true
     }
   },
-  emits: ['update:visible', 'success'],
+  
   setup(props, { emit }) {
     const { t } = useI18n()
     const authStore = useAuthStore()
-    const formRef = ref()
+    const formRef = ref<FormInstance>()
     const loading = ref(false)
     const dateFormat = 'YYYY-MM-DD'
 
-    const formState = reactive<Campaign>({
-      CampaignID: props.campaignData?.CampaignID || 0   ,
-      CampaignName: props.campaignData?.CampaignName || '',
-      Description: props.campaignData?.Description || '',
-      StartDate: props.campaignData?.StartDate ? dayjs(props.campaignData.StartDate).format('YYYY-MM-DD') : null,
-      DueDate: props.campaignData?.DueDate ? dayjs(props.campaignData.DueDate).format('YYYY-MM-DD') : null,
-      Issue: props.campaignData?.Issue || '',
-      PriorityLevel: props.campaignData?.PriorityLevel || 'Not Set',
-      Status: props.campaignData?.Status || 'Created',
-      IsPrivated: props.campaignData?.IsPrivated || false,
-      isServiceCall: props.campaignData?.isServiceCall || false,
-      isAppPush: props.campaignData?.isAppPush || false,
-      isServiceEmail: props.campaignData?.isServiceEmail || false
+    // Form state
+    const formState = reactive({
+      CampaignName: '',
+      Description: '',
+      StartDate: null,
+      DueDate: null,
+      Issue: '',
+      PriorityLevel: 'Not Set',
+      Status: 'Created',
+      IsPrivated: false,
+      isServiceCall: false,
+      isAppPush: false,
+      isServiceEmail: false
     })
 
-    const rules = {
-      CampaignName: [
-        { required: true, message: t('editCampaign.messages.error.validation') }
-      ],
-      StartDate: [
-        { required: true, message: t('editCampaign.messages.error.validation') }
-      ],
-      Issue: [
-        { required: true, message: t('editCampaign.messages.error.validation') }
-      ],
-      DueDate: [
-        {
-          validator: async (_rule: any, value: any) => {
-            if (value && formState.StartDate && dayjs(value).isBefore(formState.StartDate)) {
-              throw new Error('End date must be after start date')
-            }
-          }
-        }
-      ]
-    }
-
-    watch(() => props.campaignData, (newVal) => {
-      if (newVal) {
-        Object.assign(formState, {
-          ...newVal,
-          StartDate: newVal.StartDate ? dayjs(newVal.StartDate) : null,
-          DueDate: newVal.DueDate ? dayjs(newVal.DueDate) : null
-        })
-      }
-    }, { immediate: true })
-
-    const handleSubmit = async () => {
+    // Fetch campaign data
+    const fetchCampaignData = async () => {
       try {
-        await formRef.value.validate()
         loading.value = true
-
-        if (!formState.StartDate) {
-          message.error('Please select start date')
-          return
-        }
-
-        const payload = {
-          ...formState,
-          StartDate: dayjs(formState.StartDate).format('YYYY-MM-DD'),
-          DueDate: formState.DueDate ? dayjs(formState.DueDate).format('YYYY-MM-DD') : null
-        }
-
-        const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/membership/update/update-campaign/${props.campaignId}`,
-          {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${authStore.token}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
+        console.log('Fetching campaign data for ID:', props.campaignId)
+        
+        // Sử dụng URL trực tiếp từ bạn cung cấp
+        const response = await axios.get('https://actsone.vercel.app/api/membership/get/get-campaign/102', {
+          headers: {
+            'Authorization': `Bearer ${authStore.token}`
           }
-        )
+        })
 
-        if (!response.ok) throw new Error('Failed to update campaign')
-
-        message.success(t('editCampaign.messages.success'))
-        emit('success')
-        emit('update:visible', false)
-      } catch (error) {
-        console.error('Error:', error)
-        if (error instanceof Error) {
-          message.error(error.message)
-        } else {
-          message.error(t('editCampaign.messages.error.update'))
+        console.log('API Response:', response.data)
+        
+        if (response.data?.campaign) {
+          const campaign = response.data.campaign
+          
+          // Update form state with existing data
+          formState.CampaignName = campaign.campaignName
+          formState.Description = campaign.description
+          formState.StartDate = campaign.startDate ? dayjs(campaign.startDate) : null
+          formState.DueDate = campaign.dueDate ? dayjs(campaign.dueDate) : null
+          formState.Issue = campaign.issue
+          formState.PriorityLevel = campaign.priorityLevel
+          formState.Status = campaign.status
+          formState.IsPrivated = campaign.isPrivated
+          formState.isServiceCall = campaign.isServiceCall
+          formState.isAppPush = campaign.isAppPush
+          formState.isServiceEmail = campaign.isServiceEmail
         }
+
+      } catch (error) {
+        console.error('Error fetching campaign:', error)
+        message.error(t('editCampaign.messages.error.update'))
       } finally {
         loading.value = false
       }
     }
 
+    // Fetch data when component is mounted
+    onMounted(() => {
+      fetchCampaignData()
+    })
+
+    // Watch for modal visibility
+    watch(
+      () => props.visible,
+      (newVisible) => {
+        if (newVisible) {
+          fetchCampaignData()
+        }
+      }
+    )
+
     const handleCancel = () => {
-      formRef.value?.resetFields()
       emit('update:visible', false)
     }
 
+    const handleSubmit = async () => {
+      try {
+        loading.value = true
+        const payload = {
+          CampaignName: formState.CampaignName,
+          Description: formState.Description,
+          StartDate: formState.StartDate ? dayjs(formState.StartDate).format('YYYY-MM-DD') : null,
+          DueDate: formState.DueDate ? dayjs(formState.DueDate).format('YYYY-MM-DD') : null,
+          Issue: formState.Issue,
+          PriorityLevel: formState.PriorityLevel,
+          Status: formState.Status,
+          IsPrivated: formState.IsPrivated,
+          isServiceCall: formState.isServiceCall,
+          isAppPush: formState.isAppPush,
+          isServiceEmail: formState.isServiceEmail
+        }
+
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/membership/update/update-campaign/${props.campaignId}`,
+          payload,
+          {
+            headers: {
+              'Authorization': `Bearer ${authStore.token}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        )
+
+        if (response.status === 200) {
+          message.success(t('editCampaign.messages.success'))
+          emit('success')
+          emit('update:visible', false)
+        }
+      } catch (error) {
+        console.error('Error:', error)
+        message.error(t('editCampaign.messages.error.update'))
+      } finally {
+        loading.value = false
+      }
+    }
+
     return {
+      t,
       formRef,
       formState,
       loading,
-      rules,
       dateFormat,
       handleSubmit,
-      handleCancel,
-      t
+      handleCancel
     }
   }
 })

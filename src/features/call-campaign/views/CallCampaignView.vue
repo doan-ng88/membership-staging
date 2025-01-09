@@ -34,7 +34,7 @@
 
       <EditCampaignModal
         v-model:open="showEditModal"
-        :campaignId="selectedCampaign?.CampaignID"
+        :campaignId="selectedCampaign?.Id||0"
         :campaign-data="selectedCampaign || {}"
         @success="fetchCampaignList"
       />
@@ -82,22 +82,23 @@ const handleAdd = () => {
     router.push({name: 'NewCampaign'});
   };
 
-const handleEdit = (campaign: Campaign) => {
+const handleEdit = (campaign: any) => {
   selectedCampaign.value = {
-    CampaignID: campaign.CampaignID,
-    CampaignName: campaign.CampaignName,
-    Description: campaign.Description,
-    StartDate: campaign.StartDate,
-    DueDate: campaign.DueDate,
-    Issue: campaign.Issue,
-    PriorityLevel: campaign.PriorityLevel,
-    Status: campaign.Status,
-    IsPrivated: campaign.IsPrivated,
+    Id: campaign.id,
+    CampaignName: campaign.name,
+    Description: campaign.description,
+    StartDate: campaign.startDate,
+    DueDate: campaign.endDate,
+    Issue: campaign.issue,
+    PriorityLevel: campaign.priorityLevel,
+    Status: campaign.status,
+    IsPrivated: campaign.isPrivated,
     isServiceCall: campaign.isServiceCall,
     isAppPush: campaign.isAppPush,
     isServiceEmail: campaign.isServiceEmail
   }
   showEditModal.value = true
+  console.log('Editing campaign:', selectedCampaign.value.Id)
 }
 </script>
 

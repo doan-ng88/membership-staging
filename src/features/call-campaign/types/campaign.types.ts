@@ -1,6 +1,6 @@
 // src/features/call-campaign/types/campaign.types.ts
 export interface Campaign {
-  CampaignID: number;
+  Id: number;
   CampaignName: string;
   Description: string;
   StartDate: string | null;
