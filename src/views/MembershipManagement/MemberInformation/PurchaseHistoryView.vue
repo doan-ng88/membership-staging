@@ -146,11 +146,12 @@ const fetchOrders = async () => {
       currentPage.value,
       pageSize.value
     )
-    orders.value = response.data
-    totalOrders.value = response.pagination.total
+    orders.value = response.data || []
+    totalOrders.value = response.pagination?.total || 0
   } catch (err) {
     error.value = t('purchaseHistory.error')
     message.error(t('purchaseHistory.error'))
+    orders.value = []
   } finally {
     loading.value = false
   }
