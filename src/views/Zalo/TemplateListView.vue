@@ -219,8 +219,11 @@ import CampaignTab from '@/features/mail/components/SendMail/CampaignTab.vue'
 import MembershipTab from '@/features/mail/components/SendMail/MembershipTab.vue'
 import SendTemplateZaloModal from '@/features/mail/components/SendTemplateZaloModel.vue'
 import { useI18nGlobal } from '@/i18n'
+import { useAuthStore } from '@/stores/auth'
 
 const { t } = useI18nGlobal()
+
+const authStore = useAuthStore()
 
 interface ZaloTemplate {
   templateId: number
@@ -321,7 +324,7 @@ const fetchTemplates = async () => {
   try {
     loading.value = true
     
-    let url = `/api/membership/zalo/templates?page=${pagination.current}&pageSize=${pagination.pageSize}`
+    let url = `${import.meta.env.VITE_API_BASE_URL}/membership/zalo/templates?page=${pagination.current}&pageSize=${pagination.pageSize}`
     
     if (filters.status !== '0') {
       url += `&status=${filters.status}`
@@ -331,9 +334,18 @@ const fetchTemplates = async () => {
       url += `&search=${encodeURIComponent(filters.search)}`
     }
 
-    const response = await fetch(url)
-    const data: PaginationResponse = await response.json()
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${authStore.token}`,
+        'Content-Type': 'application/json'
+      }
+    })
 
+    if (!response.ok) {
+      throw new Error('Failed to fetch templates')
+    }
+
+    const data: PaginationResponse = await response.json()
     if (data.result === 'Success') {
       templates.value = data.source.data
       pagination.total = data.totalCount

@@ -13,7 +13,9 @@
           "all": "Tất cả",
           "publish": "Đang hoạt động",
           "draft": "Nháp",
-          "trash": "Đã xóa"
+          "trash": "Đã xóa",
+          "private": "Riêng tư",
+          "future": "Chưa bắt đầu"
         }
       },
       "search": {
