@@ -7,6 +7,27 @@
 
     <!-- Filter Section -->
     <div class="mb-6 flex flex-wrap gap-4">
+      <!-- Brand Selection -->
+      <div class="flex-1 min-w-[200px]">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          {{ t('productSales.product.filters.brand') }}
+        </label>
+        <a-select 
+          v-model:value="selectedBrandValue"
+          @change="handleBrandChange" 
+          class="w-48"
+          placeholder="Select brand"
+        >
+          <a-select-option v-for="brand in defaultBrands" 
+                           :key="brand.value" 
+                           :value="brand.value"
+          >
+            {{ t(`productSales.filters.brand.options.${brand.key}`) }}
+          </a-select-option>
+        </a-select>
+      </div>
+
+      <!-- Existing Product Filter -->
       <div class="flex-1 min-w-[200px]">
         <label class="block text-sm font-medium text-gray-700 mb-2">
           {{ t('productSales.product.filters.product') }}
@@ -21,6 +42,7 @@
         />
       </div>
       
+      <!-- Existing Date Range Filter -->
       <div class="flex-1 min-w-[200px]">
         <label class="block text-sm font-medium text-gray-700 mb-2">
           {{ t('productSales.product.filters.dateRange') }}
@@ -102,8 +124,8 @@ const loading = ref(false)
 const productStats = ref<any[]>([])
 const selectedProduct = ref<string>()
 const dateRange = ref<[dayjs.Dayjs, dayjs.Dayjs]>([
-  dayjs().startOf('year'),
-  dayjs().endOf('year')
+  dayjs().startOf('month'),
+  dayjs().endOf('day')
 ])
 const websites = ref([])
 const selectedWebsite = ref<number>(2)
@@ -178,9 +200,40 @@ const disabledDate = (current: dayjs.Dayjs) => {
   return current && current > dayjs().endOf('day')
 }
 
+interface Brand {
+  value: string;
+  key: string;
+  label: string;
+}
+
 const props = defineProps<{
-  websiteId: number
+  selectedBrand: string
+  brands: Brand[]
 }>()
+
+const emit = defineEmits<{
+  (e: 'update:selectedBrand', value: string): void
+}>()
+
+// Định nghĩa brands mặc định
+const defaultBrands: Brand[] = [
+  { value: '1', key: 'sky007', label: 'Sky007' },
+  { value: '2', key: 'bbia', label: 'BBIA' },
+  { value: '3', key: 'hince', label: 'Hince' },
+  { value: '4', key: 'mixsoon', label: 'Mixsoon' },
+]
+
+const selectedBrandValue = ref(props.selectedBrand || '1')
+
+const handleBrandChange = (value: string) => {
+  selectedBrandValue.value = value;
+  emit('update:selectedBrand', value);
+}
+
+// Thêm watch
+watch(selectedBrandValue, () => {
+  fetchProductStats()
+})
 
 const fetchWebsites = async () => {
   try {
@@ -218,7 +271,7 @@ const fetchProductStats = async () => {
     const response = await axios.post(
       `${import.meta.env.VITE_API_BASE_URL}/membership/get/get-product-stats`,
       {
-        websiteId: selectedWebsite.value,
+        websiteId: parseInt(selectedBrandValue.value),
         startDate: dateRange.value[0].format('YYYY-MM-DD'),
         endDate: dateRange.value[1].format('YYYY-MM-DD')
       },
