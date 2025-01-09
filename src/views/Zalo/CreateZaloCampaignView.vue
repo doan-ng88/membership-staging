@@ -287,10 +287,11 @@ const fetchAdminUsers = async () => {
   try {
     loadingAdmins.value = true;
     const response = await membershipAPI.getAdminUsers();
-    formState.adminUsers = response.data.map((admin: any) => ({
-      id: admin.userId,
-      name: admin.name || admin.fullName || admin.email,
-    }));
+    formState.adminUsers = response.data.data
+      .map((admin: any) => ({
+        id: admin.userId,
+        name: admin.fullName || admin.email // Fallback to email if no fullName
+      }));
   } catch (error) {
     message.error('Error fetching admin users');
   } finally {
