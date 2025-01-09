@@ -105,6 +105,8 @@ const dateRange = ref<[dayjs.Dayjs, dayjs.Dayjs]>([
   dayjs().startOf('year'),
   dayjs().endOf('year')
 ])
+const websites = ref([])
+const selectedWebsite = ref<number>(2)
 
 // Computed
 const productOptions = computed(() => 
@@ -176,14 +178,47 @@ const disabledDate = (current: dayjs.Dayjs) => {
   return current && current > dayjs().endOf('day')
 }
 
+const props = defineProps<{
+  websiteId: number
+}>()
+
+const fetchWebsites = async () => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/membership/get/websites`,
+      {
+        headers: {
+          'Authorization': `Bearer ${authStore.token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    if (!response.ok) {
+      throw new Error('Failed to fetch websites')
+    }
+    const data = await response.json()
+    websites.value = data.websites
+    // Auto select first website
+    if (data.websites.length > 0) {
+      selectedWebsite.value = data.websites[0].id
+    }
+  } catch (error) {
+    console.error('Error fetching websites:', error)
+    message.error('Không thể tải danh sách website')
+  }
+}
+
+const authStore = useAuthStore()
+
 const fetchProductStats = async () => {
-  const authStore = useAuthStore()
+  if (!selectedWebsite.value) return
+  
   try {
     loading.value = true
     const response = await axios.post(
       `${import.meta.env.VITE_API_BASE_URL}/membership/get/get-product-stats`,
       {
-        websiteId: 2,
+        websiteId: selectedWebsite.value,
         startDate: dateRange.value[0].format('YYYY-MM-DD'),
         endDate: dateRange.value[1].format('YYYY-MM-DD')
       },

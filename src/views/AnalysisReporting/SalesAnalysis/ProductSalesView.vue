@@ -47,27 +47,53 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useI18nGlobal } from '@/i18n'
+import { useAuthStore } from '@/stores/auth'
+import { message } from 'ant-design-vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import CategorySales from '@/components/SalesAnalysis/CategorySales.vue'
 import ProductSales from '@/components/SalesAnalysis/ProductSales.vue'
 import SalesTrends from '@/components/SalesAnalysis/SalesTrends.vue'
 
 const { t } = useI18nGlobal()
+const authStore = useAuthStore()
 
 // State management
-const selectedBrand = ref('sky007')
-const selectedCategory = ref('electronics')
-const selectedProduct = ref('Laptop')
-const selectedTimeRange = ref(6)
+const selectedBrand = ref('2') // Default là Sky007
+const selectedCategory = ref('')
+const selectedProduct = ref('')
+const brands = ref([])
+const loading = ref(false)
 
-// Brand options
-const brands = [
-  { value: '1', key: 'sky007', label: t('productSales.filters.brand.options.sky007') },
-  { value: '2', key: 'hince', label: t('productSales.filters.brand.options.hince') },
-  { value: '3', key: 'mixsoon', label: t('productSales.filters.brand.options.mixsoon') }
-]
+const fetchBrands = async () => {
+  try {
+    loading.value = true
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/membership/get/websites`,
+      {
+        headers: {
+          'Authorization': `Bearer ${authStore.token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    if (!response.ok) {
+      throw new Error('Failed to fetch brands')
+    }
+    const data = await response.json()
+    brands.value = data.brands
+  } catch (error) {
+    console.error('Error fetching brands:', error)
+    message.error('Không thể tải danh sách thương hiệu')
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(() => {
+  fetchBrands()
+})
 
 // Product options - using translation keys
 const allProducts = [

@@ -10,8 +10,8 @@
         <div class="flex items-center">
           <label class="text-sm font-medium text-gray-700 mr-2">{{ t('productSales.category.filters.brand') }}</label>
           <a-select 
-            :value="selectedBrand"
-            @change="(value: string) => $emit('update:selectedBrand', value)"
+            v-model:value="selectedBrandValue"
+            @change="handleBrandChange" 
             class="w-48"
             placeholder="Select brand"
           >
@@ -116,9 +116,9 @@ const { t } = useI18nGlobal()
 // Định nghĩa brands mặc định với đầy đủ key
 const defaultBrands: Brand[] = [
   { value: '1', key: 'sky007', label: 'Sky007' },
-  { value: '4', key: 'bbia', label: 'BBIA' },
-  { value: '2', key: 'hince', label: 'Hince' },
-  { value: '3', key: 'mixsoon', label: 'Mixsoon' },
+  { value: '2', key: 'bbia', label: 'BBIA' },
+  { value: '3', key: 'hince', label: 'Hince' },
+  { value: '4', key: 'mixsoon', label: 'Mixsoon' },
 ]
 
 // Data & State
@@ -126,8 +126,8 @@ const loading = ref(false)
 const categoryStats = ref<any[]>([])
 const selectedBrandValue = ref(props.selectedBrand || '1')
 const dateRange = ref<[dayjs.Dayjs, dayjs.Dayjs]>([
-  dayjs().startOf('year'),
-  dayjs().endOf('year')
+  dayjs().startOf('month'),
+  dayjs().endOf('day')
 ])
 
 // Computed Properties
@@ -167,7 +167,7 @@ const fetchCategoryStats = async () => {
     const response = await axios.post(
       `${import.meta.env.VITE_API_BASE_URL}/membership/get/get-category-stats`,
       {
-        websiteId: 2,
+        websiteId: parseInt(selectedBrandValue.value),
         startDate: dateRange.value[0].format('YYYY-MM-DD'),
         endDate: dateRange.value[1].format('YYYY-MM-DD')
       },
@@ -291,6 +291,11 @@ const orderStatusOptions = computed(() => ({
     enabled: true
   }
 }))
+
+const handleBrandChange = (value: string) => {
+  selectedBrandValue.value = value;
+  emit('update:selectedBrand', value);
+}
 
 // Lifecycle
 onMounted(() => {
