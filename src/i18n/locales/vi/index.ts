@@ -35,6 +35,7 @@ import purchasePattern from './purchasePattern.json'
 import marketingPerformance from './marketingPerformance.json'
 import salesAnalysis from './salesAnalysis.json'
 import callCampaign from './callCampaign.json'
+import editCampaignModal from './editCampaignModal.json'
 
 export default {
   ...common,
@@ -73,5 +74,6 @@ export default {
   ...purchasePattern,
   ...marketingPerformance,
   ...salesAnalysis,
-  ...callCampaign
+  ...callCampaign,
+  ...editCampaignModal
 } 
