@@ -54,7 +54,10 @@
       "status": {
         "publish": "Active",
         "draft": "Draft",
-        "trash": "Deleted"
+        "trash": "Deleted",
+        "private": "Private",
+        "future": "Future",
+        "expired": "Expired"
       },
       "actions": {
         "details": "Details"
