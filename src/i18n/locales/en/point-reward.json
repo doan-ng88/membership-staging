@@ -28,6 +28,7 @@
       "success": "Points adjusted successfully"
     },
     "history": {
+      "noData": "No history data found",
       "title": "Point Earning Usage History",
       "table": {
         "headers": {

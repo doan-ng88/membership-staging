@@ -28,6 +28,7 @@
       "success": "Đã điều chỉnh điểm thành công"
     },
     "history": {
+      "noData": "Không có lịch sử điểm thưởng",
       "title": "Lịch sử sử dụng điểm thưởng",
       "types": {
         "earn": "Nhận điểm",

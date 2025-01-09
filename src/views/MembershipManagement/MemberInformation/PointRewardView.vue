@@ -125,7 +125,7 @@
             </div>
             <!-- Empty state -->
             <div v-else-if="!pointRewardStore.earningUsageHistory?.length" class="text-center py-8 text-gray-500">
-              Không có dữ liệu lịch sử điểm
+              {{ t('pointReward.history.noData') }}
             </div>
             <!-- Data table -->
             <table v-else class="min-w-full divide-y divide-gray-200">
