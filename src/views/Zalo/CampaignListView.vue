@@ -232,7 +232,7 @@ const fetchCampaigns = async () => {
       throw new Error('Unauthorized')
     }
 
-    const response = await fetch('/api/membership/get/get-campaign-list', {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/membership/get/get-campaign-list`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
