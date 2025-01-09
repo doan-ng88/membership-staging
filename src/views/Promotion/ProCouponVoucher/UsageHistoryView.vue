@@ -356,7 +356,9 @@ const getStatusColor = (status: string) => {
   const colors = {
     publish: 'green',
     draft: 'gold',
-    trash: 'red'
+    trash: 'gray',
+    private: 'black',
+    future: 'blue'
   }
   return colors[status as keyof typeof colors] || 'default'
 }
