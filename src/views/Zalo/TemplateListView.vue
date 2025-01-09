@@ -35,6 +35,15 @@
               </template>
             </a-input>
           </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">&nbsp;</label>
+            <a-button 
+              type="primary"
+              class="w-full"
+              @click="openZaloTemplate">
+               + {{ t('zaloTemplate.filters.buttons.createTemplate') }}
+            </a-button>
+          </div>
         </div>
 
         <div class="flex justify-end mt-4 space-x-2">
@@ -143,7 +152,7 @@
     <!-- Send Template Drawer -->
     <a-drawer
       v-model:open="showSendDrawer"
-      title="{{ t('zaloTemplate.drawer.title') }}"
+      :title="t('zaloTemplate.drawer.title')"
       placement="right"
       width="80%"
       :destroyOnClose="true"
@@ -152,8 +161,8 @@
       <div class="flex items-center justify-between border-gray-200 mb-4">
         <div class="flex-1">
           <a-tabs v-model:activeKey="activeKey">
-            <a-tab-pane key="campaign" tab="{{ t('zaloTemplate.drawer.tabs.campaign') }}" />
-            <a-tab-pane key="membership" tab="{{ t('zaloTemplate.drawer.tabs.membership') }}" />
+            <a-tab-pane :key="'campaign'" :tab="t('zaloTemplate.drawer.tabs.campaign')" />
+            <a-tab-pane :key="'membership'" :tab="t('zaloTemplate.drawer.tabs.membership')" />
           </a-tabs>
         </div>
 
@@ -198,7 +207,7 @@
 
     <!-- Thêm SendTemplateZaloModal -->
     <SendTemplateZaloModal
-      v-model:open="showSendZaloModal"
+      v-model:visible="showSendZaloModal"
       :template="currentTemplate"
       :selected-campaigns="selectedCampaigns"
       mode="campaign"
@@ -472,6 +481,10 @@ const handleShowSendZaloModal = () => {
     return message.warning('Please select at least one campaign')
   }
   showSendZaloModal.value = true
+}
+
+const openZaloTemplate = () => {
+  window.open('https://account.zalo.cloud/tool/zns/manage/templateLibrary', '_blank')
 }
 
 onMounted(() => {

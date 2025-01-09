@@ -19,7 +19,8 @@
       },
       "buttons": {
         "reset": "Đặt lại",
-        "search": "Tìm kiếm"
+        "search": "Tìm kiếm",
+        "createTemplate": "Tạo template"
       }
     },
     "template": {

@@ -7,18 +7,16 @@
         </template>
       </PageHeader>
 
-      <a-form
-        ref="formRef"
-        :model="formState"
-        :rules="rules"
-        layout="vertical"
-      >
+      <a-form ref="formRef" :model="formState" :rules="rules" layout="vertical">
         <div class="flex gap-4">
           <a-form-item label="Campaign Name" name="name" class="flex-1">
             <a-input v-model:value="formState.name" placeholder="Enter campaign name" />
           </a-form-item>
           <a-form-item label="Campaign Description" name="description" class="flex-1">
-            <a-input v-model:value="formState.description" placeholder="Enter campaign description" />
+            <a-input
+              v-model:value="formState.description"
+              placeholder="Enter campaign description"
+            />
           </a-form-item>
         </div>
 
@@ -35,7 +33,11 @@
             </a-select>
           </a-form-item>
 
-          <a-form-item :label="`Coupon name ${!formState.websiteId ? '(Please select website first)' : ''}`" name="coupons" class="flex-1">
+          <a-form-item
+            :label="`Coupon name ${!formState.websiteId ? '(Please select website first)' : ''}`"
+            name="coupons"
+            class="flex-1"
+          >
             <a-select
               v-model:value="formState.coupons"
               placeholder="Select coupons"
@@ -63,17 +65,13 @@
               :loading="loadingAdmins"
               style="width: 100%"
               :field-names="{
-                label: 'name',   
-                value: 'id',     
+                label: 'name',
+                value: 'id'
               }"
             >
             </a-select>
           </a-form-item>
-          <a-form-item
-            label="Time of Sending"
-            name="startDate"
-            class="flex-1"
-          >
+          <a-form-item label="Time of Sending" name="startDate" class="flex-1">
             <a-range-picker
               v-model:value="dateRange"
               format="YYYY-MM-DD"
@@ -129,36 +127,36 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch, computed, onMounted } from 'vue';
-import { UserAddOutlined, DeleteOutlined } from '@ant-design/icons-vue';
-import type { Dayjs } from 'dayjs';
-import { membershipAPI } from '@/api/services/membershipApi';
-import { websites, type Website } from '@/api/types/website';
-import { debounce } from 'lodash';
-import { message } from 'ant-design-vue';
-import DefaultLayout from '@/layouts/DefaultLayout.vue';
-import PageHeader from '@/shared/components/PageHeader.vue';
-import { useRouter } from 'vue-router';
-import axios from 'axios';
-import { useAuthStore } from '@/stores/auth';
-import dayjs from 'dayjs';
-import AddMemberModal from '@/features/new-campaign/components/AddMember/AddMemberModal.vue';
-import type { CampaignMember } from '@/types/campaign.types';
+import { ref, reactive, watch, computed, onMounted } from 'vue'
+import { UserAddOutlined, DeleteOutlined } from '@ant-design/icons-vue'
+import type { Dayjs } from 'dayjs'
+import { membershipAPI } from '@/api/services/membershipApi'
+import { websites, type Website } from '@/api/types/website'
+import { debounce } from 'lodash'
+import { message } from 'ant-design-vue'
+import DefaultLayout from '@/layouts/DefaultLayout.vue'
+import PageHeader from '@/shared/components/PageHeader.vue'
+import { useRouter } from 'vue-router'
+import axios from 'axios'
+import { useAuthStore } from '@/stores/auth'
+import dayjs from 'dayjs'
+import AddMemberModal from '@/features/new-campaign/components/AddMember/AddMemberModal.vue'
+import type { CampaignMember } from '@/types/campaign.types'
 
-type User = { 
-  id: string,
-  name: string 
+type User = {
+  id: string
+  name: string
 }
 
 export type NewCampaign = {
-  name: string,
-  description: string,
-  startDate: string | null,
-  dueDate: string | null,
-  pic: User[],
-  members: CampaignMember[],
-  websiteId: number | undefined,
-  coupons: string[],
+  name: string
+  description: string
+  startDate: string | null
+  dueDate: string | null
+  pic: User[]
+  members: CampaignMember[]
+  websiteId: number | undefined
+  coupons: string[]
   adminUsers: User[]
 }
 
@@ -167,57 +165,57 @@ const memberColumns = [
     title: 'Customer Name',
     dataIndex: 'fullName',
     key: 'fullName',
-    width: '20%',
+    width: '20%'
   },
   {
     title: 'Phone Number',
     dataIndex: 'mainPhoneNumber',
     key: 'mainPhoneNumber',
-    width: '20%',
+    width: '20%'
   },
   {
     title: 'Platform Website',
     dataIndex: 'websiteName',
     key: 'websiteName',
-    width: '20%',
+    width: '20%'
   },
   {
     title: 'Birthday',
     dataIndex: 'birthday',
     key: 'birthday',
-    width: '20%',
+    width: '20%'
   },
   {
     title: 'Registered Time',
     dataIndex: 'registeredTime',
     key: 'registeredTime',
-    width: '20%',
+    width: '20%'
   },
   {
     title: 'Actions',
     key: 'action',
-    width: '10%',
-  },
-];
+    width: '10%'
+  }
+]
 
 const rules = {
   name: [{ required: true, message: 'Please enter campaign name' }],
-  startDate: [{ required: true, message: 'Please select sending time'}],
+  startDate: [{ required: true, message: 'Please select sending time' }],
   pic: [{ required: true, message: 'Please select person in charge' }],
-  coupons: [{ required: true, message: 'Please select at least one coupon code'}],
-  websiteId: [{ required: true, message: 'Please select a website' }],
-};
+  coupons: [{ required: true, message: 'Please select at least one coupon code' }],
+  websiteId: [{ required: true, message: 'Please select a website' }]
+}
 
-const router = useRouter();
-const formRef = ref();
-const showMemberModal = ref(false);
-const dateRange = ref<[Dayjs, Dayjs] | null>(null);
+const router = useRouter()
+const formRef = ref()
+const showMemberModal = ref(false)
+const dateRange = ref<[Dayjs, Dayjs] | null>(null)
 
 const pagination = reactive({
   current: 1,
   pageSize: 5,
   total: 0
-});
+})
 
 const tableConfig = computed(() => ({
   pagination: {
@@ -226,11 +224,11 @@ const tableConfig = computed(() => ({
     showTotal: (total: number) => `Total ${formState.members.length} items`,
     pageSizeOptions: ['5', '10', '20'],
     onChange: (page: number, pageSize: number) => {
-      pagination.current = page;
-      pagination.pageSize = pageSize;
-    },
+      pagination.current = page
+      pagination.pageSize = pageSize
+    }
   }
-}));
+}))
 
 const formState = reactive<NewCampaign>({
   name: '',
@@ -242,114 +240,113 @@ const formState = reactive<NewCampaign>({
   members: [],
   coupons: [],
   adminUsers: []
-});
+})
 
-const couponOptions = ref<{ label: string; value: string }[]>([]);
-const loadingCoupons = ref(false);
-const loadingAdmins = ref(false);
+const couponOptions = ref<{ label: string; value: string }[]>([])
+const loadingCoupons = ref(false)
+const loadingAdmins = ref(false)
 
 const fetchCoupons = async (search?: string) => {
-  if (!formState.websiteId) return;
-  
+  if (!formState.websiteId) return
+
   try {
-    loadingCoupons.value = true;
+    loadingCoupons.value = true
     const response = await membershipAPI.getCoupons(
       formState.websiteId,
       1, // pageIndex
       10, // pageSize
       search // search term
-    );
+    )
 
     couponOptions.value = response.data.map((coupon: any) => ({
       label: coupon.code,
-      value: coupon.code,
-    }));
+      value: coupon.code
+    }))
   } catch (error) {
-    message.error('Error fetching coupons');
+    message.error('Error fetching coupons')
   } finally {
-    loadingCoupons.value = false;
+    loadingCoupons.value = false
   }
-};
+}
 
 const handleWebsiteChange = () => {
-  formState.coupons = [];
-  couponOptions.value = [];
+  formState.coupons = []
+  couponOptions.value = []
   if (formState.websiteId) {
-    fetchCoupons();
+    fetchCoupons()
   }
-};
+}
 
 const handleSearchCoupons = debounce((value: string) => {
-  fetchCoupons(value);
-}, 300);
+  fetchCoupons(value)
+}, 300)
 
 const fetchAdminUsers = async () => {
   try {
-    loadingAdmins.value = true;
-    const response = await membershipAPI.getAdminUsers();
-    formState.adminUsers = response.data.data
-      .map((admin: any) => ({
-        id: admin.userId,
-        name: admin.fullName || admin.email // Fallback to email if no fullName
-      }));
+    loadingAdmins.value = true
+    const response = await membershipAPI.getAdminUsers()
+    formState.adminUsers = response.data.data.map((admin: any) => ({
+      id: admin.userId,
+      name: admin.fullName || admin.email // Fallback to email if no fullName
+    }))
   } catch (error) {
-    message.error('Error fetching admin users');
+    message.error('Error fetching admin users')
   } finally {
-    loadingAdmins.value = false;
+    loadingAdmins.value = false
   }
-};
+}
 
 onMounted(() => {
   if (formState.websiteId) {
-    fetchCoupons();
+    fetchCoupons()
   }
-  fetchAdminUsers();
-});
+  fetchAdminUsers()
+})
 
 const onDateRangeChange = (dates: [Dayjs, Dayjs] | null, dateStrings: [string, string]) => {
   if (dates) {
-    formState.startDate = dateStrings[0];
-    formState.dueDate = dateStrings[1];
+    formState.startDate = dateStrings[0]
+    formState.dueDate = dateStrings[1]
   } else {
-    formState.startDate = null;
-    formState.dueDate = null;
+    formState.startDate = null
+    formState.dueDate = null
   }
-};
+}
 
 const disabledDate = (current: dayjs.Dayjs) => {
   // Disable dates before today
-  return current && current < dayjs().startOf('day');
-};
+  return current && current < dayjs().startOf('day')
+}
 
 const handleMemberSelect = (members: CampaignMember[]) => {
-  const existingMemberIds = new Set(formState.members.map(member => member.id));
-  const newMembers = members.filter(member => !existingMemberIds.has(member.id));
-  formState.members = [...formState.members, ...newMembers];
-};
+  const existingMemberIds = new Set(formState.members.map((member) => member.id))
+  const newMembers = members.filter((member) => !existingMemberIds.has(member.id))
+  formState.members = [...formState.members, ...newMembers]
+}
 
 const removeMember = (member: CampaignMember) => {
-  formState.members = formState.members.filter(m => m.id !== member.id);
-};
+  formState.members = formState.members.filter((m) => m.id !== member.id)
+}
 
 const showAddMemberModal = () => {
-  showMemberModal.value = true;
-};
+  showMemberModal.value = true
+}
 
 const handleSubmit = async () => {
-  const previousRoute = router.options.history.state.back;
-  console.log('Previous route:', router.resolve(previousRoute).name);
+  const previousRoute = router.options.history.state.back
+  console.log('Previous route:', router.resolve(previousRoute).name)
   try {
-    await formRef.value.validate();
+    await formRef.value.validate()
     if (formState.members.length === 0) {
-      message.error('Please select at least one membership');
-      return;
+      message.error('Please select at least one membership')
+      return
     }
   } catch (error) {
-    console.error('Validation failed:', error);
-    return;
+    console.error('Validation failed:', error)
+    return
   }
   try {
-    const previousRouteName = router.resolve(router.options.history.state.back).name;
+    const previousRouteName = router.resolve(router.options.history.state.back).name
     let payload = {
       campaignName: formState.name,
       description: formState.description,
@@ -357,39 +354,39 @@ const handleSubmit = async () => {
       dueDate: formState.dueDate,
       membershipIds: formState.members.map((member: any) => member.id),
       websiteID: formState.websiteId,
-      coupons: formState.coupons.map((coupon)=> ({couponCode: coupon})),
-      employeePermissions: formState.pic.map((user)=> ({           
+      coupons: formState.coupons.map((coupon) => ({ couponCode: coupon })),
+      employeePermissions: formState.pic.map((user) => ({
         employeeId: user,
-        permissionLevel: "edit"
+        permissionLevel: 'edit'
       })),
       isServiceZalo: true,
-      ...( previousRouteName === 'MailCampaign' && {isServiceEmail: true}),
-      ...( previousRouteName === 'CallCampaign' && {isServiceCall: true})
+      ...(previousRouteName === 'MailCampaign' && { isServiceEmail: true }),
+      ...(previousRouteName === 'CallCampaign' && { isServiceCall: true })
     }
 
-    console.log('Payload:', payload);
+    console.log('Payload:', payload)
 
     await axios.post(
-      `${import.meta.env.VITE_API_BASE_URL}/membership/update/create-campaign`, 
-      payload,          
+      `${import.meta.env.VITE_API_BASE_URL}/membership/update/create-campaign`,
+      payload,
       {
         headers: {
-          'Authorization': `Bearer ${useAuthStore().token}`
+          Authorization: `Bearer ${useAuthStore().token}`
         }
       }
-    );
+    )
 
-    message.success('Campaign created successfully');
+    message.success('Campaign created successfully')
     router.back()
   } catch (error) {
-    console.error('Error:', error.response?.data);
-    message.error(error.response?.data?.message || 'Failed to save campaign');
+    console.error('Error:', error.response?.data)
+    message.error(error.response?.data?.message || 'Failed to save campaign')
   }
-};
+}
 
 const handleBack = () => {
-  router.back();
-};
+  router.back()
+}
 </script>
 
 <style scoped>
@@ -398,4 +395,4 @@ const handleBack = () => {
   align-items: center;
   height: 100%;
 }
-</style> 
+</style>

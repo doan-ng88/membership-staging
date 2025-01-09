@@ -19,7 +19,8 @@
       },
       "buttons": {
         "reset": "Reset",
-        "search": "Search"
+        "search": "Search",
+        "createTemplate": "Create Template"
       }
     },
     "template": {
@@ -66,3 +67,4 @@
     }
   }
 } 
+

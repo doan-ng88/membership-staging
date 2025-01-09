@@ -225,7 +225,7 @@ const loadTemplateDetail = async () => {
       throw new Error('Template ID not found')
     }
 
-    const response = await api.get(`/zalo/templates/${props.template.templateId}`)
+    const response = await api.get(`/membership/zalo/templates/${props.template.templateId}`)
     console.log('Template API response:', response)
     
     if (response.data.result === 'Success') {
