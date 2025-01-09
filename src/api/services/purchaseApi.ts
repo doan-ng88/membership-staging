@@ -36,15 +36,32 @@ export interface OrdersResponse {
   }
 }
 
+interface SearchParam {
+  field: string;
+  value: string | number;
+  operator: string;
+}
+
+interface GetPageParam {
+  pageIndex: number;
+  pageSize: number;
+  sortField?: string;
+  sortType?: string;
+  searchParams?: SearchParam[];
+}
+
 class PurchaseApi {
   async getPurchaseHistory(websiteId: number, page: number = 1, pageSize: number = 10) {
     try {
-      const response = await axiosInstance.post(`/membership/get/orders/${websiteId}`, {
-        params: {
-          page,
-          page_size: pageSize
-        }
-      })
+      const body: GetPageParam = {
+        pageIndex: page,
+        pageSize: pageSize,
+        sortField: "order_date",
+        sortType: "DESC",
+        searchParams: []
+      }
+
+      const response = await axiosInstance.post(`/membership/get/orders/${websiteId}`, body)
       return response.data as OrdersResponse
     } catch (error) {
       console.error('Error fetching member orders:', error)
