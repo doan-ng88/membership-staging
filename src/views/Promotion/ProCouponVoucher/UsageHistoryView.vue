@@ -92,7 +92,7 @@
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'status'">
             <a-tag :color="getStatusColor(record.status)">
-              {{ t(`couponHistory.table.status.${record.status}`) }}
+              {{ getStatusText(record.status) }}
             </a-tag>
           </template>
           
