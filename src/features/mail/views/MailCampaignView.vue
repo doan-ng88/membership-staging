@@ -33,7 +33,7 @@
       </div>
   
       <div class="bg-white rounded-lg shadow">
-        <CampaignTable
+        <MailCampaignTable
           :campaigns="displayCampaigns"
           :loading="loading"
           :pagination="{
@@ -47,6 +47,13 @@
         />
       </div>
   
+      <EditMailCampaignModal
+        v-model:open="showEditModal"
+        :campaignId="selectedCampaign?.id || 0"
+        :campaign-data="selectedCampaign || {}"
+        @success="fetchCampaignList"
+      />
+  
       </div>
     </DefaultLayout>
   </template>
@@ -55,16 +62,17 @@
   import { ref, computed, onMounted } from 'vue';
   import { useRouter } from 'vue-router';
   import DefaultLayout from '@/layouts/DefaultLayout.vue';
-  import { message } from 'ant-design-vue';
-  import { mailCampaignService } from '@/services/mailCampaignService';
+  import { message, Modal } from 'ant-design-vue';
+  import { mailCampaignService } from '@/features/mail/services/mail-campaign.service'
   import { useI18nGlobal } from '@/i18n';
+  import EditMailCampaignModal from '@/features/mail/components/CampaignForm/EditMailCampaignModal.vue';
+  import type { MailCampaign } from '../types/mail-campaign.types';
 
   // Import components
   import PageHeader from '@/shared/components/PageHeader.vue';
   import CampaignActions from '@/features/call-campaign/components/CampaignList/CampaignActions.vue';
   import CampaignFilters from '@/features/call-campaign/components/CampaignList/CampaignFilters.vue';
-  import CampaignTable from '@/features/call-campaign/components/CampaignList/CampaignTable.vue';
-  import { useMailCampaign } from '../composables/useMailCampaign';
+  import MailCampaignTable from '@/features/mail/components/CampaignList/MailCampaignTable.vue';
   import type { CampaignFilters as CampaignFiltersType } from '../../call-campaign/types/campaign.types';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
@@ -78,63 +86,30 @@ import { useAuthStore } from '@/stores/auth';
   const filters = ref<CampaignFiltersType>({});
   const pagination = ref({
     current: 1,
-    pageSize: Number(t('mailCampaign.table.pagination.pageSize')),
+    pageSize: 10,
     total: 0
   });
+
+  // Thêm reactive states cho modal
+  const showEditModal = ref(false);
+  const selectedCampaign = ref<MailCampaign | null>(null);
 
   // Methods
   const fetchCampaignList = async () => {
     try {
       loading.value = true;
-      
-      const params = {
+      const response = await mailCampaignService.getMailCampaignList({
         pageIndex: pagination.value.current,
-        pageSize: pagination.value.pageSize,
-        searchParams: filters.value.searchParams || []
-      };
-
-      if (filters.value.searchText) {
-        params.searchParams.push({
-          key: t('mailCampaign.filters.searchParams.search'),
-          value: filters.value.searchText
-        })
-      }
-
-      if (filters.value.status) {
-        params.searchParams.push({
-          key: t('mailCampaign.filters.searchParams.status'),
-          value: filters.value.status
-        })
-      }
-
-      if (filters.value.dateRange) {
-        params.searchParams.push({
-          key: t('mailCampaign.filters.searchParams.startDateFrom'),
-          value: filters.value.dateRange.start,
-        })
-        params.searchParams.push({
-          key: t('mailCampaign.filters.searchParams.dueDateTo'),
-          value: filters.value.dateRange.end,
-        })
-      }
-
-      params.searchParams.push({
-        key: t('mailCampaign.filters.searchParams.isServiceEmail'),
-        value: 'true'
-      })
-
-      const result = await mailCampaignService.getCampaignList(params);
-      campaigns.value = result.data;
-      pagination.value = {
-        ...pagination.value,
-        current: Number(result.pagination.pageIndex),
-        pageSize: Number(result.pagination.pageSize),
-        total: Number(result.pagination.totalCount)
-      };
+        pageSize: pagination.value.pageSize
+      });
       
+      console.log('Fetched campaigns:', response);
+      
+      campaigns.value = response.data;
+      pagination.value.total = response.pagination.totalCount;
     } catch (error) {
       console.error('Error fetching campaigns:', error);
-      message.error(t('mailCampaign.messages.loadError'));
+      message.error('Không thể tải danh sách chiến dịch');
     } finally {
       loading.value = false;
     }
@@ -164,20 +139,46 @@ import { useAuthStore } from '@/stores/auth';
     fetchCampaignList();
   };
 
-  const handleEdit = (campaign) => {
-    selectedCampaign.value = { ...campaign };
-    showAddModal.value = true;
+  const handleEdit = (campaign: MailCampaign) => {
+    console.log('Campaign before setting:', campaign);
+    selectedCampaign.value = {
+      id: campaign.id,
+      name: campaign.name,
+      description: campaign.description,
+      startDate: campaign.startDate,
+      endDate: campaign.endDate,
+      websiteId: campaign.websiteId,
+      priorityLevel: campaign.priorityLevel,
+      status: campaign.status,
+      isServiceEmail: campaign.isServiceEmail || false,
+      total: campaign.total,
+      remaining: campaign.remaining,
+      createdAt: campaign.createdAt,
+      updatedAt: campaign.updatedAt,
+      createdBy: campaign.createdBy
+    };
+    console.log('Campaign after setting:', selectedCampaign.value);
+    showEditModal.value = true;
   };
 
-  const handleDelete = async (campaign) => {
-    try {
-      // TODO: Implement delete API
-      message.success(t('mailCampaign.messages.deleteSuccess'));
-      await fetchCampaignList();
-    } catch (error) {
-      console.error('Error deleting campaign:', error);
-      message.error(t('mailCampaign.messages.deleteError'));
-    }
+  const handleDelete = async (campaign: MailCampaign) => {
+    Modal.confirm({
+      title: t('mailCampaign.delete.confirmTitle'),
+      content: t('mailCampaign.delete.confirmContent', { name: campaign.name }),
+      okText: t('mailCampaign.delete.buttons.confirm'),
+      cancelText: t('mailCampaign.delete.buttons.cancel'),
+      okType: 'danger',
+      async onOk() {
+        try {
+          await mailCampaignService.deleteMailCampaign(campaign.id);
+          message.success(t('mailCampaign.messages.deleteSuccess'));
+          await fetchCampaignList(); // Refresh list after delete
+        } catch (error) {
+          console.error('Error deleting campaign:', error);
+          message.error(t('mailCampaign.messages.deleteError'));
+        }
+      }
+    });
   };
 
   const handleAdd = () => {

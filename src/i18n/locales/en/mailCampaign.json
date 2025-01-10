@@ -4,24 +4,82 @@
     "messages": {
       "loadError": "Unable to load campaign list",
       "deleteSuccess": "Campaign deleted successfully",
-      "deleteError": "Failed to delete campaign"
+      "deleteError": "Failed to delete campaign",
+      "updateSuccess": "Campaign updated successfully",
+      "updateError": "Failed to update campaign",
+      "exportSuccess": "Campaign exported successfully"
     },
     "table": {
       "pagination": {
-        "pageSize": 10
+        "pageSize": 10,
+        "total": "{start}-{end} of {total} items"
+      },
+      "columns": {
+        "name": "Campaign Name",
+        "website": "Website",
+        "priorityLevel": "Priority Level",
+        "startTime": "Start Date",
+        "endTime": "End Date",
+        "status": "Status",
+        "actions": "Actions",
+        "total": "Total",
+        "remaining": "Remaining",
+        "dateRange": "Date Range",
+        "isServiceEmail": "Service Email"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "pending": "Pending",
+        "completed": "Completed",
+        "created": "Created",
+        "inProgress": "In Progress",
+        "onHold": "On Hold",
+        "closed": "Closed",
+        "cancelled": "Cancelled"
       }
     },
-    "filters": {
-      "searchParams": {
-        "search": "search",
-        "status": "status",
-        "startDateFrom": "startDateFrom",
-        "dueDateTo": "dueDateTo",
-        "isServiceEmail": "true"
+    "edit": {
+      "title": "Edit Campaign",
+      "validation": {
+        "nameRequired": "Please enter campaign name",
+        "websiteRequired": "Please select website",
+        "priorityRequired": "Please select priority level",
+        "statusRequired": "Please select status",
+        "dateRangeRequired": "Please select date range"
+      },
+      "placeholder": {
+        "name": "Enter campaign name",
+        "website": "Select website",
+        "priorityLevel": "Select priority level",
+        "status": "Select status",
+        "startDate": "Start date",
+        "endDate": "End date"
+      },
+      "buttons": {
+        "save": "Save Changes",
+        "cancel": "Cancel"
       }
     },
-    "search": {
-      "placeholder": "Search by campaign name"
+    "priority": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low",
+      "normal": "Normal"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "pending": "Pending",
+      "completed": "Completed"
+    },
+    "delete": {
+      "confirmTitle": "Delete Campaign",
+      "confirmContent": "Are you sure you want to delete campaign '{name}'?",
+      "buttons": {
+        "confirm": "Delete",
+        "cancel": "Cancel"
+      }
     }
   }
 } 

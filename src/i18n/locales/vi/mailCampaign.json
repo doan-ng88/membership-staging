@@ -4,24 +4,82 @@
     "messages": {
       "loadError": "Không thể tải danh sách chiến dịch",
       "deleteSuccess": "Xóa chiến dịch thành công",
-      "deleteError": "Không thể xóa chiến dịch"
+      "deleteError": "Không thể xóa chiến dịch",
+      "updateSuccess": "Cập nhật chiến dịch thành công",
+      "updateError": "Không thể cập nhật chiến dịch",
+      "exportSuccess": "Xuất chiến dịch thành công"
     },
     "table": {
       "pagination": {
-        "pageSize": 10
+        "pageSize": 10,
+        "total": "{start}-{end} của {total} mục"
+      },
+      "columns": {
+        "name": "Tên chiến dịch",
+        "website": "Website",
+        "priorityLevel": "Mức độ ưu tiên",
+        "startTime": "Ngày bắt đầu",
+        "endTime": "Ngày kết thúc",
+        "status": "Trạng thái",
+        "actions": "Thao tác",
+        "total": "Tổng số",
+        "remaining": "Còn lại",
+        "dateRange": "Khoảng thời gian",
+        "isServiceEmail": "Email dịch vụ"
+      },
+      "status": {
+        "active": "Đang hoạt động",
+        "inactive": "Không hoạt động",
+        "pending": "Đang chờ",
+        "completed": "Hoàn thành",
+        "created": "Đã tạo",
+        "inProgress": "Đang xử lý",
+        "onHold": "Tạm dừng",
+        "closed": "Đã đóng",
+        "cancelled": "Đã hủy"
       }
     },
-    "filters": {
-      "searchParams": {
-        "search": "tìm kiếm",
-        "status": "trạng thái",
-        "startDateFrom": "từ ngày",
-        "dueDateTo": "đến ngày",
-        "isServiceEmail": "true"
+    "edit": {
+      "title": "Chỉnh sửa chiến dịch",
+      "validation": {
+        "nameRequired": "Vui lòng nhập tên chiến dịch",
+        "websiteRequired": "Vui lòng chọn website",
+        "priorityRequired": "Vui lòng chọn mức độ ưu tiên",
+        "statusRequired": "Vui lòng chọn trạng thái",
+        "dateRangeRequired": "Vui lòng chọn khoảng thời gian"
+      },
+      "placeholder": {
+        "name": "Nhập tên chiến dịch",
+        "website": "Chọn website",
+        "priorityLevel": "Chọn mức độ ưu tiên",
+        "status": "Chọn trạng thái",
+        "startDate": "Ngày bắt đầu",
+        "endDate": "Ngày kết thúc"
+      },
+      "buttons": {
+        "save": "Lưu thay đổi",
+        "cancel": "Hủy"
       }
     },
-    "search": {
-      "placeholder": "Tìm kiếm theo tên chiến dịch"
+    "priority": {
+      "high": "Cao",
+      "medium": "Trung bình",
+      "low": "Thấp",
+      "normal": "Bình thường"
+    },
+    "status": {
+      "active": "Đang hoạt động",
+      "inactive": "Không hoạt động",
+      "pending": "Đang chờ",
+      "completed": "Hoàn thành"
+    },
+    "delete": {
+      "confirmTitle": "Xóa chiến dịch",
+      "confirmContent": "Bạn có chắc chắn muốn xóa chiến dịch '{name}'?",
+      "buttons": {
+        "confirm": "Xóa",
+        "cancel": "Hủy"
+      }
     }
   }
 } 

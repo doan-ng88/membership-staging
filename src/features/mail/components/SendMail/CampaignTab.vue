@@ -87,7 +87,7 @@ import { ref, reactive, computed } from 'vue'
 import { message } from 'ant-design-vue'
 import { useI18nGlobal } from '@/i18n'
 import type { TablePaginationConfig } from 'ant-design-vue'
-import { mailCampaignService } from '@/services/mailCampaignService'
+import { mailCampaignService } from '@/features/mail/services/mail-campaign.service'
 
 const { t } = useI18nGlobal()
 

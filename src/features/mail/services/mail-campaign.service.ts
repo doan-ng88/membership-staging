@@ -2,8 +2,9 @@ import type { MailCampaign, PaginationParams, ApiResponse } from '../types/mail-
 import axios from 'axios';
 import { message } from 'ant-design-vue';
 import { useAuthStore } from '@/stores/auth';
+import { getWebsiteName } from '@/api/types/website';
 
-export class MailCampaignService {
+class MailCampaignService {
   private api;
 
   constructor() {
@@ -14,6 +15,7 @@ export class MailCampaignService {
       }
     });
 
+    
     // Add request interceptor
     this.api.interceptors.request.use(
       (config) => {
@@ -24,12 +26,10 @@ export class MailCampaignService {
         }
         return config;
       },
-      (error) => {
-        return Promise.reject(error);
-      }
+      (error) => Promise.reject(error)
     );
 
-    // Add response interceptor 
+    // Add response interceptor
     this.api.interceptors.response.use(
       (response) => response,
       async (error) => {
@@ -37,7 +37,6 @@ export class MailCampaignService {
           const authStore = useAuthStore();
           await authStore.logout();
           window.location.href = '/login';
-          return Promise.reject(error);
         }
         return Promise.reject(error);
       }
@@ -46,16 +45,22 @@ export class MailCampaignService {
 
   async getMailCampaignList(params: PaginationParams): Promise<ApiResponse<MailCampaign>> {
     try {
-      const response = await this.api.post('/membership/get/get-campaign-list', {
-        ...params,
+      const requestBody = {
+        pageIndex: params.pageIndex || 1,
+        pageSize: params.pageSize || 10,
         searchParams: [
           { key: 'isServiceEmail', value: 'true' },
           ...(params.searchParams || [])
         ]
-      });
+      };
+
+      console.log('Request body:', requestBody);
+
+      const response = await this.api.post('/membership/get/get-campaign-list', requestBody);
+      console.log('API Response:', response.data);
 
       return {
-        data: response.data.data.map(this.transformCampaign),
+        data: response.data.data.map((item) => this.transformCampaign(item)),
         pagination: {
           pageIndex: Number(response.data.pageIndex),
           pageSize: Number(response.data.pageSize),
@@ -69,11 +74,11 @@ export class MailCampaignService {
   }
 
   private transformCampaign(data: any): MailCampaign {
-    console.log('Raw campaign data:', data);
+    const websiteId = Number(data.websiteId) || 0;
     return {
       id: data.campaignId,
       name: data.campaignName,
-      websiteId: Number(data.websiteId),
+      websiteId: websiteId,
       description: data.description,
       startDate: data.startDate,
       endDate: data.dueDate,
@@ -88,34 +93,45 @@ export class MailCampaignService {
     };
   }
 
-  async sendMail(data: any) {
+  async deleteMailCampaign(campaignId: number) {
+    const authStore = useAuthStore();
     try {
-      console.log('Request data:', data)
-      const response = await this.api.post('/membership/mail/send-mail', data)
-      console.log('Response:', response)
-      return response.data
-    } catch (error: any) {
-      console.error('Error sending mail:', error)
-      console.error('Error response:', error.response?.data)
-      throw error
+      const response = await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/membership/delete/campaign/${campaignId}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${authStore.token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error in deleteMailCampaign:', error);
+      throw error;
     }
   }
 
-  async getCampaignDetail(campaignId: number) {
+  async updateMailCampaign(campaign: any) {
+    const authStore = useAuthStore();
     try {
-      console.log('Calling API for campaign:', campaignId)
-      const response = await this.api.get(`/membership/get/get-campaign/${campaignId}`)
-      console.log('Raw API Response:', response)
-      return response
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/mail-campaigns/${campaign.id}`,
+        campaign,
+        {
+          headers: {
+            'Authorization': `Bearer ${authStore.token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      return response.data;
     } catch (error) {
-      console.error('Error fetching campaign detail:', error)
-      console.error('Error details:', {
-        status: error.response?.status,
-        data: error.response?.data
-      })
-      throw error
+      console.error('Error in updateMailCampaign:', error);
+      throw error;
     }
   }
 }
 
+// Export instance thay vì class
 export const mailCampaignService = new MailCampaignService(); 

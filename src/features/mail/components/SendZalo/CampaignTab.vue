@@ -77,7 +77,7 @@
 import { ref, reactive } from 'vue'
 import { message } from 'ant-design-vue'
 import type { TablePaginationConfig } from 'ant-design-vue'
-import { mailCampaignService } from '@/services/mailCampaignService'
+import { mailCampaignService } from '@/features/mail/services/mail-campaign.service'
 
 interface Campaign {
   id: string

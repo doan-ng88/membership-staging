@@ -10,160 +10,192 @@
       showSizeChanger: true,
       showQuickJumper: true,
       pageSizeOptions: ['10', '20', '50', '100'],
-      showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} campaigns`
+      showTotal: (total, range) => t('mailCampaign.table.pagination.total', {
+        start: range[0],
+        end: range[1],
+        total: total
+      }),
     }"
     @change="handleTableChange"
+    :row-key="(record) => record.id"
   >
-    <template #websiteName="{ record }">
-      <a-tag>{{ getWebsiteName(record.websiteId) }}</a-tag>
-    </template>
-
-    <template #action="{ record }">
-      <a-space>
-        <a-tooltip title="Send Email">
-          <a-button 
-            type="primary"
-            size="small"
-            @click="handleSendMail(record)"
-          >
-            <template #icon>
-              <MailOutlined />
-            </template>
+    <template #bodyCell="{ column, record }">
+      <template v-if="column.key === 'name'">
+        <template v-if="props.enableNameClick">
+          <a @click="handleNameClick(record)">{{ record.name }}</a>
+        </template>
+        <template v-else>
+          {{ record.name }}
+        </template>
+      </template>
+      <template v-else-if="column.key === 'action'">
+        <a-space>
+          <a-button type="link" @click="handleEdit(record)">
+            <edit-outlined />
           </a-button>
-        </a-tooltip>
-
-        <a-tooltip title="Edit">
-          <a-button 
-            type="link" 
-            size="small"
-            @click="$emit('edit', record)"
-          >
-            <EditOutlined />
+          <a-button type="link" danger @click="handleDelete(record)">
+            <delete-outlined />
           </a-button>
-        </a-tooltip>
-
-        <a-tooltip title="Delete">
-          <a-popconfirm
-            title="Are you sure you want to delete?"
-            @confirm="$emit('delete', record)"
-          >
-            <a-button 
-              type="link" 
-              size="small"
-              danger
-            >
-              <DeleteOutlined />
-            </a-button>
-          </a-popconfirm>
-        </a-tooltip>
-      </a-space>
+        </a-space>
+      </template>
+      <template v-else-if="column.key === 'status'">
+        <a-tag :color="getStatusColor(record.status)">
+          {{ record.status }}
+        </a-tag>
+      </template>
+      <template v-else-if="column.key === 'website'">
+        {{ getWebsiteName(record.websiteId) }}
+      </template>
+      <template v-else-if="column.key === 'priorityLevel'">
+        <a-tag :color="getPriorityColor(record.priorityLevel)">
+          {{ record.priorityLevel }}
+        </a-tag>
+      </template>
     </template>
   </a-table>
+
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import { useI18nGlobal } from '@/i18n';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import type { TableColumnsType, TablePaginationConfig } from 'ant-design-vue';
-import { MailOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
-import type { MailCampaign } from '../../types/mail-campaign.types';
+import type { Campaign } from '../../types/campaign.types';
 import { getWebsiteName } from '@/api/types/website';
+import { useRouter } from 'vue-router';
 
-console.log('Imported getWebsiteName:', getWebsiteName);
-
-const props = defineProps<{
-  campaigns: MailCampaign[];
+interface Props {
+  campaigns: Campaign[];
   loading: boolean;
   pagination: {
     current: number;
     pageSize: number;
     total: number;
   };
-}>();
+  enableNameClick?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  enableNameClick: false
+});
 
 const emit = defineEmits<{
-  (e: 'change', pagination: TablePaginationConfig): void;
-  (e: 'edit', campaign: MailCampaign): void;
-  (e: 'delete', campaign: MailCampaign): void;
-  (e: 'sendMail', campaign: MailCampaign): void;
+  (e: 'pageChange', page: number, pageSize: number): void;
+  (e: 'edit', campaign: Campaign): void;
+  (e: 'delete', campaign: Campaign): void;
 }>();
 
-const columns: TableColumnsType = [
+const router = useRouter();
+
+const selectedCampaign = ref<Campaign | null>(null);
+
+const { t } = useI18nGlobal();
+
+const columns = computed<TableColumnsType>(() => [
   {
-    title: 'ID',
-    dataIndex: 'id',
-    width: 80,
-  },
-  {
-    title: 'Campaign Name',
+    title: t('mailCampaign.table.columns.name'),
     dataIndex: 'name',
-    width: 200,
+    key: 'name',
+    width: '20%',
   },
   {
-    title: 'Website',
+    title: t('mailCampaign.table.columns.website'),
     dataIndex: 'websiteId',
     key: 'website',
-    slots: { customRender: 'websiteName' },
     width: 120,
   },
   {
-    title: 'Status',
-    dataIndex: 'status',
-    width: 120,
+    title: t('mailCampaign.table.columns.priorityLevel'),
+    dataIndex: 'priorityLevel',
+    key: 'priorityLevel',
+    width: 100,
   },
   {
-    title: 'Start Date',
+    title: t('mailCampaign.table.columns.startTime'),
     dataIndex: 'startDate',
-    width: 120,
+    key: 'startDate',
+    width: '15%',
   },
   {
-    title: 'End Date',
+    title: t('mailCampaign.table.columns.endTime'),
     dataIndex: 'endDate',
-    width: 120,
+    key: 'endDate',
+    width: '15%',
   },
   {
-    title: 'Total',
-    dataIndex: 'total',
-    width: 100,
+    title: t('mailCampaign.table.columns.status'),
+    dataIndex: 'status',
+    key: 'status',
+    width: '10%',
   },
   {
-    title: 'Remaining',
-    dataIndex: 'remaining',
-    width: 100,
-  },
-  {
-    title: 'Actions',
+    title: t('mailCampaign.table.columns.actions'),
     key: 'action',
-    fixed: 'right',
-    width: 150,
-    slots: { customRender: 'action' }
-  }
-];
-
-const handleSendMail = (campaign: MailCampaign) => {
-  emit('sendMail', campaign);
-};
+    width: '10%',
+  },
+]);
 
 const handleTableChange = (pagination: TablePaginationConfig) => {
-  emit('change', pagination);
+  emit('pageChange', pagination.current || 1, pagination.pageSize || 10);
 };
+
+const handleEdit = (campaign: Campaign) => {
+  emit('edit', campaign);
+};
+
+const handleDelete = (campaign: Campaign) => {
+  emit('delete', campaign);
+};
+
+const getStatusColor = (status: string) => {
+  const statusColors: Record<string, string> = {
+    [t('mailCampaign.table.status.active').toLowerCase()]: 'green',
+    [t('mailCampaign.table.status.inactive').toLowerCase()]: 'red',
+    [t('mailCampaign.table.status.pending').toLowerCase()]: 'orange',
+    [t('mailCampaign.table.status.completed').toLowerCase()]: 'blue',
+    [t('mailCampaign.table.status.created').toLowerCase()]: 'geekblue',
+    [t('mailCampaign.table.status.inProgress').toLowerCase()]: 'gold',
+  };
+  return statusColors[status.toLowerCase()] || 'default';
+};
+
+const handleNameClick = (campaign: Campaign) => {
+  selectedCampaign.value = campaign;
+  router.push(`/call-campaign/${campaign.id}`);
+  
+};
+
+const getPriorityColor = (priority: string) => {
+  const priorityColors: Record<string, string> = {
+    'High': 'red',
+    'Medium': 'orange',
+    'Low': 'green',
+    'Urgent': 'volcano',
+    'Normal': 'blue'
+  };
+  return priorityColors[priority] || 'default';
+};
+
 </script>
 
 <style scoped>
 .ant-table-wrapper {
-  background: white;
-  padding: 24px;
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  margin-top: 16px;
 }
 
-.ant-tag {
-  min-width: 80px;
-  text-align: center;
+.ant-pagination {
+  margin: 16px 0;
+  text-align: right;
 }
 
-.action-buttons {
-  display: flex;
-  gap: 8px;
-  align-items: center;
+/* Add styles for clickable name */
+a {
+  color: #1890ff;
+  cursor: pointer;
 }
-</style> 
+
+a:hover {
+  text-decoration: underline;
+}
+</style>
