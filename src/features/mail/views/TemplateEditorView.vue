@@ -161,7 +161,7 @@
     <!-- Second Modal: Send Mail Template by Campaign/Membership -->
     <SendTemplateMailModal
       v-if="showSendMailModal && templateData"
-      v-model:open="showSendMailModal"
+      v-model:visible="showSendMailModal"
       :template="templateData"
       :selected-campaigns="selectedCampaign"
       :selected-members="selectedMembers"
@@ -193,9 +193,9 @@ import CampaignTab from '../components/SendMail/CampaignTab.vue'
 import MembershipTab from '../components/SendMail/MembershipTab.vue'
 import SendTemplateMailModal from '../components/SendTemplateMailModal.vue'
 import type { Campaign } from '@/types/campaign'  // Import interface
-import { useI18n } from 'vue-i18n'
+import { useI18nGlobal } from '@/i18n'
 
-const { t } = useI18n();
+const { t } = useI18nGlobal();
 
 const route = useRoute()
 const router = useRouter()

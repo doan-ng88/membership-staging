@@ -36,6 +36,7 @@ import marketingPerformance from './marketingPerformance.json'
 import salesAnalysis from './salesAnalysis.json'
 import callCampaign from './callCampaign.json'
 import editCampaignModal from './editCampaignModal.json'
+import membershipTabMail from './membershipTabMail.json'
 
 export default {
   ...common,
@@ -75,5 +76,6 @@ export default {
   ...marketingPerformance,
   ...salesAnalysis,
   ...callCampaign,
-  ...editCampaignModal
+  ...editCampaignModal,
+  ...membershipTabMail
 } 

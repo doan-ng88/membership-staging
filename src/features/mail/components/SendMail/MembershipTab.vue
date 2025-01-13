@@ -59,6 +59,9 @@
           <a-tag :color="getLevelColor(record.levelName)">{{ record.levelName }}</a-tag>
         </template>
       </template>
+      <template #websiteName="{ record }">
+        <a-tag>{{ getWebsiteName(record.websiteId) }}</a-tag>
+      </template>
     </a-table>
 
     <!-- Footer buttons -->
@@ -70,7 +73,7 @@
           :loading="sending" 
           @click="showSendMailModal"
         >
-          Send by Membership324
+          Send by Membership
         </a-button>
       </a-space>
     </div>
@@ -89,12 +92,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, watch } from 'vue'
+import { ref, reactive, onMounted, watch, computed } from 'vue'
 import { message } from 'ant-design-vue'
+import { useI18nGlobal } from '@/i18n'
 import type { TablePaginationConfig } from 'ant-design-vue'
 import { membershipAPI } from '@/api/services/membershipApi'
 import SendTemplateMailModal from '../SendTemplateMailModal.vue'
 import type { Member } from '@/types/profile'
+import { getWebsiteName } from '@/api/types/website'
+
+const { t } = useI18nGlobal()
 
 const emit = defineEmits<{
   (e: 'select', members: Member[]): void
@@ -122,39 +129,34 @@ const sendMailModalVisible = ref(false)
 const selectedTemplate = ref(null)
 const sending = ref(false)
 
-const columns = [
+const columns = computed(() => [
   {
-    title: 'Customer Name',
+    title: t('membershipTabMail.table.columns.name'),
     dataIndex: 'fullName',
     width: 200
   },
   {
-    title: 'Email',
-    dataIndex: 'email',
-    width: 200
+    title: t('membershipTabMail.table.columns.phone'),
+    dataIndex: 'mainPhoneNumber',
+    width: 120
   },
   {
-    title: 'Phone',
-    dataIndex: 'phoneNumber',
-    width: 150
+    title: t('membershipTabMail.table.columns.website'),
+    dataIndex: 'websiteId',
+    slots: { customRender: 'websiteName' },
+    width: 120
   },
   {
-    title: 'Level',
+    title: t('membershipTabMail.table.columns.level'),
     dataIndex: 'levelName',
-    slots: { customRender: 'level' },
-    width: 120
+    width: 100
   },
   {
-    title: 'Website',
-    dataIndex: 'websiteName',
-    width: 120
-  },
-  {
-    title: 'Join Date',
+    title: t('membershipTabMail.table.columns.registeredTime'),
     dataIndex: 'registeredTime',
-    width: 120
+    width: 150
   }
-]
+])
 
 const rowSelection = reactive({
   selectedRowKeys,

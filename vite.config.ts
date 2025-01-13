@@ -24,7 +24,8 @@ export default defineConfig({
       '/api': {
         target: 'https://actsone.vercel.app',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '/api')
       }
     }
   },

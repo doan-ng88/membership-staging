@@ -4,9 +4,10 @@
       type="primary"
       :loading="loading"
       @click="$emit('add')"
+      class="flex items-center justify-center"
     >
       <template #icon>
-        <PlusOutlined />
+        <PlusOutlined class="flex items-center" />
       </template>
       {{ t('campaignActions.buttons.addCampaign') }}
     </a-button>
@@ -14,9 +15,10 @@
     <a-button
       :loading="loading"
       @click="$emit('refresh')"
+      class="flex items-center justify-center"
     >
       <template #icon>
-        <ReloadOutlined />
+        <ReloadOutlined class="flex items-center" />
       </template>
       {{ t('campaignActions.buttons.refresh') }}
     </a-button>
@@ -26,9 +28,10 @@
       @click="handleExport"
       :loading="exporting"
       :disabled="!hasData"
+      class="flex items-center justify-center"
     >
       <template #icon>
-        <DownloadOutlined />
+        <DownloadOutlined class="flex items-center" />
       </template>
       {{ t('campaignActions.buttons.exportExcel') }}
     </a-button>
@@ -104,3 +107,20 @@ const handleExport = async () => {
   }
 };
 </script>
+
+<style scoped>
+/* Thêm CSS để căn chỉnh icon */
+:deep(.anticon) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+:deep(.ant-btn) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+</style>

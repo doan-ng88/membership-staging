@@ -76,8 +76,11 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { message } from 'ant-design-vue'
+import { useI18nGlobal } from '@/i18n'
 import type { TablePaginationConfig } from 'ant-design-vue'
 import { mailCampaignService } from '@/features/mail/services/mail-campaign.service'
+
+const { t } = useI18nGlobal();
 
 interface Campaign {
   id: string
@@ -187,40 +190,27 @@ const fetchCampaigns = async () => {
   try {
     loading.value = true
     const searchParams = []
-    
     if (filterForm.name) {
       searchParams.push({ key: 'name', value: filterForm.name })
     }
-    
     if (filterForm.status) {
       searchParams.push({ key: 'status', value: filterForm.status })
     }
-
     if (filterForm.website) {
       searchParams.push({ key: 'websiteId', value: filterForm.website })
     }
-
-    const result = await mailCampaignService.getCampaignList({
-      pageIndex: pagination.value.current,
-      pageSize: pagination.value.pageSize,
+    const result = await mailCampaignService.getMailCampaignList({
+      pageIndex: pagination.value.current || 1,
+      pageSize: pagination.value.pageSize || 10,
       searchParams
     })
-
     if (result.data) {
-      campaigns.value = result.data.map((campaign: any) => ({
-        id: campaign.id,
-        name: campaign.name,
-        websiteId: campaign.websiteId,
-        websiteName: campaign.websiteName,
-        startDate: campaign.startDate,
-        endDate: campaign.endDate,
-        status: campaign.status
-      }))
+      campaigns.value = result.data
       pagination.value.total = result.pagination.totalCount
     }
   } catch (error) {
     console.error('Error fetching campaigns:', error)
-    message.error('Failed to load campaigns')
+    message.error(t('campaignTabMail.messages.error.fetchFailed'))
   } finally {
     loading.value = false
   }

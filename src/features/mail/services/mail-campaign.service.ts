@@ -74,12 +74,12 @@ class MailCampaignService {
   }
 
   private transformCampaign(data: any): MailCampaign {
-    const websiteId = Number(data.websiteId) || 0;
     return {
       id: data.campaignId,
       name: data.campaignName,
-      websiteId: websiteId,
-      description: data.description,
+      websiteId: data.websiteId,
+      websiteName: getWebsiteName(data.websiteId),
+      description: data.description || '',
       startDate: data.startDate,
       endDate: data.dueDate,
       status: data.status,
@@ -89,8 +89,37 @@ class MailCampaignService {
       isServiceEmail: data.isServiceEmail,
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
-      createdBy: data.createdBy
+      createdBy: data.createdBy.toString()
     };
+  }
+
+  async sendMail(data: any) {
+    try {
+      console.log('Request data:', data)
+      const response = await this.api.post('/membership/mail/send-mail', data)
+      console.log('Response:', response)
+      return response.data
+    } catch (error: any) {
+      console.error('Error sending mail:', error)
+      console.error('Error response:', error.response?.data)
+      throw error
+    }
+  }
+
+  async getCampaignDetail(campaignId: number) {
+    try {
+      console.log('Calling API for campaign:', campaignId)
+      const response = await this.api.get(`/membership/get/get-campaign/${campaignId}`)
+      console.log('Raw API Response:', response)
+      return response
+    } catch (error) {
+      console.error('Error fetching campaign detail:', error)
+      console.error('Error details:', {
+        status: error.response?.status,
+        data: error.response?.data
+      })
+      throw error
+    }
   }
 
   async deleteMailCampaign(campaignId: number) {

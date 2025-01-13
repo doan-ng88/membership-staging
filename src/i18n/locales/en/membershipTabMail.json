@@ -1,0 +1,53 @@
+{
+  "membershipTabMail": {
+    "form": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Enter name"
+      },
+      "level": {
+        "label": "Level",
+        "placeholder": "Select level",
+        "options": {
+          "all": "All levels",
+          "bronze": "Bronze",
+          "silver": "Silver",
+          "gold": "Gold"
+        }
+      },
+      "website": {
+        "label": "Website",
+        "placeholder": "Select website",
+        "options": {
+          "all": "All websites"
+        }
+      }
+    },
+    "table": {
+      "columns": {
+        "name": "Full Name",
+        "phone": "Phone Number",
+        "website": "Website",
+        "level": "Level",
+        "registeredTime": "Registered Time"
+      },
+      "pagination": {
+        "total": "Total {total} items"
+      }
+    },
+    "selection": {
+      "count": "{count} members selected",
+      "clear": "Clear selection"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "send": "Send Mail"
+    },
+    "messages": {
+      "error": {
+        "fetchFailed": "Failed to load members",
+        "noSelection": "Please select at least one member"
+      }
+    }
+  }
+}

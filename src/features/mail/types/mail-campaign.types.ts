@@ -4,6 +4,7 @@ export interface MailCampaign {
   id: string | number;
   name: string;
   websiteId: number;
+  websiteName: string;
   description: string;
   startDate: string;
   endDate: string;

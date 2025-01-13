@@ -212,7 +212,7 @@ const fetchCampaigns = async () => {
       searchParams.push({ key: 'websiteId', value: filterForm.website })
     }
 
-    const result = await mailCampaignService.getCampaignList({
+    const result = await mailCampaignService.getMailCampaignList({
       pageIndex: pagination.value.current,
       pageSize: pagination.value.pageSize,
       searchParams

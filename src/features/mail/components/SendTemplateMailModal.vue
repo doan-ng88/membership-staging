@@ -152,12 +152,28 @@ const emit = defineEmits<{
   (e: 'removeCampaign', campaign: any): void
 }>()
 
-// Add debug logs
+// Sửa lại watch
 watch(() => props.visible, (newValue) => {
-  if (newValue && (!props.template || !props.selectedCampaigns.length)) {
-    console.error('Invalid props:', { template: props.template, campaigns: props.selectedCampaigns })
-    emit('update:visible', false)
-    message.error('Invalid template data or no campaigns selected')
+  if (newValue) {
+    if (!props.template) {
+      console.error('Invalid props:', { template: props.template })
+      emit('update:visible', false)
+      message.error('Invalid template data')
+      return
+    }
+    if (props.mode === 'campaign' && (!props.selectedCampaigns || !props.selectedCampaigns.length)) {
+      console.error('No campaigns selected')
+      emit('update:visible', false) 
+      message.error('Please select at least one campaign')
+      return
+    }
+
+    if (props.mode === 'membership' && (!props.selectedMembers || !props.selectedMembers.length)) {
+      console.error('No members selected')
+      emit('update:visible', false)
+      message.error('Please select at least one member')
+      return
+    }
   }
 }, { immediate: true })
 
