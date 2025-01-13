@@ -26,7 +26,7 @@
           </a-form-item>
 
           <!-- Member Level -->
-          <a-form-item :label="t('profileManagement.filter.memberLevel')">
+          <a-form-item v-if="!props.hideMemberLevel" :label="t('profileManagement.filter.memberLevel')">
             <a-select v-model:value="filterForm.levelId">
               <a-select-option value="">{{ t('profileManagement.filter.allLevels') }}</a-select-option>
               <a-select-option v-for="level in memberLevels" :key="level.id" :value="level.id">
@@ -61,7 +61,7 @@
       </div>
 
       <!-- Action Buttons -->
-      <div class="flex justify-end space-x-4 mt-4">
+      <div class="flex justify-end space-x-4">
         <a-button type="primary" @click="handleSearch">{{ t('profileManagement.filter.filterButtonText') }}</a-button>
         <a-button @click="handleReset">{{ t('profileManagement.filter.reset') }}</a-button>
       </div>
@@ -69,8 +69,35 @@
   </div>
 </template>
 
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  name: 'SearchFilters',
+  props: {
+    tab: {
+      type: String as () => TabType,
+      required: true
+    },
+    hideOrderPoint: {
+      type: Boolean,
+      default: false
+    },
+    hideLevelUpCondition: {
+      type: Boolean,
+      default: false
+    },
+    hideMemberLevel: {
+      type: Boolean,
+      default: false
+    }
+  },
+  emits: ['filter', 'reset']
+})
+</script>
+
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { useI18nGlobal } from '@/i18n'
 import type { Dayjs } from 'dayjs'
 import type { TabType } from '@/types/profile'
@@ -80,7 +107,10 @@ import { memberLevels, getLevelNameById } from '@/api/types/member'
 const { t } = useI18nGlobal()
 
 const props = defineProps<{
-  tab: TabType
+  tab: TabType,
+  hideOrderPoint: boolean,
+  hideLevelUpCondition: boolean,
+  hideMemberLevel: boolean
 }>()
 
 const emit = defineEmits<{
@@ -101,6 +131,18 @@ const filterForm = reactive<FilterForm>({
   websiteId: '',
   levelId: ''
 })
+
+// Watch for tab changes
+watch(() => props.tab, (newTab) => {
+  // Reset form khi chuyển tab
+  filterForm.registeredTimeRange = null;
+  filterForm.birthdayRange = null;
+  filterForm.websiteId = '';
+  filterForm.levelId = '';
+
+  // Emit reset để parent component fetch lại data
+  emit('reset');
+}, { immediate: true });
 
 const handleSearch = () => {
   const params: Array<{key: string, value: any}> = []
@@ -125,7 +167,7 @@ const handleSearch = () => {
     }
 
     // 2. Member Level (giữ nguyên cách filter theo levelName)
-    if (filterForm.levelId) {
+    if (!props.hideMemberLevel && filterForm.levelId) {
       const levelName = getLevelNameById(Number(filterForm.levelId))
       if (levelName) {
         params.push({ 
@@ -136,15 +178,21 @@ const handleSearch = () => {
     }
   } else if (props.tab === 'date-of-birth') {
     // Date of Birth Range
-    if (filterForm.birthdayRange) {
-      params.push({ 
-        key: 'birthdayFrom', 
-        value: filterForm.birthdayRange[0].format('YYYY-MM-DD') 
-      })
-      params.push({ 
-        key: 'birthdayTo', 
-        value: filterForm.birthdayRange[1].format('YYYY-MM-DD') 
-      })
+    // Cập nhật logic filter cho Date of Birth
+    if (filterForm.birthdayRange?.[0] && filterForm.birthdayRange?.[1]) {
+      const startDate = filterForm.birthdayRange[0]
+      const endDate = filterForm.birthdayRange[1]
+      
+      if (startDate.isValid() && endDate.isValid()) {
+        params.push({ 
+          key: 'birthdayFrom', 
+          value: startDate.format('YYYY-MM-DD') 
+        })
+        params.push({ 
+          key: 'birthdayTo', 
+          value: endDate.format('YYYY-MM-DD') 
+        })
+      }
     }
   }
 
@@ -165,12 +213,13 @@ const handleSearch = () => {
 }
 
 const handleReset = () => {
-  Object.assign(filterForm, {
-    registeredTimeRange: null,
-    birthdayRange: null,
-    websiteId: '',
-    levelId: ''
-  })
-  emit('reset')
+  // Reset form
+  filterForm.registeredTimeRange = null;
+  filterForm.birthdayRange = null;
+  filterForm.websiteId = '';
+  filterForm.levelId = '';
+
+  // Emit reset event
+  emit('reset');
 }
 </script>

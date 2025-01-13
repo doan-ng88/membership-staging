@@ -71,7 +71,13 @@
       "active": "Đang hoạt động",
       "inactive": "Không hoạt động",
       "pending": "Đang chờ",
-      "completed": "Hoàn thành"
+      "completed": "Hoàn thành",
+      "created": "Đã tạo",
+      "planning": "Lên kế hoạch",
+      "inProgress": "Đang thực hiện",
+      "onHold": "Tạm dừng",
+      "closed": "Đã đóng",
+      "cancelled": "Đã hủy"
     },
     "delete": {
       "confirmTitle": "Xóa chiến dịch",
@@ -80,6 +86,17 @@
         "confirm": "Xóa",
         "cancel": "Hủy"
       }
+    },
+    "validation": {
+      "nameRequired": "Vui lòng nhập tên chiến dịch",
+      "websiteRequired": "Vui lòng chọn website",
+      "priorityRequired": "Vui lòng chọn mức độ ưu tiên",
+      "statusRequired": "Vui lòng chọn trạng thái",
+      "dateRangeRequired": "Vui lòng chọn khoảng thời gian"
+    },
+    "placeholder": {
+      "startDate": "Ngày bắt đầu",
+      "endDate": "Ngày kết thúc"
     }
   }
 } 

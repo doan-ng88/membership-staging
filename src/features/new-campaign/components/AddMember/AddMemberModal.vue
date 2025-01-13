@@ -16,6 +16,7 @@
           @reset="handleReset"
           :hideOrderPoint="true"
           :hideLevelUpCondition="true"
+          :hideMemberLevel="true"
         />
 
         <div class="mb-4">
@@ -63,22 +64,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { ref, reactive, onMounted, computed, watch } from 'vue';
+import { useI18nGlobal } from '@/i18n';
 import type { TabType, FilterParams, Member } from '@/types/profile';
-import type { CampaignMember } from '../../types/mail.types';
+import type { CampaignMember } from '@/features/mail/types/mail.types';
+import dayjs, { type Dayjs } from 'dayjs';
 import ProfileTabs from '@/components/MemberInfomation/ProfileTabs.vue';
 import SearchFilters from '@/components/MemberInfomation/SearchFilters.vue';
 import { membershipAPI } from '@/api/services/membershipApi';
-import { formatDate } from '@/utils/date';
+import { formatDateRange } from '@/utils/date';
 import { getWebsiteName } from '@/api/types/website';
 import { SearchOutlined } from '@ant-design/icons-vue';
 
-const { t } = useI18n();
+const { t } = useI18nGlobal();
 
 const emit = defineEmits<{
   (e: 'update:visible', visible: boolean): void;
   (e: 'select', members: CampaignMember[]): void;
+}>();
+
+const props = defineProps<{
+  visible: boolean
 }>();
 
 // Table state
@@ -88,14 +94,16 @@ const currentPage = ref(1);
 const pageSize = ref(20);
 const totalCount = ref(0);
 const members = ref<Member[]>([]);
-const currentFilters = reactive<FilterParams>({});
 const loading = ref(false);
 
 // Selection state
 const selectedRowKeys = ref<(string | number)[]>([]);
 const selectedRows = ref<CampaignMember[]>([]);
 
-// Columns
+// Filter state
+const currentFilters = ref<Array<{key: string, value: any}>>([]);
+
+// Columns definition
 const columns = computed(() => {
   const baseColumns = [
     {
@@ -105,7 +113,7 @@ const columns = computed(() => {
       width: '22%',
     },
     {
-      title: t('addMemberModal.table.columns.phoneNumber'),
+      title: t('addMemberModal.table.columns.phoneNumber'), 
       dataIndex: 'mainPhoneNumber',
       key: 'mainPhoneNumber',
       width: '22%',
@@ -115,28 +123,27 @@ const columns = computed(() => {
       dataIndex: 'websiteName',
       key: 'websiteName',
       width: '22%',
-    },
+    }
   ];
 
-  const dateColumns = activeTab.value === 'date-join-member' 
-    ? [
-        {
-          title: t('addMemberModal.table.columns.registeredTime'),
-          dataIndex: 'registeredTime',
-          key: 'registeredTime',
-          width: '22%',
-        }
-      ]
-    : [
-        {
-          title: t('addMemberModal.table.columns.birthday'),
-          dataIndex: 'birthday',
-          key: 'birthday',
-          width: '22%',
-        }
-      ];
+  // Thêm cột cuối tùy theo tab
+  if (activeTab.value === 'date-join-member') {
+    baseColumns.push({
+      title: t('addMemberModal.table.columns.registeredTime'),
+      dataIndex: 'registeredTime',
+      key: 'registeredTime',
+      width: '22%',
+    });
+  } else {
+    baseColumns.push({
+      title: t('addMemberModal.table.columns.birthday'),
+      dataIndex: 'birthday',
+      key: 'birthday',
+      width: '22%',
+    });
+  }
 
-  return [...baseColumns, ...dateColumns];
+  return baseColumns;
 });
 
 // Table config
@@ -160,23 +167,64 @@ const rowSelection = computed(() => ({
   },
 }));
 
-// Handlers
-const handleFilter = (filters: FilterParams) => {
-  Object.assign(currentFilters, filters);
-  fetchMembers(1);
+// Filter handlers
+const handleFilter = (filters: Array<{key: string, value: any}>) => {
+  const params: Array<{key: string, value: any}> = [];
+
+  // Xử lý filter theo tab hiện tại
+  if (activeTab.value === 'date-join-member') {
+    // Filter cho Date Join Member
+    const registeredTimeFilter = filters.find(f => f.key === 'registeredTimeFrom' || f.key === 'registeredTimeTo');
+    if (registeredTimeFilter) {
+      params.push(...filters);
+    }
+  } else if (activeTab.value === 'date-of-birth') {
+    // Filter cho Date of Birth
+    const birthdayFilter = filters.find(f => f.key === 'birthdayFrom' || f.key === 'birthdayTo');
+    if (birthdayFilter) {
+      params.push(
+        ...filters.map(f => ({
+          key: f.key === 'registeredTimeFrom' ? 'birthdayFrom' : 
+               f.key === 'registeredTimeTo' ? 'birthdayTo' : f.key,
+          value: f.value
+        }))
+      );
+    }
+  }
+
+  // Website filter (chung cho cả 2 tab)
+  const websiteFilter = filters.find(f => f.key === 'websiteId');
+  if (websiteFilter) {
+    params.push(websiteFilter);
+  }
+
+  currentFilters.value = params;
+  fetchMembers(1, pageSize.value, params);
 };
 
 const handleReset = () => {
-  Object.keys(currentFilters).forEach(key => {
-    currentFilters[key as keyof FilterParams] = undefined;
-  });
-  fetchMembers(1);
+  currentFilters.value = [];
+  fetchMembers(1, pageSize.value, []);
 };
 
+// Existing search handler
+const onSearch = () => {
+  const searchParams = [...currentFilters.value];
+  if (searchText.value.trim()) {
+    searchParams.push({
+      key: 'search',
+      value: searchText.value.trim()
+    });
+  }
+  fetchMembers(1, pageSize.value, searchParams);
+};
+
+// Pagination handler
 const handlePageChange = (page: number) => {
-  fetchMembers(page);
+  fetchMembers(page, pageSize.value, currentFilters.value);
 };
 
+// Selection handlers
 const onSelectChange = (keys: (string | number)[], rows: CampaignMember[]) => {
   selectedRowKeys.value = keys;
   selectedRows.value = rows;
@@ -198,75 +246,62 @@ const handleCancel = () => {
 };
 
 // Data fetching
-const fetchMembers = async (page: number = 1) => {
+const fetchMembers = async (
+  page: number = 1,
+  pageSizeParam: number = 20,
+  searchParams: Array<{key: string, value: any}> = []
+) => {
   try {
     loading.value = true;
-    const searchParams = Object.entries(currentFilters || {})
-      .filter(([_, value]) => value !== undefined)
-      .reduce((acc, [key, value]) => [...acc, { [key]: value }], [] as any[]);
-
-    if (searchText.value.trim()) {
-      searchParams.push({ 
-        key: 'search',
-        value: searchText.value.trim()
-      });
-    }
-    if (currentFilters.startDate) {
-      searchParams.push({ 
-        key: 'registeredTimeFrom',
-        value: currentFilters.startDate
-      });
-    }
-    if (currentFilters.endDate) {
-      searchParams.push({ 
-        key: 'registeredTimeTo',
-        value: currentFilters.endDate
-      });
-    }
-    if(currentFilters.websiteId){
-      searchParams.push({ 
-        key: 'websiteId',
-        value: currentFilters.websiteId
-      });
-    }
+    console.log('Fetching with params:', { page, pageSizeParam, searchParams });
 
     const response = await membershipAPI.getList(
       'MembershipsWebsitesId',
-      'ASC',
-      pageSize.value,
+      'DESC',
+      pageSizeParam,
       page,
       searchParams
     );
 
-    const { data, totalCount: total, pageIndex } = response;
-    
-    members.value = data.map((member: any) => ({
-      id: member.membershipWebsiteId,
-      fullName: member.fullName || member.name,
-      mainPhoneNumber: member.mainPhoneNumber,
-      websiteName: member.websiteName || getWebsiteName(member.websiteId),
-      birthday: formatDate(member.birthday),
-      registeredTime: formatDate(member.registeredTime),
-      level: member.level,
-    }));
-    
-    totalCount.value = total;
-    currentPage.value = pageIndex;
+    if (response?.data) {
+      members.value = response.data.map((member: any) => ({
+        id: member.membershipWebsiteId,
+        fullName: member.fullName || member.name,
+        mainPhoneNumber: member.mainPhoneNumber,
+        websiteName: member.websiteName || getWebsiteName(member.websiteId),
+        registeredTime: activeTab.value === 'date-join-member' ? 
+          formatDateRange(member.registeredTime) : undefined,
+        birthday: activeTab.value === 'date-of-birth' ? 
+          formatDateRange(member.birthday) : undefined
+      }));
+
+      totalCount.value = response.totalCount || 0;
+      currentPage.value = page;
+      pageSize.value = pageSizeParam;
+    }
   } catch (error) {
     console.error('Error fetching members:', error);
+    message.error(t('addMemberModal.messages.fetchError'));
   } finally {
     loading.value = false;
   }
 };
 
-// Add search handler
-const onSearch = () => {
-  fetchMembers(1);
+// Helper function để format date
+const formatDate = (date: string | Date | undefined, format: string = 'DD/MM/YYYY HH:mm:ss') => {
+  if (!date) return '';
+  return dayjs(date).format(format);
 };
 
 // Initial fetch
 onMounted(() => {
   fetchMembers();
+});
+
+// Watch for tab changes
+watch(activeTab, (newTab) => {
+  currentFilters.value = []; // Reset filters when changing tabs
+  fetchMembers(1, pageSize.value, []); // Reload data with new tab
 });
 </script>
 

@@ -5,7 +5,7 @@
     @cancel="handleCancel"
     @ok="handleSubmit"
     :confirmLoading="loading"
-    width="800px"
+    width="600px"
     :maskClosable="false"
     :keyboard="true"
     class="edit-campaign-modal"
@@ -86,7 +86,7 @@
                 :key="status.value" 
                 :value="status.value"
               >
-                <a-tag :color="status.color">{{ status.label }}</a-tag>
+                {{ status.label }}
               </a-select-option>
             </a-select>
           </a-form-item>
@@ -98,14 +98,14 @@
             class="col-span-2"
           >
             <a-range-picker
-              v-model:value="dateRange"
+              v-model:value="formState.dateRange"
               style="width: 100%"
-              :placeholder="[
-                t('mailCampaign.edit.placeholder.startDate'),
-                t('mailCampaign.edit.placeholder.endDate')
-              ]"
-              @change="handleDateRangeChange"
               :format="dateFormat"
+              @change="handleDateRangeChange"
+              :placeholder="[
+                t('mailCampaign.placeholder.startDate'),
+                t('mailCampaign.placeholder.endDate')
+              ]"
             />
           </a-form-item>
 
@@ -124,200 +124,234 @@
   </a-modal>
 </template>
 
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  name: 'EditMailCampaignModal'
+})
+</script>
+
 <script setup lang="ts">
 import { ref, reactive, watch, computed } from 'vue';
 import { message } from 'ant-design-vue';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
+import { useAuthStore } from '@/stores/auth';
 import { useI18nGlobal } from '@/i18n';
-import { websites } from '@/api/types/website';
-import type { FormInstance } from 'ant-design-vue';
-import type { MailCampaign } from '../../types/mail-campaign.types';
-import { mailCampaignService } from '../../services/mail-campaign.service';
-import type { Rule } from 'ant-design-vue/es/form';
+import type { FormInstance, Rule } from 'ant-design-vue/es/form';
+import axios from 'axios';
+import { websites, getWebsiteName } from '@/api/types/website';
 
 const props = defineProps<{
   open: boolean;
   campaignId: number;
-  campaignData: MailCampaign;
 }>();
-
-const { t } = useI18nGlobal();
-const formRef = ref<FormInstance>();
-const loading = ref(false);
-const dateFormat = 'YYYY-MM-DD';
-const dateRange = ref<[Dayjs, Dayjs] | null>(null);
-
-// Form State
-const formState = reactive({
-  name: '',
-  websiteId: undefined as number | undefined,
-  priorityLevel: '',
-  status: '',
-  isServiceEmail: false,
-  startDate: null as string | null,
-  endDate: null as string | null
-});
-
-// Priority Levels Configuration
-const priorityLevels = [
-  { value: 'High', label: t('mailCampaign.priority.high'), color: 'red' },
-  { value: 'Medium', label: t('mailCampaign.priority.medium'), color: 'orange' },
-  { value: 'Low', label: t('mailCampaign.priority.low'), color: 'green' },
-  { value: 'Normal', label: t('mailCampaign.priority.normal'), color: 'blue' }
-];
-
-// Campaign Statuses Configuration
-const campaignStatuses = [
-  { value: 'Active', label: t('mailCampaign.status.active'), color: 'green' },
-  { value: 'Inactive', label: t('mailCampaign.status.inactive'), color: 'red' },
-  { value: 'Pending', label: t('mailCampaign.status.pending'), color: 'orange' },
-  { value: 'Completed', label: t('mailCampaign.status.completed'), color: 'blue' }
-];
-
-// Add ref for modal visibility
-const modalVisible = computed({
-  get: () => props.open,
-  set: (value) => emit('update:open', value)
-});
-
-// Load campaign data when modal opens
-watch(
-  () => props.open,
-  async (newValue) => {
-    if (newValue && props.campaignId) {
-      try {
-        loading.value = true;
-        formState.name = props.campaignData.name;
-        formState.websiteId = props.campaignData.websiteId;
-        formState.priorityLevel = props.campaignData.priorityLevel;
-        formState.status = props.campaignData.status;
-        formState.isServiceEmail = props.campaignData.isServiceEmail;
-        formState.startDate = props.campaignData.startDate;
-        formState.endDate = props.campaignData.endDate;
-
-        // Set date range if both dates exist
-        if (props.campaignData.startDate && props.campaignData.endDate) {
-          dateRange.value = [
-            dayjs(props.campaignData.startDate),
-            dayjs(props.campaignData.endDate)
-          ];
-        }
-        
-        console.log('Loaded campaign data:', formState);
-      } catch (error) {
-        console.error('Error loading campaign:', error);
-        message.error(t('mailCampaign.messages.loadError'));
-      } finally {
-        loading.value = false;
-      }
-    }
-  }
-);
 
 const emit = defineEmits<{
   'update:open': [value: boolean];
   'success': [];
 }>();
 
-// Handle close/cancel modal
-const handleCancel = () => {
-  // Reset form
-  formRef.value?.resetFields();
-  // Reset date range
-  dateRange.value = null;
-  // Close modal
-  modalVisible.value = false;
-};
+const { t } = useI18nGlobal();
+const authStore = useAuthStore();
+const formRef = ref<FormInstance>();
+const loading = ref(false);
+const dateFormat = 'YYYY-MM-DD';
 
-// Handle close button (X) click - this will be called by modal's @cancel
-const handleClose = () => {
-  handleCancel();
-};
+// Add modalVisible computed property
+const modalVisible = computed({
+  get: () => props.open,
+  set: (value) => emit('update:open', value)
+});
 
-const handleDateRangeChange = (dates: [Dayjs, Dayjs] | null) => {
-  if (dates) {
-    formState.startDate = dates[0].format(dateFormat);
-    formState.endDate = dates[1].format(dateFormat);
-  } else {
-    formState.startDate = null;
-    formState.endDate = null;
+// Add form rules
+const rules = {
+  name: [
+    { required: true, message: t('mailCampaign.validation.nameRequired') }
+  ],
+  websiteId: [
+    { required: true, message: t('mailCampaign.validation.websiteRequired') }
+  ],
+  priorityLevel: [
+    { required: true, message: t('mailCampaign.validation.priorityRequired') }
+  ],
+  status: [
+    { required: true, message: t('mailCampaign.validation.statusRequired') }
+  ],
+  dateRange: [
+    { required: true, type: 'array', message: t('mailCampaign.validation.dateRangeRequired') }
+  ]
+} as Record<string, Rule[]>;
+
+// Update form state to include dateRange
+const formState = reactive({
+  name: '',
+  websiteId: undefined as number | undefined,
+  websiteName: '',
+  priorityLevel: '',
+  status: '',
+  isServiceEmail: false,
+  startDate: null as dayjs.Dayjs | null,
+  endDate: null as dayjs.Dayjs | null,
+  dateRange: [] as [dayjs.Dayjs, dayjs.Dayjs] | null
+});
+
+// Define priority levels
+const priorityLevels = [
+  { value: 'High', label: t('mailCampaign.priority.high'), color: 'red' },
+  { value: 'Medium', label: t('mailCampaign.priority.medium'), color: 'orange' },
+  { value: 'Low', label: t('mailCampaign.priority.low'), color: 'blue' },
+  { value: 'Normal', label: t('mailCampaign.priority.normal'), color: 'green' }
+];
+
+// Define statuses
+const campaignStatuses = [
+  { value: 'Created', label: t('mailCampaign.status.created') },
+  { value: 'Planning', label: t('mailCampaign.status.planning') },
+  { value: 'In Progress', label: t('mailCampaign.status.inProgress') },
+  { value: 'On Hold', label: t('mailCampaign.status.onHold') },
+  { value: 'Completed', label: t('mailCampaign.status.completed') },
+  { value: 'Closed', label: t('mailCampaign.status.closed') },
+  { value: 'Cancelled', label: t('mailCampaign.status.cancelled') }
+];
+
+// Update fetchCampaignData
+const fetchCampaignData = async () => {
+  if (!props.campaignId) return;
+  
+  try {
+    loading.value = true;
+    console.log('Fetching campaign data for ID:', props.campaignId);
+    
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_BASE_URL}/membership/get/get-campaign/${props.campaignId}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${authStore.token}`
+        }
+      }
+    );
+
+    console.log('API Response:', response.data);
+    
+    if (response.data?.campaign) {
+      const campaign = response.data.campaign;
+      
+      // Update other fields
+      formState.name = campaign.campaignName;
+      formState.websiteId = campaign.websiteId;
+      formState.websiteName = getWebsiteName(campaign.websiteId);
+      formState.priorityLevel = campaign.priorityLevel;
+      formState.status = campaign.status;
+      formState.isServiceEmail = campaign.isServiceEmail;
+
+      // Handle dates
+      console.log('Start Date from API:', campaign.startDate);
+      console.log('End Date from API:', campaign.dueDate);
+
+      // Convert start date if available
+      if (campaign.startDate) {
+        const startDate = dayjs(campaign.startDate);
+        formState.startDate = startDate;
+        console.log('Converted Start Date:', startDate.format('YYYY-MM-DD'));
+      }
+
+      // Convert end date if available
+      if (campaign.dueDate) {
+        const endDate = dayjs(campaign.dueDate);
+        formState.endDate = endDate;
+        console.log('Converted End Date:', endDate.format('YYYY-MM-DD'));
+      }
+
+      // Set dateRange if both dates are available
+      if (formState.startDate && formState.endDate) {
+        formState.dateRange = [formState.startDate, formState.endDate];
+        console.log('Updated formState.dateRange:', formState.dateRange);
+      } else {
+        formState.dateRange = null;
+      }
+    }
+
+  } catch (error) {
+    console.error('Error fetching campaign:', error);
+    message.error(t('mailCampaign.messages.loadError'));
+  } finally {
+    loading.value = false;
   }
 };
 
-// Update handleSubmit
+// Watch for modal visibility and campaignId changes
+watch(
+  [() => props.open, () => props.campaignId],
+  ([newOpen, newId]) => {
+    if (newOpen && newId) {
+      fetchCampaignData();
+    }
+  }
+);
+
+const handleCancel = () => {
+  modalVisible.value = false;
+};
+
 const handleSubmit = async () => {
   try {
     await formRef.value?.validate();
     loading.value = true;
 
-    const updatedCampaign = {
-      id: props.campaignId,
-      name: formState.name,
+    const payload = {
+      campaignName: formState.name,
       websiteId: formState.websiteId,
       priorityLevel: formState.priorityLevel,
       status: formState.status,
-      isServiceEmail: formState.isServiceEmail,
-      startDate: formState.startDate,
-      endDate: formState.endDate
+      startDate: formState.startDate ? dayjs(formState.startDate).format('YYYY-MM-DD') : null,
+      dueDate: formState.endDate ? dayjs(formState.endDate).format('YYYY-MM-DD') : null,
+      isServiceEmail: formState.isServiceEmail
     };
 
-    // Gọi API update campaign
-    const response = await mailCampaignService.updateMailCampaign(updatedCampaign);
-    
-    if (response) {
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_BASE_URL}/membership/update/update-campaign/${props.campaignId}`,
+      payload,
+      {
+        headers: {
+          'Authorization': `Bearer ${authStore.token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (response.status === 200) {
       message.success(t('mailCampaign.messages.updateSuccess'));
       emit('success');
       modalVisible.value = false;
-      formRef.value?.resetFields();
-      dateRange.value = null;
     }
   } catch (error) {
-    console.error('Error updating campaign:', error);
+    console.error('Error:', error);
     message.error(t('mailCampaign.messages.updateError'));
   } finally {
     loading.value = false;
   }
 };
 
-// Add form rules
-const rules = {
-  name: [
-    { 
-      required: true, 
-      message: t('mailCampaign.edit.validation.nameRequired'),
-      trigger: 'blur' 
-    }
-  ],
-  websiteId: [
-    { 
-      required: true, 
-      message: t('mailCampaign.edit.validation.websiteRequired'),
-      trigger: 'change' 
-    }
-  ],
-  priorityLevel: [
-    { 
-      required: true, 
-      message: t('mailCampaign.edit.validation.priorityRequired'),
-      trigger: 'change' 
-    }
-  ],
-  status: [
-    { 
-      required: true, 
-      message: t('mailCampaign.edit.validation.statusRequired'),
-      trigger: 'change' 
-    }
-  ],
-  dateRange: [
-    { 
-      required: true, 
-      message: t('mailCampaign.edit.validation.dateRangeRequired'),
-      trigger: 'change',
-      type: 'array' 
-    }
-  ]
-} as Record<string, Rule[]>;
+// Update handleDateRangeChange
+const handleDateRangeChange = (dates: [dayjs.Dayjs, dayjs.Dayjs] | null) => {
+  formState.dateRange = dates;
+  if (dates) {
+    formState.startDate = dates[0];
+    formState.endDate = dates[1];
+  } else {
+    formState.startDate = null;
+    formState.endDate = null;
+  }
+};
+
+// Watch for websiteId changes
+watch(
+  () => formState.websiteId,
+  (newWebsiteId) => {
+    formState.websiteName = getWebsiteName(newWebsiteId ?? 0);
+  }
+);
 </script>
 
 <style scoped>

@@ -25,75 +25,77 @@
         </button>
       </div>
     </div>
-    <table class="w-full border-collapse border border-gray-300">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.customerName') }}</th>
-          <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.email') }}</th>
-          <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.phoneNumber') }}</th>
-          <th class="border border-gray-300 p-2">
-            {{ t(`membershipTable.tabs.${tab}`) }}
-          </th>
-          <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.platformWebsite') }}</th>
-          <template v-if="tab === 'date-join-member'">
-            <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.memberLevel') }}</th>
-          </template>
-          <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.defaultAddress') }}</th>
-          <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.actions') }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(member, index) in filteredMembers" 
-            :key="`member-${member.membershipId}-${member.websiteId}-${member.email}-${index}`">
-          <td class="border border-gray-300 p-2">{{ member.fullName }}</td>
-          <td class="border border-gray-300 p-2">{{ member.email }}</td>
-          <td class="border border-gray-300 p-2">{{ member.mainPhoneNumber }}</td>
-          <td class="border border-gray-300 p-2">
-            {{ formatDate(tab === 'date-join-member' ? member.registeredTime : member.birthday) }}
-          </td>
-          <td class="border border-gray-300 p-2">{{ getWebsiteName(member.websiteId) }}</td>
-          <template v-if="tab === 'date-join-member'">
-            <td class="border border-gray-300 p-2">{{ member.levelName }}</td>
-          </template>
-          <td class="border border-gray-300 p-2">
-            <a-tooltip v-if="member.defaultAddress" :title="member.defaultAddress">
-              <span class="block truncate max-w-[200px]">{{ member.defaultAddress }}</span>
-            </a-tooltip>
-            <span v-else>-</span>
-          </td>
-          <td class="border border-gray-300 p-2">
-            <div class="flex gap-2">
-              <a-tooltip :title="t('membershipTable.actions.edit')">
-                <button 
-                  @click="handleView(member)" 
-                  class="inline-flex items-center justify-center p-2 rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                >
-                  <edit-outlined class="text-lg" />
-                </button>
+    <div class="overflow-x-auto">
+      <table class="min-w-full border-collapse border border-gray-300">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.customerName') }}</th>
+            <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.email') }}</th>
+            <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.phoneNumber') }}</th>
+            <th class="border border-gray-300 p-2">
+              {{ t(`membershipTable.tabs.${tab}`) }}
+            </th>
+            <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.platformWebsite') }}</th>
+            <template v-if="tab === 'date-join-member'">
+              <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.memberLevel') }}</th>
+            </template>
+            <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.defaultAddress') }}</th>
+            <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.actions') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(member, index) in filteredMembers" 
+              :key="`member-${member.membershipId}-${member.websiteId}-${member.email}-${index}`">
+            <td class="border border-gray-300 p-2">{{ member.fullName }}</td>
+            <td class="border border-gray-300 p-2">{{ member.email }}</td>
+            <td class="border border-gray-300 p-2">{{ member.mainPhoneNumber }}</td>
+            <td class="border border-gray-300 p-2">
+              {{ formatDate(tab === 'date-join-member' ? member.registeredTime : member.birthday) }}
+            </td>
+            <td class="border border-gray-300 p-2">{{ getWebsiteName(member.websiteId) }}</td>
+            <template v-if="tab === 'date-join-member'">
+              <td class="border border-gray-300 p-2">{{ member.levelName }}</td>
+            </template>
+            <td class="border border-gray-300 p-2">
+              <a-tooltip v-if="member.defaultAddress" :title="member.defaultAddress">
+                <span class="block truncate max-w-[200px]">{{ member.defaultAddress }}</span>
               </a-tooltip>
+              <span v-else>-</span>
+            </td>
+            <td class="border border-gray-300 p-2">
+              <div class="flex gap-2">
+                <a-tooltip :title="t('membershipTable.actions.edit')">
+                  <button 
+                    @click="handleView(member)" 
+                    class="inline-flex items-center justify-center p-2 rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                  >
+                    <edit-outlined class="text-lg" />
+                  </button>
+                </a-tooltip>
 
-              <a-tooltip :title="t('membershipTable.actions.history')">
-                <button 
-                  @click="handleHistory(member)" 
-                  class="inline-flex items-center justify-center p-2 rounded-md text-white bg-amber-600 hover:bg-amber-700 focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors"
-                >
-                  <history-outlined class="text-lg" />
-                </button>
-              </a-tooltip>
+                <a-tooltip :title="t('membershipTable.actions.history')">
+                  <button 
+                    @click="handleHistory(member)" 
+                    class="inline-flex items-center justify-center p-2 rounded-md text-white bg-amber-600 hover:bg-amber-700 focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors"
+                  >
+                    <history-outlined class="text-lg" />
+                  </button>
+                </a-tooltip>
 
-              <a-tooltip :title="t('membershipTable.actions.pointReward')">
-                <button 
-                  @click="handlePointReward(member)" 
-                  class="inline-flex items-center justify-center p-2 rounded-md text-white bg-green-600 hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
-                >
-                  <gift-outlined class="text-lg" />
-                </button>
-              </a-tooltip>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+                <a-tooltip :title="t('membershipTable.actions.pointReward')">
+                  <button 
+                    @click="handlePointReward(member)" 
+                    class="inline-flex items-center justify-center p-2 rounded-md text-white bg-green-600 hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
+                  >
+                    <gift-outlined class="text-lg" />
+                  </button>
+                </a-tooltip>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- Enhanced Member Details Modal -->
     <div v-if="selectedMember && activeModal === 'details'" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-9999">

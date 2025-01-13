@@ -53,8 +53,8 @@
         "website": "Select website",
         "priorityLevel": "Select priority level",
         "status": "Select status",
-        "startDate": "Start date",
-        "endDate": "End date"
+        "startDate": "Start Date",
+        "endDate": "End Date"
       },
       "buttons": {
         "save": "Save Changes",
@@ -71,7 +71,13 @@
       "active": "Active",
       "inactive": "Inactive",
       "pending": "Pending",
-      "completed": "Completed"
+      "completed": "Completed",
+      "created": "Created",
+      "planning": "Planning",
+      "inProgress": "In Progress",
+      "onHold": "On Hold",
+      "closed": "Closed",
+      "cancelled": "Cancelled"
     },
     "delete": {
       "confirmTitle": "Delete Campaign",
@@ -80,6 +86,17 @@
         "confirm": "Delete",
         "cancel": "Cancel"
       }
+    },
+    "validation": {
+      "nameRequired": "Please enter campaign name",
+      "websiteRequired": "Please select website",
+      "priorityRequired": "Please select priority level",
+      "statusRequired": "Please select status",
+      "dateRangeRequired": "Please select date range"
+    },
+    "placeholder": {
+      "startDate": "Start Date",
+      "endDate": "End Date"
     }
   }
 } 
