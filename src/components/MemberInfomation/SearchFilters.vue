@@ -58,6 +58,27 @@
             </a-select>
           </a-form-item>
         </template>
+
+        <!-- History Tab -->
+        <template v-else-if="tab === 'history'">
+          <a-form-item :label="t('profileManagement.filter.purchaseDate')">
+            <a-range-picker
+              v-model:value="filterForm.purchaseDateRange"
+              style="width: 100%"
+            />
+          </a-form-item>
+
+          <a-form-item :label="t('profileManagement.filter.platformWebsite')">
+            <a-select v-model:value="filterForm.websiteId">
+              <a-select-option value="">{{ t('profileManagement.filter.allWebsites') }}</a-select-option>
+              <a-select-option v-for="website in websites" 
+                              :key="website.websiteId" 
+                              :value="website.websiteId">
+                {{ website.name }}
+              </a-select-option>
+            </a-select>
+          </a-form-item>
+        </template>
       </div>
 
       <!-- Action Buttons -->
@@ -123,13 +144,15 @@ interface FilterForm {
   birthdayRange: [Dayjs, Dayjs] | null
   websiteId: string | number
   levelId: string | number
+  purchaseDateRange: [Dayjs, Dayjs] | null
 }
 
 const filterForm = reactive<FilterForm>({
   registeredTimeRange: null,
   birthdayRange: null,
   websiteId: '',
-  levelId: ''
+  levelId: '',
+  purchaseDateRange: null
 })
 
 // Watch for tab changes
@@ -147,8 +170,24 @@ watch(() => props.tab, (newTab) => {
 const handleSearch = () => {
   const params: Array<{key: string, value: any}> = []
 
-  // Collect all active filters
-  if (props.tab === 'date-join-member') {
+  if (props.tab === 'history') {
+    if (filterForm.purchaseDateRange?.[0] && filterForm.purchaseDateRange?.[1]) {
+      params.push({ 
+        key: 'orderDateFrom', 
+        value: filterForm.purchaseDateRange[0].format('YYYY-MM-DD') 
+      })
+      params.push({ 
+        key: 'orderDateTo', 
+        value: filterForm.purchaseDateRange[1].format('YYYY-MM-DD') 
+      })
+    }
+    if (filterForm.websiteId) {
+      params.push({ 
+        key: 'websiteId', 
+        value: filterForm.websiteId.toString()
+      })
+    }
+  } else if (props.tab === 'date-join-member') {
     // 1. Date Join Member Range
     if (filterForm.registeredTimeRange?.[0] && filterForm.registeredTimeRange?.[1]) {
       const startDate = filterForm.registeredTimeRange[0]
@@ -196,15 +235,6 @@ const handleSearch = () => {
     }
   }
 
-  // 3. Platform Website (available for both tabs)
-  if (filterForm.websiteId) {
-    params.push({ 
-      key: 'websiteId', 
-      value: filterForm.websiteId.toString()
-    })
-  }
-
-  // Emit all collected filters
   if (params.length > 0) {
     emit('filter', params)
   } else {
@@ -213,6 +243,7 @@ const handleSearch = () => {
 }
 
 const handleReset = () => {
+<<<<<<< HEAD
   // Reset form
   filterForm.registeredTimeRange = null;
   filterForm.birthdayRange = null;
@@ -221,5 +252,19 @@ const handleReset = () => {
 
   // Emit reset event
   emit('reset');
+=======
+  if (props.tab === 'history') {
+    filterForm.purchaseDateRange = null
+    filterForm.websiteId = ''
+  } else {
+    Object.assign(filterForm, {
+      registeredTimeRange: null,
+      birthdayRange: null,
+      websiteId: '',
+      levelId: ''
+    })
+  }
+  emit('reset')
+>>>>>>> c1d763ecb2a5468a80974efba1eb30a5e246ed96
 }
 </script>
