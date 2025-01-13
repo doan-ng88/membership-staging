@@ -12,12 +12,44 @@
     },
     "purchaseCycle": {
       "title": "Purchase Cycle Analysis",
+      "website": "Website",
+      "timeRange": "Time Range",
+      "stats": {
+        "totalOrders": "Total Orders",
+        "totalProducts": "Total Products",
+        "avgOrdersPerMonth": "Average Orders/Month"
+      },
       "chart": {
-        "title": "Purchase Frequency Distribution",
-        "xaxis": "Days Between Purchases",
-        "yaxis": "Number of Customers",
+        "title": "Monthly Purchase Frequency",
+        "xaxis": "Month",
+        "yaxis": "Number of Orders",
+        "month": "Month"
+      },
+      "series": {
+        "frequency": "Purchase Frequency"
+      }
+    },
+    "productPreference": {
+      "title": "Product Preference Analysis",
+      "website": "Website",
+      "dateRange": "Date Range",
+      "stats": {
+        "totalProducts": "Total Products",
+        "totalOrders": "Total Orders",
+        "avgQuantityPerOrder": "Average Quantity/Order"
+      },
+      "chart": {
+        "title": "Top Products by Sales Quantity",
+        "xaxis": "Product Name",
+        "yaxis": "Sales Quantity",
         "series": {
-          "frequency": "Purchase Frequency"
+          "salesQuantity": "Sales Quantity"
+        },
+        "tooltip": {
+          "quantity": "Quantity",
+          "orders": "Orders",
+          "avgOrder": "Avg. per Order",
+          "percentage": "Market Share"
         }
       }
     }

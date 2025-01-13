@@ -12,12 +12,44 @@
     },
     "purchaseCycle": {
       "title": "Phân Tích Chu Kỳ Mua Hàng",
+      "website": "Website",
+      "timeRange": "Khoảng Thời Gian",
+      "stats": {
+        "totalOrders": "Tổng Đơn Hàng",
+        "totalProducts": "Tổng Sản Phẩm",
+        "avgOrdersPerMonth": "Trung Bình Đơn/Tháng"
+      },
       "chart": {
-        "title": "Phân Bố Tần Suất Mua Hàng",
-        "xaxis": "Số Ngày Giữa Các Lần Mua",
-        "yaxis": "Số Lượng Khách Hàng",
+        "title": "Tần Suất Mua Hàng Theo Tháng",
+        "xaxis": "Tháng",
+        "yaxis": "Số Đơn Hàng",
+        "month": "Tháng"
+      },
+      "series": {
+        "frequency": "Tần Suất Mua Hàng"
+      }
+    },
+    "productPreference": {
+      "title": "Phân Tích Sở Thích Sản Phẩm",
+      "website": "Website",
+      "dateRange": "Khoảng Thời Gian",
+      "stats": {
+        "totalProducts": "Tổng Sản Phẩm",
+        "totalOrders": "Tổng Đơn Hàng",
+        "avgQuantityPerOrder": "Trung Bình SL/Đơn"
+      },
+      "chart": {
+        "title": "Top Sản Phẩm Theo Số Lượng Bán",
+        "xaxis": "Tên Sản Phẩm",
+        "yaxis": "Số Lượng Bán",
         "series": {
-          "frequency": "Tần Suất Mua Hàng"
+          "salesQuantity": "Số Lượng Bán"
+        },
+        "tooltip": {
+          "quantity": "Số Lượng",
+          "orders": "Đơn Hàng",
+          "avgOrder": "TB mỗi Đơn",
+          "percentage": "Thị Phần"
         }
       }
     }
