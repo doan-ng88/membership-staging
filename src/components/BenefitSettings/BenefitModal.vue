@@ -178,6 +178,7 @@ const props = defineProps<{
   show: boolean
   benefit: LevelSetting | null
   isEditing: boolean
+  websiteId: number
 }>()
 
 const emit = defineEmits<{
@@ -192,7 +193,7 @@ const isSubmitting = ref(false)
 const formData = reactive<LevelSetting>({
   levelId: 0,
   Name: '',
-  websiteId: 1,
+  websiteId: props.websiteId,
   thresholdAmount: 0,
   rewardRate: 0,
   redeemRate: 0,
@@ -320,10 +321,14 @@ const isFormValid = computed(() => {
 })
 
 // Watchers
-watch(() => formData.websiteId, () => {
-  validateName()
-  validateRank()
-})
+watch(() => props.websiteId, (newWebsiteId) => {
+  if (newWebsiteId) {
+    formData.websiteId = newWebsiteId
+    // Re-validate sau khi cập nhật websiteId
+    validateName()
+    validateRank() 
+  }
+}, { immediate: true })
 
 watch(() => formData.Name, () => {
   validateName()
@@ -373,7 +378,7 @@ const resetForm = () => {
   Object.assign(formData, {
     levelId: 0,
     Name: '',
-    websiteId: 1,
+    websiteId: props.websiteId,
     thresholdAmount: 0,
     rewardRate: 0,
     redeemRate: 0,

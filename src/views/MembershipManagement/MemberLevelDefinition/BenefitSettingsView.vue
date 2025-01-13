@@ -93,6 +93,7 @@
         v-model:show="showModal"
         :benefit="currentBenefit"
         :is-editing="isEditing"
+        :website-id="selectedBrand"
         @save="saveBenefit"
         @close="closeModal"
       />

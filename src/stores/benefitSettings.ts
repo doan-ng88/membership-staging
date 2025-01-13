@@ -35,6 +35,8 @@ export const useBenefitStore = defineStore('benefit', {
     },
 
     async checkDuplicateName(name: string, websiteId: number, levelId?: number) {
+      console.log('Store: Checking duplicate websiteId', websiteId)
+      console.log('Store: Checking duplicate levelId', levelId)
       try {
         const existingLevel = this.levelSettings.find(level => 
           level.websiteId === websiteId && 
@@ -49,6 +51,7 @@ export const useBenefitStore = defineStore('benefit', {
     },
 
     async checkDuplicateRank(rank: number, websiteId: number, levelId?: number) {
+
       try {
         const existingLevel = this.levelSettings.find(level => 
           level.websiteId === websiteId && 
