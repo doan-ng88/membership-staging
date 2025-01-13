@@ -24,6 +24,7 @@ WORKDIR /app
 COPY --from=build-stage /app/dist ./dist
 COPY --from=build-stage /app/package*.json ./
 COPY --from=build-stage /app/node_modules ./node_modules
+COPY --from=build-stage /app/vite.config.ts ./
 
 # Expose port (nếu ứng dụng của bạn chạy trên cổng khác)
 EXPOSE 3000
