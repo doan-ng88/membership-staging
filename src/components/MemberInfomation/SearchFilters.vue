@@ -243,16 +243,14 @@ const handleSearch = () => {
 }
 
 const handleReset = () => {
-<<<<<<< HEAD
   // Reset form
-  filterForm.registeredTimeRange = null;
-  filterForm.birthdayRange = null;
-  filterForm.websiteId = '';
-  filterForm.levelId = '';
+  // filterForm.registeredTimeRange = null;
+  // filterForm.birthdayRange = null;
+  // filterForm.websiteId = '';
+  // filterForm.levelId = '';
 
   // Emit reset event
   emit('reset');
-=======
   if (props.tab === 'history') {
     filterForm.purchaseDateRange = null
     filterForm.websiteId = ''
@@ -261,10 +259,10 @@ const handleReset = () => {
       registeredTimeRange: null,
       birthdayRange: null,
       websiteId: '',
-      levelId: ''
+      levelId: '',
+      
     })
   }
   emit('reset')
->>>>>>> c1d763ecb2a5468a80974efba1eb30a5e246ed96
 }
 </script>
