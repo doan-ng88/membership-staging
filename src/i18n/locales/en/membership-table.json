@@ -88,7 +88,8 @@
     },
     "tabs": {
       "date-join-member": "Date Join Member",
-      "date-of-birth": "Date of Birth"
+      "date-of-birth": "Date of Birth",
+      "history": "History"
     }
   }
 } 

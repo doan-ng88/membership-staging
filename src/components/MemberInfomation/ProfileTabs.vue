@@ -37,7 +37,8 @@ export default defineComponent({
     
     const tabs = [
       { id: 'date-join-member', label: t('membershipTable.tabs.date-join-member') },
-      { id: 'date-of-birth', label: t('membershipTable.tabs.date-of-birth') }
+      { id: 'date-of-birth', label: t('membershipTable.tabs.date-of-birth') },
+      { id: 'history', label: t('membershipTable.tabs.history') }
     ]
 
     return { tabs, t }
