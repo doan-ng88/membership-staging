@@ -181,9 +181,9 @@ export default defineComponent({
     }
 
     // Fetch data when component is mounted
-    onMounted(() => {
-      fetchCampaignData()
-    })
+    // onMounted(() => {
+    //   fetchCampaignData()
+    // })
 
     // Watch for modal visibility
     watch(
