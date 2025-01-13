@@ -54,18 +54,17 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { message } from 'ant-design-vue';
-import { PlusOutlined, MailOutlined } from '@ant-design/icons-vue';
-import { useI18n } from 'vue-i18n';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import PageHeader from '@/shared/components/PageHeader.vue';
 import TemplateFilters from '../components/template/TemplateFilters.vue';
 import TemplateGrid from '../components/template/TemplateGrid.vue';
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { message } from 'ant-design-vue';
+import { PlusOutlined } from '@ant-design/icons-vue';
+import { useI18n } from 'vue-i18n';
 import { useMailTemplate } from '../composables/useMailTemplate';
 import type { MailTemplate } from '../types/MailTemplate';
-// import SendMailModal from '../components/SendTemplateMailModal.vue';
 
 const { t } = useI18n();
 const router = useRouter();

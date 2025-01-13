@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    :open="visible"
+    :open="open"
     :title="t('editCampaign.title')"
     @cancel="handleCancel"
     @ok="handleSubmit"
@@ -104,12 +104,16 @@ import axios from 'axios'
 export default defineComponent({
   name: 'EditCampaignModal',
   props: {
-    visible: {
+    open: {
       type: Boolean,
       default: false
     },
     campaignId: {
       type: Number,
+      required: true
+    },
+    campaignData: {
+      type: Object,
       required: true
     }
   },
@@ -143,7 +147,7 @@ export default defineComponent({
         console.log('Fetching campaign data for ID:', props.campaignId)
         
         // Sử dụng URL trực tiếp từ bạn cung cấp
-        const response = await axios.get('https://actsone.vercel.app/api/membership/get/get-campaign/102', {
+        const response = await axios.get(`https://actsone.vercel.app/api/membership/get/get-campaign/${props.campaignId}`, {
           headers: {
             'Authorization': `Bearer ${authStore.token}`
           }
@@ -183,16 +187,16 @@ export default defineComponent({
 
     // Watch for modal visibility
     watch(
-      () => props.visible,
-      (newVisible) => {
-        if (newVisible) {
+      [() => props.open, () => props.campaignId],
+      ([newOpen, newId]) => {
+        if (newOpen && newId) {
           fetchCampaignData()
         }
       }
     )
 
     const handleCancel = () => {
-      emit('update:visible', false)
+      emit('update:open', false)
     }
 
     const handleSubmit = async () => {
@@ -226,7 +230,7 @@ export default defineComponent({
         if (response.status === 200) {
           message.success(t('editCampaign.messages.success'))
           emit('success')
-          emit('update:visible', false)
+          emit('update:open', false)
         }
       } catch (error) {
         console.error('Error:', error)
