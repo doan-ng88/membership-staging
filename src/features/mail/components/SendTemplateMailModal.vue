@@ -152,23 +152,88 @@ const emit = defineEmits<{
   (e: 'removeCampaign', campaign: any): void
 }>()
 
-// Sửa lại watch
-watch(() => props.visible, (newValue) => {
-  if (newValue) {
-    if (!props.template) {
-      console.error('Invalid props:', { template: props.template })
-      emit('update:visible', false)
-      message.error('Invalid template data')
-      return
+// 2. States
+const mailSender = ref('testing@sky007.vn')
+const subject = ref(props.template?.subject || '')
+const sending = ref(false)
+const loadingCampaigns = ref(false)
+const campaignData = ref<any>(null)
+const availableFields = ref<Array<{label: string, value: string}>>([])
+const fieldMapping = ref<Record<string, string>>({})
+
+// 3. Computed
+const templateFields = computed(() => {
+  if (!props.template?.content) return []
+  const matches = props.template.content.match(/\{([^}]+)\}/g) || []
+  return Array.from(new Set(matches))
+})
+
+// 4. Methods
+const fetchCampaignFields = async () => {
+  if (props.mode !== 'campaign' || !props.selectedCampaigns?.length) {
+    return
+  }
+
+  try {
+    loadingCampaigns.value = true
+    const campaignId = props.selectedCampaigns[0].id
+    const response = await mailCampaignService.getCampaignDetail(campaignId)
+    
+    if (!response?.data?.campaign) {
+      throw new Error('No campaign data received')
     }
-    if (props.mode === 'campaign' && (!props.selectedCampaigns || !props.selectedCampaigns.length)) {
+
+    campaignData.value = response.data.campaign
+    
+    // Build available fields
+    const fields: Array<{label: string, value: string}> = [
+      { label: 'Campaign Name', value: 'campaignName' },
+      { label: 'Description', value: 'description' },
+      { label: 'Start Date', value: 'startDate' },
+      { label: 'Due Date', value: 'dueDate' }
+    ]
+
+    if (campaignData.value?.memberships?.[0]) {
+      fields.push(
+        { label: 'Customer Name', value: 'memberships[0].fullName' },
+        { label: 'Email', value: 'memberships[0].email' },
+        { label: 'Phone', value: 'memberships[0].phone' },
+        { label: 'Address', value: 'memberships[0].address' }
+      )
+    }
+
+    availableFields.value = fields
+  } catch (error) {
+    console.error('Error fetching campaign fields:', error)
+    message.error('Failed to load campaign fields')
+  } finally {
+    loadingCampaigns.value = false
+  }
+}
+
+// 5. Watchers
+watch(() => props.visible, (newValue) => {
+  if (!newValue) return
+
+  // Validate template first
+  if (!props.template) {
+    console.error('Invalid template data')
+    emit('update:visible', false)
+    message.error('Invalid template data')
+    return
+  }
+
+  // Mode specific validation
+  if (props.mode === 'campaign') {
+    if (!props.selectedCampaigns?.length) {
       console.error('No campaigns selected')
-      emit('update:visible', false) 
+      emit('update:visible', false)
       message.error('Please select at least one campaign')
       return
     }
-
-    if (props.mode === 'membership' && (!props.selectedMembers || !props.selectedMembers.length)) {
+    fetchCampaignFields()
+  } else if (props.mode === 'membership') {
+    if (!props.selectedMembers?.length) {
       console.error('No members selected')
       emit('update:visible', false)
       message.error('Please select at least one member')
@@ -177,16 +242,18 @@ watch(() => props.visible, (newValue) => {
   }
 }, { immediate: true })
 
-watch(() => props.template, (newValue) => {
-  console.log('Modal template prop:', newValue)
-})
-
-// States
-const mailSender = ref('testing@sky007.vn')
-const subject = ref(props.template?.subject || '')
-const selectedCampaign = ref(null)
-const sending = ref(false)
-const loadingCampaigns = ref(false)
+// 6. Helper Methods
+const getMappingOptions = (field: string) => {
+  if (props.mode === 'campaign') {
+    return availableFields.value
+  }
+  return [
+    { label: 'Customer Name', value: 'fullName' },
+    { label: 'Email', value: 'email' },
+    { label: 'Phone', value: 'phoneNumber' },
+    { label: 'Address', value: 'address' }
+  ]
+}
 
 // Member table columns with Tailwind classes
 const memberColumns = [
@@ -233,154 +300,6 @@ const memberColumns = [
   }
 ]
 
-// Extract fields from template content
-const templateFields = computed(() => {
-  if (!props.template?.content) return []
-  const matches = props.template.content.match(/\{([^}]+)\}/g) || []
-  return Array.from(new Set(
-    matches.map(match => match)
-  ))
-})
-
-// Store field mapping values
-const fieldMapping = ref<Record<string, string>>({})
-
-// Initialize field mapping when template changes
-watch(() => props.template, (newTemplate) => {
-  if (newTemplate?.content) {
-    const fields = templateFields.value
-    fields.forEach((field) => {
-      if (!fieldMapping.value[field]) {
-        fieldMapping.value[field] = ''
-      }
-    })
-  }
-}, { immediate: true })
-
-// Thêm state để lưu campaign data
-const campaignData = ref<any>(null)
-const availableFields = ref<Array<{label: string, value: string}>>([])
-
-// Load campaign data khi component mounted hoặc khi campaign thay đổi
-const fetchCampaignFields = async () => {
-  try {
-    if (!props.selectedCampaigns?.length) {
-      return message.error('No campaign selected')
-    }
-    
-    const campaignId = props.selectedCampaigns[0].id
-    console.log('Fetching campaign data for ID:', campaignId)
-    
-    const response = await mailCampaignService.getCampaignDetail(campaignId)
-    console.log('API Response:', response)
-    
-    if (!response?.data?.campaign) {
-      throw new Error('No campaign data received from API')
-    }
-
-    campaignData.value = response.data.campaign  // Lấy data từ campaign
-    console.log('Campaign Data:', campaignData.value)
-
-    // Tạo danh sách các field có thể mapping từ campaign data
-    const fields: { label: string, value: string }[] = []
-
-    if (campaignData.value?.memberships?.[0]) {
-      console.log('Membership Data:', campaignData.value.memberships[0])
-      
-      // Basic fields
-      fields.push(
-        { label: 'Campaign Name', value: 'campaignName' },
-        { label: 'Description', value: 'description' },
-        { label: 'Start Date', value: 'startDate' },
-        { label: 'Due Date', value: 'dueDate' }
-      )
-
-      // Membership fields
-      const membershipFields = [
-        { label: 'Customer Name', value: 'memberships[0].fullName' },
-        { label: 'Email', value: 'memberships[0].email' },
-        { label: 'Phone', value: 'memberships[0].phone' },
-        { label: 'Address', value: 'memberships[0].address' }
-      ]
-
-      // Add membership fields if they exist in the data
-      membershipFields.forEach(field => {
-        const path = field.value.split('.')
-        let value = campaignData.value
-        for (const part of path) {
-          if (part.includes('[')) {
-            const [arrayName, index] = part.split(/[\[\]]/)
-            value = value[arrayName]?.[Number(index)]
-          } else {
-            value = value[part]
-          }
-        }
-        if (value !== undefined) {
-          fields.push(field)
-        }
-      })
-
-      // Dynamic fields from membership data
-      const memberData = campaignData.value.memberships[0]
-      Object.keys(memberData).forEach(key => {
-        if (!fields.some(f => f.value === `memberships[0].${key}`)) {
-          fields.push({
-            label: key.charAt(0).toUpperCase() + key.slice(1),
-            value: `memberships[0].${key}`
-          })
-        }
-      })
-    }
-
-    console.log('Available Fields:', fields)
-    availableFields.value = fields
-
-  } catch (error) {
-    console.error('Error fetching campaign fields:', error)
-    message.error('Failed to load campaign fields')
-  }
-}
-
-// Gọi fetchCampaignFields khi component mounted hoặc campaign thay đổi
-watch(() => props.selectedCampaigns, fetchCampaignFields, { immediate: true })
-
-// Thêm state cho membership
-const membershipFields = ref<Array<{label: string, value: string}>>([])
-
-// Sửa lại getMappingOptions để sử dụng fields đã có
-const getMappingOptions = (field: string) => {
-  if (props.mode === 'campaign') {
-    return availableFields.value
-  }
-
-  // Sử dụng lại cấu trúc fields giống như trong campaign nhưng bỏ prefix memberships[0]
-  return [
-    { label: 'Customer Name', value: 'fullName' },
-    { label: 'Email', value: 'email' },
-    { label: 'Phone', value: 'phoneNumber' },
-    { label: 'Address', value: 'address' }
-  ]
-}
-
-// Thêm watch cho membership mode
-watch(
-  [() => props.mode, () => props.selectedMembers],
-  ([newMode, newMembers]) => {
-    if (newMode === 'campaign') {
-      fetchCampaignFields()
-    } else if (newMode === 'membership' && newMembers?.length) {
-      // Set membership fields với cấu trúc tương tự nhưng không có prefix
-      membershipFields.value = [
-        { label: 'Customer Name', value: 'fullName' },
-        { label: 'Email', value: 'email' },
-        { label: 'Phone', value: 'phoneNumber' },
-        { label: 'Address', value: 'address' }
-      ]
-    }
-  },
-  { immediate: true }
-)
-
 // Add campaignColumns
 const campaignColumns = [
   {
@@ -426,38 +345,55 @@ const handleSubmit = async () => {
 
     sending.value = true
 
-    // Lấy giá trị thực từ campaignData dựa trên mapping
+    // Lấy giá trị thực từ data dựa trên mode
     const getMappedValue = (path: string) => {
-      const parts = path.split('.')
-      let value = campaignData.value
-      for (const part of parts) {
-        if (part.includes('[')) {
-          const [arrayName, index] = part.split(/[\[\]]/)
-          value = value[arrayName][Number(index)]
-        } else {
-          value = value[part]
+      if (props.mode === 'campaign') {
+        if (!campaignData.value) return ''
+        const parts = path.split('.')
+        let value = campaignData.value
+        for (const part of parts) {
+          if (part.includes('[')) {
+            const [arrayName, index] = part.split(/[\[\]]/)
+            value = value[arrayName]?.[Number(index)]
+          } else {
+            value = value[part]
+          }
+          if (value === undefined) return ''
         }
+        return value || ''
+      } else {
+        // Mode membership
+        if (!props.selectedMembers?.[0]) return ''
+        return props.selectedMembers[0][path] || ''
       }
-      return value || ''
     }
 
     const sendData = {
       templateId: props.template?.id,
       FromMail: mailSender.value,
-      subject: props.template?.name || 'Mail Template',
+      subject: subject.value || props.template?.name || 'Mail Template',
       mergeFields: Object.entries(fieldMapping.value).reduce((acc, [key, value]) => {
         const cleanKey = key.replace(/[{}]/g, '')
         acc[cleanKey] = value
         return acc
       }, {}),
-      to: [{
-        email: "doannguyen.actsone@gmail.com",
-        mergeData: Object.entries(fieldMapping.value).reduce((acc, [key, path]) => {
-          const cleanKey = key.replace(/[{}]/g, '')
-          acc[cleanKey] = getMappedValue(path)
-          return acc
-        }, {})
-      }]
+      to: props.mode === 'campaign' ? 
+        [{
+          email: campaignData.value?.memberships?.[0]?.email || '',
+          mergeData: Object.entries(fieldMapping.value).reduce((acc, [key, path]) => {
+            const cleanKey = key.replace(/[{}]/g, '')
+            acc[cleanKey] = getMappedValue(path)
+            return acc
+          }, {})
+        }] :
+        props.selectedMembers.map(member => ({
+          email: member.email || '',
+          mergeData: Object.entries(fieldMapping.value).reduce((acc, [key, path]) => {
+            const cleanKey = key.replace(/[{}]/g, '')
+            acc[cleanKey] = member[path] || ''
+            return acc
+          }, {})
+        }))
     }
 
     console.log('Sending data:', JSON.stringify(sendData, null, 2))
