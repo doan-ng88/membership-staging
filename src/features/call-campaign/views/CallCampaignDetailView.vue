@@ -3,7 +3,7 @@
     <div class="p-6">
       <PageHeader>
         <template #title>
-          <h2 class="text-3xl font-bold text-gray-800">Campaign Details</h2>
+          <h2 class="text-3xl font-bold text-gray-800">Call Campaign Detail</h2>
         </template>
         <template #extra>
           <a-button type="primary" @click="router.back()">
@@ -18,7 +18,7 @@
           <h2 class="text-2xl font-bold text-blue-600">{{ campaign.campaignName }}</h2>
           <a-tag color="blue">{{ campaign.status }}</a-tag>
         </div>
-        <p class="text-lg font-semibold text-gray-700 mt-2">{{ campaign.description }}</p>
+        <!-- <p class="text-lg font-semibold text-gray-700 mt-2">{{ campaign.description }}</p> -->
         <div class="text-gray-600 mt-1">{{ `${formatDate(campaign.startDate)} - ${formatDate(campaign.dueDate)}` }}</div>
 
         <!-- Members Table Title -->

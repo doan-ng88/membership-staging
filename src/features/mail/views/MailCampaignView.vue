@@ -41,6 +41,7 @@
             pageSize: pagination.pageSize,
             total: pagination.total
           }"
+          :enable-name-click="true" 
           @page-change="handlePageChange"
           @edit="handleEdit"
           @delete="handleDelete"

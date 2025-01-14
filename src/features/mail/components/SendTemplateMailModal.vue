@@ -2,7 +2,7 @@
   <a-modal
     :open="visible"
     @update:visible="emit('update:visible', $event)"
-    :title="mode === 'campaign' ? 'Send Mail Template by Campaign' : 'Send Mail Template by Membership'"
+    :title="t(`sendTemplateMailModal.title.${mode}`)"
     width="800px"
     :footer="null"
     @cancel="handleCancel"
@@ -12,25 +12,31 @@
       <div class="mb-6">
         <a-form layout="vertical">
           <a-form-item 
-            label="Mail Sender" 
+            :label="t('sendTemplateMailModal.fields.mailSender.label')"
             required
-            :rules="[{ required: true, message: 'Please input mail sender' }]"
+            :rules="[{ required: true, message: t('sendTemplateMailModal.fields.mailSender.required') }]"
           >
-            <a-input v-model:value="mailSender" placeholder="testing@sky007.vn" />
+            <a-input 
+              v-model:value="mailSender" 
+              :placeholder="t('sendTemplateMailModal.fields.mailSender.placeholder')" 
+            />
           </a-form-item>
           <a-form-item 
-            label="Subject" 
+            :label="t('sendTemplateMailModal.fields.subject.label')"
             required
-            :rules="[{ required: true, message: 'Please input subject' }]"
+            :rules="[{ required: true, message: t('sendTemplateMailModal.fields.subject.required') }]"
           >
-            <a-input v-model:value="subject" placeholder="Enter subject email" />
+            <a-input 
+              v-model:value="subject" 
+              :placeholder="t('sendTemplateMailModal.fields.subject.placeholder')" 
+            />
           </a-form-item>
         </a-form>
       </div>
 
       <!-- Campaign Mode Section -->
       <div v-if="mode === 'campaign'" class="p-4 border rounded-lg mb-6">
-        <h4 class="font-medium mb-4">Selected Campaigns</h4>
+        <h4 class="font-medium mb-4">{{ t('sendTemplateMailModal.sections.campaigns.title') }}</h4>
         <div class="overflow-auto max-h-60">
           <a-table
             :columns="campaignColumns"
@@ -64,7 +70,7 @@
 
       <!-- Membership Mode Section -->
       <div v-if="mode === 'membership'" class="p-4 border rounded-lg mb-6">
-        <h4 class="font-medium mb-4">Selected Members</h4>
+        <h4 class="font-medium mb-4">{{ t('sendTemplateMailModal.sections.members.title') }}</h4>
         <div class="overflow-auto max-h-60">
           <a-table
             :columns="memberColumns"
@@ -93,30 +99,34 @@
 
       <!-- Fields Template Mapping Section -->
       <div class="p-4 border rounded-lg mb-6">
-        <h4 class="font-medium mb-4">Fields Template Mapping</h4>
+        <h4 class="font-medium mb-4">{{ t('sendTemplateMailModal.sections.mapping.title') }}</h4>
         <div v-if="templateFields.length > 0">
           <div v-for="field in templateFields" :key="field" class="mb-3">
             <label class="block text-sm mb-1 font-semibold">{{ field }}</label>
             <a-select
               v-model:value="fieldMapping[field]"
               :options="getMappingOptions(field)"
-              placeholder="Select field mapping"
+              :placeholder="t('sendTemplateMailModal.sections.mapping.placeholder')"
               class="w-full"
             />
           </div>
         </div>
-        <div v-else class="text-gray-500">No merge fields found in template</div>
+        <div v-else class="text-gray-500">
+          {{ t('sendTemplateMailModal.sections.mapping.noFields') }}
+        </div>
       </div>
 
       <!-- Footer Actions -->
       <div class="mt-6 flex justify-end gap-2">
-        <a-button @click="handleCancel">Cancel</a-button>
+        <a-button @click="handleCancel">
+          {{ t('sendTemplateMailModal.buttons.cancel') }}
+        </a-button>
         <a-button 
           type="primary" 
           :loading="sending"
           @click="handleSubmit"
         >
-          Send Email
+          {{ sending ? t('sendTemplateMailModal.buttons.sending') : t('sendTemplateMailModal.buttons.send') }}
         </a-button>
       </div>
     </div>
@@ -127,8 +137,11 @@
 import { ref, computed, watch } from 'vue'
 import { message } from 'ant-design-vue'
 import { DeleteOutlined } from '@ant-design/icons-vue'
+import { useI18nGlobal } from '@/i18n'
 import { mailCampaignService } from '@/features/mail/services/mail-campaign.service'
 import { membershipAPI } from '@/api/services/membershipApi'
+
+const { t } = useI18nGlobal()
 
 interface TemplateData {
   id: number
@@ -258,7 +271,7 @@ const getMappingOptions = (field: string) => {
 // Member table columns with Tailwind classes
 const memberColumns = [
   {
-    title: 'Customer Name',
+    title: t('sendTemplateMailModal.sections.members.table.columns.fullName'),
     dataIndex: 'fullName',
     key: 'fullName',
     width: 180,
@@ -303,7 +316,7 @@ const memberColumns = [
 // Add campaignColumns
 const campaignColumns = [
   {
-    title: 'Campaign Name',
+    title: t('sendTemplateMailModal.sections.campaigns.table.columns.name'),
     dataIndex: 'name',
     key: 'name',
     width: 180,
@@ -335,7 +348,7 @@ const campaignColumns = [
 const handleSubmit = async () => {
   try {
     if (!mailSender.value) {
-      message.error('Please input mail sender')
+      message.error(t('sendTemplateMailModal.validation.email.required'))
       return
     }
 
@@ -401,16 +414,16 @@ const handleSubmit = async () => {
     const response = await mailCampaignService.sendMail(sendData)
     
     if (response.success) {
-      message.success('Mail sent successfully')
+      message.success(t('sendTemplateMailModal.messages.success.send'))
       emit('success')
       emit('update:visible', false)
     } else {
-      const errorMessage = response.data?.results?.[0]?.message || 'Failed to send mail'
+      const errorMessage = response.data?.results?.[0]?.message || t('sendTemplateMailModal.messages.error.send')
       message.error(errorMessage)
     }
   } catch (error) {
     console.error('Error sending mail:', error)
-    message.error('Failed to send mail')
+    message.error(t('sendTemplateMailModal.messages.error.send'))
   } finally {
     sending.value = false
   }
@@ -437,7 +450,7 @@ const handleRemoveCampaign = (campaign: any) => {
 const validateFieldMapping = () => {
   const unmappedFields = templateFields.value.filter(field => !fieldMapping.value[field])
   if (unmappedFields.length > 0) {
-    message.error(`Please map all template fields: ${unmappedFields.join(', ')}`)
+    message.error(t('sendTemplateMailModal.messages.error.mappingRequired', { fields: unmappedFields.join(', ') }))
     return false
   }
   return true

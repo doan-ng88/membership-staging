@@ -51,6 +51,21 @@
           {{ record.priorityLevel }}
         </a-tag>
       </template>
+      <template v-else-if="column.key === 'actions'">
+        <a-space>
+          <router-link :to="`/mail-campaigns/${record.id}`">
+            <a-button type="link">
+              View Details
+            </a-button>
+          </router-link>
+          <a-button type="link" @click="emit('edit', record)">
+            Edit
+          </a-button>
+          <a-button type="link" danger @click="emit('delete', record)">
+            Delete
+          </a-button>
+        </a-space>
+      </template>
     </template>
   </a-table>
 
@@ -162,9 +177,10 @@ const getStatusColor = (status: string) => {
 
 const handleNameClick = (campaign: Campaign) => {
   selectedCampaign.value = campaign;
-  router.push(`/call-campaign/${campaign.id}`);
+  router.push(`/mail/mail-campaign/${campaign.id}`);
   
 };
+
 
 const getPriorityColor = (priority: string) => {
   const priorityColors: Record<string, string> = {

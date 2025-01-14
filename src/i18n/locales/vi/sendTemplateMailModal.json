@@ -1,0 +1,110 @@
+{
+  "sendTemplateMailModal": {
+    "title": {
+      "campaign": "Gửi Mail Template theo Chiến dịch",
+      "membership": "Gửi Mail Template theo Thành viên"
+    },
+    "fields": {
+      "mailSender": {
+        "label": "Email người gửi",
+        "placeholder": "testing@sky007.vn",
+        "required": "Vui lòng nhập email người gửi"
+      },
+      "subject": {
+        "label": "Tiêu đề",
+        "placeholder": "Nhập tiêu đề email",
+        "required": "Vui lòng nhập tiêu đề"
+      }
+    },
+    "sections": {
+      "campaigns": {
+        "title": "Chiến dịch đã chọn",
+        "table": {
+          "columns": {
+            "name": "Tên chiến dịch",
+            "website": "Website",
+            "status": "Trạng thái",
+            "actions": "Thao tác"
+          },
+          "status": {
+            "active": "Đang hoạt động",
+            "inactive": "Không hoạt động"
+          }
+        }
+      },
+      "members": {
+        "title": "Thành viên đã chọn",
+        "table": {
+          "columns": {
+            "fullName": "Tên khách hàng",
+            "email": "Email",
+            "phone": "Số điện thoại",
+            "actions": "Thao tác"
+          }
+        }
+      },
+      "mapping": {
+        "title": "Ánh xạ trường Template",
+        "noFields": "Không tìm thấy trường merge nào trong template",
+        "fieldOptions": {
+          "campaign": {
+            "campaignName": "Tên chiến dịch",
+            "description": "Mô tả",
+            "startDate": "Ngày bắt đầu",
+            "dueDate": "Ngày kết thúc",
+            "customerName": "Tên khách hàng",
+            "email": "Email",
+            "phone": "Số điện thoại",
+            "address": "Địa chỉ"
+          },
+          "membership": {
+            "fullName": "Tên khách hàng",
+            "email": "Email",
+            "phoneNumber": "Số điện thoại",
+            "address": "Địa chỉ"
+          }
+        }
+      }
+    },
+    "buttons": {
+      "cancel": "Hủy",
+      "send": "Gửi mail",
+      "sending": "Đang gửi...",
+      "remove": "Xóa"
+    },
+    "messages": {
+      "success": {
+        "send": "Gửi mail thành công"
+      },
+      "error": {
+        "send": "Gửi mail thất bại",
+        "invalidTemplate": "Dữ liệu template không hợp lệ",
+        "noCampaigns": "Vui lòng chọn ít nhất một chiến dịch",
+        "noMembers": "Vui lòng chọn ít nhất một thành viên",
+        "mappingRequired": "Vui lòng ánh xạ tất cả các trường template: {fields}",
+        "loadCampaignFailed": "Không thể tải thông tin chiến dịch"
+      },
+      "confirm": {
+        "send": "Bạn có chắc chắn muốn gửi mail?",
+        "removeCampaign": "Bạn có chắc chắn muốn xóa chiến dịch này?",
+        "removeMember": "Bạn có chắc chắn muốn xóa thành viên này?"
+      }
+    },
+    "tooltips": {
+      "removeCampaign": "Xóa chiến dịch",
+      "removeMember": "Xóa thành viên"
+    },
+    "validation": {
+      "email": {
+        "required": "Email là bắt buộc",
+        "invalid": "Email không hợp lệ"
+      },
+      "subject": {
+        "required": "Tiêu đề là bắt buộc"
+      },
+      "mapping": {
+        "required": "Vui lòng ánh xạ trường này"
+      }
+    }
+  }
+} 

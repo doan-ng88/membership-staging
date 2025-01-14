@@ -40,6 +40,7 @@ import enSalesAnalysis from './locales/en/salesAnalysis.json'
 import enCallCampaign from './locales/en/callCampaign.json'
 import enEditCampaignModal from './locales/en/editCampaignModal.json'
 import enMembershipTabMail from './locales/en/membershipTabMail.json'
+import enSendTemplateMailModal from './locales/en/sendTemplateMailModal.json'
 
 import viCommon from './locales/vi/common.json'
 import viHeader from './locales/vi/header.json'
@@ -79,6 +80,7 @@ import viSalesAnalysis from './locales/vi/salesAnalysis.json'
 import viCallCampaign from './locales/vi/callCampaign.json'
 import viEditCampaignModal from './locales/vi/editCampaignModal.json'
 import viMembershipTabMail from './locales/vi/membershipTabMail.json'
+import viSendTemplateMailModal from './locales/vi/sendTemplateMailModal.json'
 
 // Merge tất cả messages
 const messages = {
@@ -120,7 +122,8 @@ const messages = {
     ...enSalesAnalysis,
     ...enCallCampaign,
     ...enEditCampaignModal,
-    ...enMembershipTabMail
+    ...enMembershipTabMail,
+    ...enSendTemplateMailModal
   },
   vi: {
     ...viCommon,
@@ -160,7 +163,8 @@ const messages = {
     ...viSalesAnalysis,
     ...viCallCampaign,
     ...viEditCampaignModal,
-    ...viMembershipTabMail
+    ...viMembershipTabMail,
+    ...viSendTemplateMailModal
   }
 }
 

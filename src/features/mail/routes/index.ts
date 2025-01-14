@@ -34,6 +34,15 @@ export const mailRoutes: RouteRecordRaw[] = [
         }
       },
       {
+        path: '/mail/mail-campaign/:id',
+        name: 'MailCampaignDetail',
+        component: () => import('@/features/mail/views/MailCampaignDetailView.vue'),
+        meta: {
+          requiresAuth: true,
+          title: 'Mail Campaign Detail'
+        }
+      },
+      {
         path: 'send/:id',
         name: 'SendMail',
         component: () => import('@/features/mail/views/SendPreviewView.vue'),

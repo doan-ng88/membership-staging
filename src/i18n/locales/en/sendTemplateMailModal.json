@@ -1,0 +1,110 @@
+{
+  "sendTemplateMailModal": {
+    "title": {
+      "campaign": "Send Mail Template by Campaign",
+      "membership": "Send Mail Template by Membership"
+    },
+    "fields": {
+      "mailSender": {
+        "label": "Mail Sender",
+        "placeholder": "testing@sky007.vn",
+        "required": "Please input mail sender"
+      },
+      "subject": {
+        "label": "Subject",
+        "placeholder": "Enter subject email",
+        "required": "Please input subject"
+      }
+    },
+    "sections": {
+      "campaigns": {
+        "title": "Selected Campaigns",
+        "table": {
+          "columns": {
+            "name": "Campaign Name",
+            "website": "Website",
+            "status": "Status",
+            "actions": "Actions"
+          },
+          "status": {
+            "active": "Active",
+            "inactive": "Inactive"
+          }
+        }
+      },
+      "members": {
+        "title": "Selected Members",
+        "table": {
+          "columns": {
+            "fullName": "Customer Name",
+            "email": "Email",
+            "phone": "Phone",
+            "actions": "Actions"
+          }
+        }
+      },
+      "mapping": {
+        "title": "Fields Template Mapping",
+        "noFields": "No merge fields found in template",
+        "fieldOptions": {
+          "campaign": {
+            "campaignName": "Campaign Name",
+            "description": "Description",
+            "startDate": "Start Date",
+            "dueDate": "Due Date",
+            "customerName": "Customer Name",
+            "email": "Email",
+            "phone": "Phone",
+            "address": "Address"
+          },
+          "membership": {
+            "fullName": "Customer Name",
+            "email": "Email",
+            "phoneNumber": "Phone Number",
+            "address": "Address"
+          }
+        }
+      }
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "send": "Send mail",
+      "sending": "Sending...",
+      "remove": "Remove"
+    },
+    "messages": {
+      "success": {
+        "send": "Mail sent successfully"
+      },
+      "error": {
+        "send": "Failed to send mail",
+        "invalidTemplate": "Invalid template data",
+        "noCampaigns": "Please select at least one campaign",
+        "noMembers": "Please select at least one member",
+        "mappingRequired": "Please map all template fields: {fields}",
+        "loadCampaignFailed": "Failed to load campaign data"
+      },
+      "confirm": {
+        "send": "Are you sure you want to send mail?",
+        "removeCampaign": "Are you sure you want to remove this campaign?",
+        "removeMember": "Are you sure you want to remove this member?"
+      }
+    },
+    "tooltips": {
+      "removeCampaign": "Remove campaign",
+      "removeMember": "Remove member"
+    },
+    "validation": {
+      "email": {
+        "required": "Email is required",
+        "invalid": "Invalid email format"
+      },
+      "subject": {
+        "required": "Subject is required"
+      },
+      "mapping": {
+        "required": "Please map this field"
+      }
+    }
+  }
+} 

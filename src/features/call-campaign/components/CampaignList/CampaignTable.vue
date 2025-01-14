@@ -44,7 +44,6 @@
         </a-tag>
       </template>
       <template v-else-if="column.key === 'website'">
-        <!-- {{ record.websiteName }} -->
         {{ getWebsiteName(record.websiteId) }}
       </template>
     </template>
@@ -153,7 +152,6 @@ const getStatusColor = (status: string) => {
 const handleNameClick = (campaign: Campaign) => {
   selectedCampaign.value = campaign;
   router.push(`/call-campaign/${campaign.id}`);
-  
 };
 
 </script>
