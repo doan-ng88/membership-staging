@@ -992,7 +992,7 @@ const getMappingOptions = (fieldKey: string) => {
   ]
 
   const campaignOptions = [
-    { label: 'Campaign Name', value: 'name' },
+    { label: 'Campaign Namerêt', value: 'name' },
     { label: 'Start Date', value: 'startDate' },
     { label: 'End Date', value: 'endDate' }
   ]

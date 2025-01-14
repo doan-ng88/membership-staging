@@ -1,5 +1,6 @@
 {
-  "campaignTab": {
+  "campaignTabMail": {
+    "title": "Gửi Mail theo Chiến dịch",
     "form": {
       "name": {
         "label": "Tên chiến dịch",
@@ -11,12 +12,20 @@
         "options": {
           "active": "Đang hoạt động",
           "inactive": "Không hoạt động",
-          "completed": "Đã hoàn thành"
+          "completed": "Đã hoàn thành",
+          "pending": "Đang chờ",
+          "cancelled": "Đã hủy"
         }
       },
       "website": {
         "label": "Website",
         "placeholder": "Chọn website"
+      },
+      "dateRange": {
+        "label": "Khoảng thời gian",
+        "placeholder": ["Ngày bắt đầu", "Ngày kết thúc"],
+        "startDate": "Ngày bắt đầu",
+        "endDate": "Ngày kết thúc"
       }
     },
     "table": {
@@ -25,22 +34,52 @@
         "website": "Website",
         "startDate": "Ngày bắt đầu",
         "endDate": "Ngày kết thúc",
-        "status": "Trạng thái"
-      }
+        "status": "Trạng thái",
+        "memberCount": "Số thành viên",
+        "createdBy": "Người tạo",
+        "createdAt": "Ngày tạo",
+        "updatedAt": "Ngày cập nhật",
+        "actions": "Thao tác"
+      },
+      "empty": "Không tìm thấy chiến dịch nào",
+      "loading": "Đang tải danh sách chiến dịch..."
     },
     "selection": {
       "count": "Đã chọn: {count} chiến dịch",
-      "clear": "Xóa lựa chọn"
+      "clear": "Xóa lựa chọn",
+      "selected": "chiến dịch đã chọn",
+      "selectAll": "Chọn tất cả",
+      "deselectAll": "Bỏ chọn tất cả"
     },
     "buttons": {
+      "search": "Tìm kiếm",
+      "reset": "Đặt lại",
       "cancel": "Hủy",
-      "send": "Gửi theo chiến dịch"
+      "send": "Gửi theo chiến dịch",
+      "confirm": "Xác nhận",
+      "delete": "Xóa"
     },
     "messages": {
+      "success": {
+        "send": "Gửi mail thành công",
+        "delete": "Xóa chiến dịch thành công"
+      },
       "error": {
         "noSelection": "Vui lòng chọn ít nhất một chiến dịch",
-        "fetchFailed": "Không thể tải danh sách chiến dịch"
+        "fetchFailed": "Không thể tải danh sách chiến dịch",
+        "sendFailed": "Gửi mail thất bại",
+        "deleteFailed": "Xóa chiến dịch thất bại",
+        "invalidData": "Dữ liệu chiến dịch không hợp lệ"
+      },
+      "confirm": {
+        "delete": "Bạn có chắc chắn muốn xóa chiến dịch này?",
+        "send": "Bạn có chắc chắn muốn gửi mail cho các chiến dịch đã chọn?"
       }
+    },
+    "tooltips": {
+      "delete": "Xóa chiến dịch",
+      "edit": "Chỉnh sửa chiến dịch",
+      "view": "Xem chi tiết chiến dịch"
     }
   }
 } 

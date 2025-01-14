@@ -15,30 +15,31 @@
       },
       "thresholdAmount": {
         "label": "Số tiền tích lũy tối thiểu:",
-        "placeholder": "Nhập số tiền tối thiểu"
+        "placeholder": "Nhập số tiền tối thiểu",
+        "description": "Số tiền khách hàng cần chi tiêu để đạt cấp bậc này"
       },
       "rewardRate": {
         "label": "Tỷ lệ tích điểm (%):",
-        "placeholder": "Nhập tỷ lệ tích điểm"
+        "placeholder": "Nhập tỷ lệ tích điểm",
+        "description": "Tỷ lệ điểm thưởng trên mỗi đơn vị tiền tệ",
+        "suffix": "%"
       },
       "redeemRate": {
         "label": "Tỷ lệ đổi điểm:",
-        "placeholder": "Nhập tỷ lệ đổi điểm"
+        "placeholder": "Nhập tỷ lệ đổi điểm",
+        "description": "Số tiền quy đổi cho mỗi điểm thưởng"
       },
       "duration": {
         "label": "Thời hạn hiệu lực (tháng):",
-        "placeholder": "Nhập thời hạn"
+        "placeholder": "Nhập thời hạn",
+        "description": "Thời gian hiệu lực của cấp bậc sau khi đạt được"
       },
       "discount": {
         "label": "Giảm giá trên mỗi đơn (%):",
-        "placeholder": "Nhập phần trăm giảm giá"
+        "placeholder": "Nhập phần trăm giảm giá",
+        "description": "Phần trăm giảm giá áp dụng cho mỗi đơn hàng",
+        "suffix": "%"
       }
-    },
-    "buttons": {
-      "cancel": "Hủy",
-      "saving": "Đang lưu...",
-      "update": "Cập nhật",
-      "add": "Thêm mới"
     },
     "validation": {
       "level": {
@@ -52,29 +53,53 @@
       "rank": {
         "required": "Rank là bắt buộc",
         "negative": "Rank không được âm",
-        "exists": "Rank {rank} đã tồn tại cho website này"
+        "exists": "Rank {rank} đã tồn tại cho website này",
+        "minimum": "Rank phải lớn hơn hoặc bằng 0"
       },
       "thresholdAmount": {
-        "negative": "Số tiền tích lũy không được âm"
+        "required": "Số tiền tích lũy là bắt buộc",
+        "negative": "Số tiền tích lũy không được âm",
+        "minimum": "Số tiền tích lũy phải lớn hơn 0"
       },
       "rewardRate": {
-        "range": "Tỷ lệ tích điểm phải từ 0-100%"
+        "required": "Tỷ lệ tích điểm là bắt buộc",
+        "range": "Tỷ lệ tích điểm phải từ 0-100%",
+        "minimum": "Tỷ lệ tích điểm phải lớn hơn hoặc bằng 0"
       },
       "redeemRate": {
-        "negative": "Tỷ lệ đổi điểm không được âm"
+        "required": "Tỷ lệ đổi điểm là bắt buộc",
+        "negative": "Tỷ lệ đổi điểm không được âm",
+        "minimum": "Tỷ lệ đổi điểm phải lớn hơn 0"
       },
       "duration": {
-        "minimum": "Thời hạn hiệu lực phải lớn hơn 0 tháng"
+        "required": "Thời hạn hiệu lực là bắt buộc",
+        "minimum": "Thời hạn hiệu lực phải lớn hơn 0 tháng",
+        "maximum": "Thời hạn hiệu lực không được vượt quá 60 tháng"
       },
       "discount": {
-        "range": "Giảm giá phải từ 0-100%"
+        "required": "Phần trăm giảm giá là bắt buộc",
+        "range": "Giảm giá phải từ 0-100%",
+        "minimum": "Phần trăm giảm giá phải lớn hơn hoặc bằng 0"
       }
     },
     "messages": {
       "addSuccess": "Thêm cấp bậc thành công",
       "updateSuccess": "Cập nhật cấp bậc thành công",
       "addError": "Thêm cấp bậc thất bại",
-      "updateError": "Cập nhật cấp bậc thất bại"
+      "updateError": "Cập nhật cấp bậc thất bại",
+      "deleteSuccess": "Xóa cấp bậc thành công",
+      "deleteError": "Xóa cấp bậc thất bại",
+      "confirmDelete": "Bạn có chắc chắn muốn xóa cấp bậc này?",
+      "loading": "Đang tải...",
+      "saving": "Đang lưu..."
+    },
+    "buttons": {
+      "cancel": "Hủy",
+      "confirm": "Xác nhận",
+      "delete": "Xóa",
+      "saving": "Đang lưu...",
+      "update": "Cập nhật",
+      "add": "Thêm mới"
     }
   }
 } 
