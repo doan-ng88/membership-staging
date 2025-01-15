@@ -7,7 +7,7 @@
     "fields": {
       "mailSender": {
         "label": "Email người gửi",
-        "placeholder": "testing@sky007.vn",
+        "placeholder": "Nhập email người gửi",
         "required": "Vui lòng nhập email người gửi"
       },
       "subject": {

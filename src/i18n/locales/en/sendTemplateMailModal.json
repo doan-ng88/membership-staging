@@ -7,7 +7,7 @@
     "fields": {
       "mailSender": {
         "label": "Mail Sender",
-        "placeholder": "testing@sky007.vn",
+        "placeholder": "Input mail sender",
         "required": "Please input mail sender"
       },
       "subject": {

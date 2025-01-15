@@ -14,7 +14,7 @@
           <a-form-item 
             :label="t('sendTemplateMailModal.fields.mailSender.label')"
             required
-            :rules="[{ required: true, message: t('sendTemplateMailModal.fields.mailSender.required') }]"
+            :rules="[{ required: true, type: 'email', message: t('sendTemplateMailModal.fields.mailSender.required') }]"
           >
             <a-input 
               v-model:value="mailSender" 
@@ -166,7 +166,7 @@ const emit = defineEmits<{
 }>()
 
 // 2. States
-const mailSender = ref('testing@sky007.vn')
+const mailSender = ref('')
 const subject = ref(props.template?.subject || '')
 const sending = ref(false)
 const loadingCampaigns = ref(false)
