@@ -4,7 +4,6 @@ export interface Website {
 }
 
 export const websites: Website[] = [
-  { websiteId: 0, name: 'All websites' },
   { websiteId: 1, name: 'Sky007' },
   { websiteId: 2, name: 'Bbia' },
   { websiteId: 3, name: 'Hince' },

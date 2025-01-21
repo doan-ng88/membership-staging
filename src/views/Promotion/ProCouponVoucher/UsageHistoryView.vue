@@ -16,7 +16,11 @@
               :placeholder="t('couponHistory.filters.website.placeholder')"
               @change="handleSearch"
             >
-              <a-select-option v-for="web in websites" :key="web.websiteId" :value="web.websiteId">
+              <a-select-option 
+                v-for="web in websites.filter(w => w.websiteId !== 0)" 
+                :key="web.websiteId" 
+                :value="web.websiteId"
+              >
                 {{ web.name }}
               </a-select-option>
             </a-select>
@@ -113,13 +117,113 @@
           </template>
         </template>
       </a-table>
+
+      <!-- Modal -->
+      <a-modal
+        v-model:open="showDetailModal"
+        :title="t('couponHistory.modal.title')"
+        @cancel="handleCloseModal"
+        :footer="null"
+        width="600px"
+      >
+        <a-spin :spinning="modalLoading">
+          <template v-if="selectedRecord">
+            <div class="space-y-6">
+              <!-- Coupon Info -->
+              <div class="border-b pb-4">
+                <h4 class="font-medium mb-3">{{ t('couponHistory.modal.couponInfo') }}</h4>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <span class="text-gray-500">{{ t('couponHistory.modal.code') }}:</span>
+                    <span class="ml-2 font-medium">{{ selectedRecord.code }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500"> {{ t('couponHistory.modal.status') }}:</span>
+                    <a-tag :color="getStatusColor(selectedRecord.status)">
+                      {{ selectedRecord.status }}
+                    </a-tag>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">{{ t('couponHistory.modal.discountType') }}:</span>
+                    <span class="ml-2">{{ selectedRecord.discount_type }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">{{ t('couponHistory.modal.couponAmount') }}:</span>
+                    <span class="ml-2">{{ formatCurrency(selectedRecord.coupon_amount) }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">{{ t('couponHistory.modal.startDate') }}:</span>
+                    <span class="ml-2">{{ selectedRecord.start_date }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">{{ t('couponHistory.modal.endDate') }}:</span>
+                    <span class="ml-2">{{ selectedRecord.expiry_date }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">{{ t('couponHistory.modal.usageLimit') }}:</span>
+                    <span class="ml-2">
+                      {{ selectedRecord.usage_limit }}
+                    </span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">{{ t('couponHistory.modal.totalUsed') }}:</span>
+                    <span class="ml-2">{{ selectedRecord.total_used }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">{{ t('couponHistory.modal.minimumAmount') }}:</span>
+                    <span class="ml-2">{{ formatCurrency(selectedRecord.minimum_amount) }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">{{ t('couponHistory.modal.maximumAmount') }}:</span>
+                    <span class="ml-2">
+                      {{ formatCurrency(selectedRecord.maximum_amount) }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Usage Restrictions -->
+              <div class="border-b pb-4">
+                <h4 class="font-medium mb-3">{{ t('couponHistory.modal.restrictions') }}</h4>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <span class="text-gray-500">{{ t('couponHistory.modal.individualUse') }}:</span>
+                    <span class="ml-2">{{ selectedRecord.individual_use === 'yes' ? t('common.yes') : t('common.no') }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">{{ t('couponHistory.modal.usageLimitPerUser') }}:</span>
+                    <span class="ml-2">
+                      {{ selectedRecord.usage_limit_per_user }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Customer Info -->
+              <div>
+                <h4 class="font-medium mb-3">{{ t('couponHistory.modal.customerInfo') }}</h4>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <span class="text-gray-500">{{ t('couponHistory.modal.customerEmail') }}:</span>
+                    <span class="ml-2">{{ selectedRecord.customer_email || '-' }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">{{ t('couponHistory.modal.customerUsed') }}:</span>
+                    <span class="ml-2">{{ selectedRecord.customer_used }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </a-spin>
+      </a-modal>
     </div>
   </DefaultLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { useI18nGlobal } from '@/i18n'
 import { SearchOutlined } from '@ant-design/icons-vue'
 import { Tag, Space, Button } from 'ant-design-vue'
 import type { TablePaginationConfig, TableColumnType } from 'ant-design-vue'
@@ -129,7 +233,7 @@ import { useAuthStore } from '@/stores/auth'
 import { websites } from '@/api/types/website'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 
-const { t } = useI18n()
+const { t } = useI18nGlobal()
 const authStore = useAuthStore()
 const loading = ref(false)
 const coupons = ref([])
@@ -253,6 +357,13 @@ const pagination = reactive<TablePaginationConfig>({
   showSizeChanger: true,
   showTotal: (total) => t('couponHistory.table.pagination.total', { total })
 })
+
+// Thêm state cho modal
+const showDetailModal = ref(false)
+const selectedRecord = ref<any>(null)
+
+// Thêm state cho loading modal
+const modalLoading = ref(false)
 
 // Methods
 const buildSearchParams = () => {
@@ -378,9 +489,54 @@ const formatDiscount = (type: string, amount: number) => {
   return '-'
 }
 
-const viewDetails = (record: any) => {
-  // TODO: Implement view details
-  console.log('View details:', record)
+const viewDetails = async (record: any) => {
+  try {
+    modalLoading.value = true
+    showDetailModal.value = true
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/membership/get/check-coupon/${record.code}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authStore.token}`
+        }
+      }
+    )
+
+    const result = await response.json()
+    
+    if (result.data) {
+      selectedRecord.value = {
+        id: result.data.id,
+        code: result.data.code,
+        status: result.data.status,
+        discount_type: result.data.discount_type,
+        coupon_amount: result.data.coupon_amount,
+        start_date: result.data.start_date,
+        expiry_date: result.data.expiry_date,
+        usage_limit: result.data.usage_limit,
+        usage_limit_per_user: result.data.usage_limit_per_user,
+        total_used: result.data.total_used,
+        minimum_amount: result.data.minimum_amount,
+        maximum_amount: result.data.maximum_amount,
+        individual_use: result.data.individual_use,
+        product_ids: result.data.product_ids,
+        product_categories: result.data.product_categories,
+        exclude_product_ids: result.data.exclude_product_ids,
+        exclude_product_categories: result.data.exclude_product_categories,
+        customer_email: result.data.customer_email,
+        customer_used: result.data.customer_used
+      }
+      console.log('Selected Record:', selectedRecord.value)
+    }
+  } catch (error) {
+    console.error('Error loading coupon details:', error)
+    message.error(t('couponHistory.messages.error.loadDetails'))
+  } finally {
+    modalLoading.value = false
+  }
 }
 
 // Thêm helper function format tiền
@@ -403,10 +559,21 @@ watch(
 )
 
 // Initial fetch
+const initializeFilters = () => {
+  // Giả sử Sky007 có websiteId là 1 (điều chỉnh theo giá trị thực tế)
+  filters.websiteId = 1 // ID của Sky007
+  // Trigger search ngay khi component được mount
+  handleSearch()
+}
+
+// Thêm hàm đóng modal
+const handleCloseModal = () => {
+  showDetailModal.value = false
+  selectedRecord.value = null
+}
+
 onMounted(() => {
-  if (filters.websiteId) {
-    fetchCoupons()
-  }
+  initializeFilters()
 })
 </script>
 

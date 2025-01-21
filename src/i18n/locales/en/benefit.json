@@ -1,35 +1,29 @@
 {
   "benefit": {
-    "settings": "Benefit Settings",
-    "title": "Benefit",
-    "description": "Description",
-    "status": "Status",
-    "action": "Action",
-    "active": "Active",
-    "inactive": "Inactive",
-    "edit": "Edit",
-    "delete": "Delete",
-    "confirm": "Confirm",
-    "cancel": "Cancel",
-    "addLevel": "Add Level",
-    "search": "Search",
-    "filterStatus": "Filter by status",
-    "selectBrand": "Select Brand",
-    "memberLevelList": "Member Level List",
-    "editLevel": "Edit Level",
-    "deleteLevel": "Delete Level",
-    "loading": "Loading...",
-    "error": {
-      "title": "An error occurred",
-      "retry": "Retry"
+    "title": {
+      "settings": "Benefit Settings",
+      "memberLevelList": "Member Level List"
     },
-    "noData": {
-      "title": "No data available",
-      "description": "Start by adding a new level"
+    "fields": {
+      "description": "Description",
+      "status": "Status",
+      "action": "Action"
     },
-    "notification": {
-      "deleteSuccess": "Level deleted successfully",
-      "deleteError": "Error occurred while deleting level"
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "addLevel": "Add Level"
+    },
+    "filters": {
+      "search": "Search",
+      "status": "Filter by status",
+      "selectWebsite": "Select Website"
     },
     "table": {
       "rank": "Level",
@@ -39,26 +33,48 @@
       "duration": "Validity Period (Months)",
       "discount": "Discount (%)",
       "unlimited": "Unlimited"
-    }
-  },
-  "menu": {
-    "benefitSettings": {
-      "title": "Benefit Settings",
-      "list": {
-        "header": "Benefit List",
-        "columns": {
-          "name": "Benefit Name",
-          "code": "Benefit Code",
-          "description": "Description",
-          "status": "Status",
-          "actions": "Actions"
+    },
+    "messages": {
+      "loading": "Loading...",
+      "error": {
+        "title": "An error occurred",
+        "retry": "Retry"
+      },
+      "noData": {
+        "title": "No data available",
+        "description": "Start by adding a new level"
+      },
+      "notification": {
+        "deleteSuccess": "Level deleted successfully",
+        "deleteError": "Error occurred while deleting level"
+      }
+    },
+    "menu": {
+      "benefitSettings": {
+        "title": "Benefit Settings",
+        "list": {
+          "header": "Benefit List",
+          "columns": {
+            "name": "Benefit Name",
+            "code": "Benefit Code",
+            "description": "Description",
+            "status": "Status",
+            "actions": "Actions"
+          }
         }
       }
+    },
+    "common": {
+      "actions": "Actions",
+      "edit": "Edit",
+      "delete": "Delete",
+      "loading": "Loading...",
+      "error": {
+        "title": "An error occurred"
+      },
+      "retry": "Retry",
+      "confirm": "Confirm",
+      "cancel": "Cancel"
     }
-  },
-  "common": {
-    "actions": "Actions",
-    "edit": "Edit",
-    "delete": "Delete"
   }
 } 

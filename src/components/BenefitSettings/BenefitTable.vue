@@ -26,7 +26,7 @@
             {{ t('benefit.table.discount') }}
           </th>
           <th scope="col" class="py-2 px-4 border-b text-left text-gray-600">
-            {{ t('common.actions') }}
+            {{ t('benefit.common.actions') }}
           </th>
           <!-- <th scope="col" class="relative px-6 py-3">
             <span class="sr-only">Actions</span>
@@ -76,7 +76,7 @@
                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                   />
                 </svg>
-                {{ t('common.edit') }}
+                {{ t('benefit.common.edit') }}
               </button>
 
               <!-- Delete Button -->
@@ -97,7 +97,7 @@
                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                   />
                 </svg>
-                {{ t('common.delete') }}
+                {{ t('benefit.common.delete') }}
               </button>
             </div>
           </td>
@@ -131,7 +131,7 @@
 
 <script lang="ts">
 import { defineComponent, type PropType } from 'vue'
-import { useI18n } from 'vue-i18n'
+ import { useI18nGlobal } from '@/i18n'
 import type { LevelSetting } from '@/data/benefits'
 
 export default defineComponent({
@@ -147,7 +147,7 @@ export default defineComponent({
   emits: ['edit', 'delete'],
 
   setup(props, { emit }) {
-    const { t } = useI18n()
+    const { t } = useI18nGlobal()
 
     const handleEdit = (benefit: LevelSetting) => {
       emit('edit', benefit)

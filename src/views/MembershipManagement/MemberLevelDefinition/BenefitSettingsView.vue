@@ -3,13 +3,13 @@
     <div class="flex-1 p-6">
       <!-- <h2 class="text-2xl font-bold mb-4 text-center">{{ t('menu.benefitSettings.title') }}</h2> -->
       <h1 class="text-2xl font-bold text-center mb-5">
-        {{ t('benefit.settings') }}
+        {{ t('benefit.title.settings') }}
       </h1>
 
       <!-- Brand Selection -->
       <div class="mb-6">
         <label for="brandSelect" class="block text-sm font-medium text-gray-700">
-          <h3 class="text-lg leading-6 font-medium text-gray-900">{{ t('benefit.selectBrand') }}</h3>
+          <h3 class="text-lg leading-6 font-medium text-gray-900">{{ t('benefit.filters.selectWebsite') }}</h3>
         </label>
         <select
           id="brandSelect"
@@ -27,13 +27,13 @@
         <!-- Header -->
         <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
           <h3 class="text-lg leading-6 font-medium text-gray-900">
-            {{ t('benefit.memberLevelList') }}
+            {{ t('benefit.title.memberLevelList') }}
           </h3>
           <button
             @click="openAddModal"
             class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 focus:outline-none"
           >
-            {{ t('benefit.addLevel') }}
+            {{ t('benefit.actions.addLevel') }}
           </button>
         </div>
 

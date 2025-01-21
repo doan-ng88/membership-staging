@@ -46,11 +46,6 @@
         "usage": "Usage",
         "actions": "Thao tác"
       },
-      "discountTypes": {
-        "fixed_cart": "Đơn hàng",
-        "percent": "%",
-        "fixed_product": "Sản phẩm"
-      },
       "status": {
         "publish": "Đang hoạt động",
         "draft": "Nháp",
@@ -68,8 +63,34 @@
     },
     "messages": {
       "error": {
-        "load": "Không thể tải danh sách mã giảm giá"
+        "load": "Không thể tải danh sách mã giảm giá",
+        "loadDetails": "Không thể tải thông tin chi tiết mã giảm giá"
       }
+    },
+    "modal": {
+      "title": "Chi tiết sử dụng mã giảm giá",
+      "couponInfo": "Thông tin mã giảm giá",
+      "code": "Mã",
+      "status": "Trạng thái",
+      "discount": "Giảm giá",
+      "discountType": "Loại giảm giá",
+      "couponAmount": "Giá trị giảm",
+      "startDate": "Ngày bắt đầu",
+      "endDate": "Ngày kết thúc",
+      "usageLimit": "Giới hạn sử dụng",
+      "totalUsed": "Số lần đã dùng",
+      "minimumAmount": "Giá trị đơn hàng tối thiểu",
+      "maximumAmount": "Giá trị đơn hàng tối đa",
+      "restrictions": "Điều kiện sử dụng",
+      "individualUse": "Chỉ sử dụng riêng lẻ",
+      "usageLimitPerUser": "Giới hạn sử dụng/người dùng",
+      "customerInfo": "Thông tin khách hàng",
+      "customerEmail": "Email khách hàng",
+      "customerUsed": "Số lần khách hàng đã dùng"
     }
+  },
+  "common": {
+    "yes": "Có",
+    "no": "Không"
   }
 } 

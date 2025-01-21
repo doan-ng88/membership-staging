@@ -19,6 +19,7 @@ export interface Member {
   totalOrder: number;
   amountNextLevel: number;
   defaultAddress: string;
+  levelName: string;
 }
 
 export interface FilterParams {

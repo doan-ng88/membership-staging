@@ -1,31 +1,29 @@
 {
   "benefit": {
-    "settings": "Cài đặt quyền lợi",
-    "selectBrand": "Chọn Website",
-    "memberLevelList": "Danh sách cấp bậc thành viên",
-    "addLevel": "Thêm cấp bậc",
-    "deleteConfirmTitle": "Xác nhận xóa",
-    "deleteConfirmMessage": "Bạn có chắc chắn muốn xóa cấp bậc này?",
-    "editLevel": "Chỉnh sửa cấp bậc",
-    "deleteLevel": "Xóa cấp bậc",
-    "loading": "Đang tải dữ liệu...",
-    "error": {
-      "title": "Đã xảy ra lỗi",
-      "retry": "Thử lại"
+    "title": {
+      "settings": "Cài đặt quyền lợi",
+      "memberLevelList": "Danh sách cấp bậc thành viên"
     },
-    "noData": {
-      "title": "Không có dữ liệu",
-      "description": "Bắt đầu bằng cách thêm cấp bậc mới"
+    "fields": {
+      "description": "Mô tả",
+      "status": "Trạng thái",
+      "action": "Thao tác"
     },
-    "notification": {
-      "deleteSuccess": "Xóa cấp bậc thành công",
-      "deleteError": "Có lỗi xảy ra khi xóa cấp bậc"
+    "status": {
+      "active": "Hoạt động",
+      "inactive": "Không hoạt động"
     },
-    "messages": {
-      "createSuccess": "Tạo mới thành công",
-      "updateSuccess": "Cập nhật thành công",
-      "deleteSuccess": "Xóa thành công",
-      "deleteError": "Có lỗi xảy ra khi xóa"
+    "actions": {
+      "edit": "Sửa",
+      "delete": "Xóa",
+      "confirm": "Xác nhận",
+      "cancel": "Hủy",
+      "addLevel": "Thêm cấp bậc"
+    },
+    "filters": {
+      "search": "Tìm kiếm",
+      "status": "Lọc theo trạng thái",
+      "selectWebsite": "Chọn Website"
     },
     "table": {
       "rank": "Cấp Bậc",
@@ -36,21 +34,47 @@
       "discount": "Giảm Giá (%)",
       "unlimited": "Không giới hạn"
     },
-    "noData": {
-      "title": "Chưa có dữ liệu",
-      "description": "Bắt đầu bằng cách thêm cấp bậc mới"
-    }
-  },
-  "common": {
-    "loading": "Đang tải...",
-    "error": {
-      "title": "Đã xảy ra lỗi"
+    "messages": {
+      "loading": "Đang tải dữ liệu...",
+      "error": {
+        "title": "Đã xảy ra lỗi",
+        "retry": "Thử lại"
+      },
+      "noData": {
+        "title": "Không có dữ liệu",
+        "description": "Bắt đầu bằng cách thêm cấp bậc mới"
+      },
+      "notification": {
+        "deleteSuccess": "Xóa cấp bậc thành công",
+        "deleteError": "Có lỗi xảy ra khi xóa cấp bậc"
+      }
     },
-    "retry": "Thử lại",
-    "confirm": "Xác nhận",
-    "cancel": "Hủy",
-    "actions": "Thao tác",
-    "edit": "Sửa",
-    "delete": "Xóa"
+    "menu": {
+      "benefitSettings": {
+        "title": "Cài đặt quyền lợi",
+        "list": {
+          "header": "Danh sách quyền lợi",
+          "columns": {
+            "name": "Tên quyền lợi",
+            "code": "Mã quyền lợi",
+            "description": "Mô tả",
+            "status": "Trạng thái",
+            "actions": "Thao tác"
+          }
+        }
+      }
+    },
+    "common": {
+      "actions": "Thao tác",
+      "edit": "Sửa",
+      "delete": "Xóa",
+      "loading": "Đang tải...",
+      "error": {
+        "title": "Đã xảy ra lỗi"
+      },
+      "retry": "Thử lại",
+      "confirm": "Xác nhận", 
+      "cancel": "Hủy"
+    }
   }
 } 

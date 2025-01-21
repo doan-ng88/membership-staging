@@ -40,9 +40,11 @@
         <template v-else-if="tab === 'date-of-birth'">
           <!-- Date of Birth Range -->
           <a-form-item :label="t('profileManagement.filter.dateOfBirth')">
-            <a-range-picker
-              v-model:value="filterForm.birthdayRange"
+            <a-month-picker
+              v-model:value="filterForm.birthdayMonth"
+              format="MM"
               style="width: 100%"
+              :placeholder="t('profileManagement.filter.selectMonth')"
             />
           </a-form-item>
 
@@ -141,7 +143,7 @@ const emit = defineEmits<{
 
 interface FilterForm {
   registeredTimeRange: [Dayjs, Dayjs] | null
-  birthdayRange: [Dayjs, Dayjs] | null
+  birthdayMonth: Dayjs | null
   websiteId: string | number
   levelId: string | number
   purchaseDateRange: [Dayjs, Dayjs] | null
@@ -149,7 +151,7 @@ interface FilterForm {
 
 const filterForm = reactive<FilterForm>({
   registeredTimeRange: null,
-  birthdayRange: null,
+  birthdayMonth: null,
   websiteId: '',
   levelId: '',
   purchaseDateRange: null
@@ -159,7 +161,7 @@ const filterForm = reactive<FilterForm>({
 watch(() => props.tab, (newTab) => {
   // Reset form khi chuyển tab
   filterForm.registeredTimeRange = null;
-  filterForm.birthdayRange = null;
+  filterForm.birthdayMonth = null;
   filterForm.websiteId = '';
   filterForm.levelId = '';
 
@@ -170,24 +172,7 @@ watch(() => props.tab, (newTab) => {
 const handleSearch = () => {
   const params: Array<{key: string, value: any}> = []
 
-  if (props.tab === 'history') {
-    if (filterForm.purchaseDateRange?.[0] && filterForm.purchaseDateRange?.[1]) {
-      params.push({ 
-        key: 'orderDateFrom', 
-        value: filterForm.purchaseDateRange[0].format('YYYY-MM-DD') 
-      })
-      params.push({ 
-        key: 'orderDateTo', 
-        value: filterForm.purchaseDateRange[1].format('YYYY-MM-DD') 
-      })
-    }
-    if (filterForm.websiteId) {
-      params.push({ 
-        key: 'websiteId', 
-        value: filterForm.websiteId.toString()
-      })
-    }
-  } else if (props.tab === 'date-join-member') {
+  if (props.tab === 'date-join-member') {
     // 1. Date Join Member Range
     if (filterForm.registeredTimeRange?.[0] && filterForm.registeredTimeRange?.[1]) {
       const startDate = filterForm.registeredTimeRange[0]
@@ -205,7 +190,15 @@ const handleSearch = () => {
       }
     }
 
-    // 2. Member Level (giữ nguyên cách filter theo levelName)
+    // 2. Website Filter
+    if (filterForm.websiteId) {
+      params.push({ 
+        key: 'websiteId', 
+        value: filterForm.websiteId 
+      })
+    }
+
+    // 3. Member Level
     if (!props.hideMemberLevel && filterForm.levelId) {
       const levelName = getLevelNameById(Number(filterForm.levelId))
       if (levelName) {
@@ -216,24 +209,39 @@ const handleSearch = () => {
       }
     }
   } else if (props.tab === 'date-of-birth') {
-    // Date of Birth Range
-    // Cập nhật logic filter cho Date of Birth
-    if (filterForm.birthdayRange?.[0] && filterForm.birthdayRange?.[1]) {
-      const startDate = filterForm.birthdayRange[0]
-      const endDate = filterForm.birthdayRange[1]
-      
-      if (startDate.isValid() && endDate.isValid()) {
-        params.push({ 
-          key: 'birthdayFrom', 
-          value: startDate.format('YYYY-MM-DD') 
-        })
-        params.push({ 
-          key: 'birthdayTo', 
-          value: endDate.format('YYYY-MM-DD') 
-        })
-      }
+    if (filterForm.birthdayMonth) {
+      params.push({ 
+        key: 'birthdayMonth',
+        value: filterForm.birthdayMonth.format('M')
+      })
+    }
+
+    if (filterForm.websiteId) {
+      params.push({ 
+        key: 'websiteId', 
+        value: filterForm.websiteId.toString()
+      })
+    }
+  } else if (props.tab === 'history') {
+    if (filterForm.purchaseDateRange?.[0] && filterForm.purchaseDateRange?.[1]) {
+      params.push({ 
+        key: 'orderDateFrom', 
+        value: filterForm.purchaseDateRange[0].format('YYYY-MM-DD') 
+      })
+      params.push({ 
+        key: 'orderDateTo', 
+        value: filterForm.purchaseDateRange[1].format('YYYY-MM-DD') 
+      })
+    }
+    if (filterForm.websiteId) {
+      params.push({ 
+        key: 'websiteId', 
+        value: filterForm.websiteId.toString()
+      })
     }
   }
+
+  console.log('Search params:', params) // Debug params
 
   if (params.length > 0) {
     emit('filter', params)
@@ -245,7 +253,7 @@ const handleSearch = () => {
 const handleReset = () => {
   // Reset form
   // filterForm.registeredTimeRange = null;
-  // filterForm.birthdayRange = null;
+  // filterForm.birthdayMonth = null;
   // filterForm.websiteId = '';
   // filterForm.levelId = '';
 
@@ -257,7 +265,7 @@ const handleReset = () => {
   } else {
     Object.assign(filterForm, {
       registeredTimeRange: null,
-      birthdayRange: null,
+      birthdayMonth: null,
       websiteId: '',
       levelId: '',
       
@@ -265,4 +273,13 @@ const handleReset = () => {
   }
   emit('reset')
 }
+
+// Thêm watch để reset form khi chuyển tab
+watch(() => props.tab, (newTab) => {
+  if (newTab === 'date-of-birth') {
+    filterForm.birthdayMonth = null
+    filterForm.websiteId = ''
+  }
+  emit('reset')
+}, { immediate: true })
 </script>

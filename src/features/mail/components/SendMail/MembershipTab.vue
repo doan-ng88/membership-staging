@@ -172,9 +172,12 @@ const fetchMembers = async () => {
     const searchParams = []
     
     if (filterForm.search) {
+      // Kiểm tra xem input có phải là số điện thoại không
+      const isPhoneNumber = /^\d+$/.test(filterForm.search.trim())
+      
       searchParams.push({
-        key: 'search',
-        value: filterForm.search
+        key: isPhoneNumber ? 'mainPhoneNumber' : 'fullName', // Sửa key theo đúng field trong API
+        value: filterForm.search.trim()
       })
     }
 
@@ -191,6 +194,8 @@ const fetchMembers = async () => {
         value: filterForm.website
       })
     }
+
+    console.log('Search params:', searchParams) // Debug params
 
     const response = await membershipAPI.getList(
       'MembershipsWebsitesId',

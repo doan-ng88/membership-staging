@@ -437,17 +437,31 @@ watch(searchTerm, debounce(async (newValue: string) => {
     searchLoading.value = true
     const currentFilters = Array.isArray(props.filters) ? props.filters : []
     
-    // Luôn emit page-change, kể cả khi searchTerm rỗng
+    // Remove existing search filters
+    const filtersWithoutSearch = currentFilters.filter(f => 
+      f.key !== 'search' && f.key !== 'fullName' && f.key !== 'mainPhoneNumber'
+    )
+    
+    let searchParams = [...filtersWithoutSearch]
+    
+    if (newValue?.trim()) {
+      // Kiểm tra xem input có phải là số điện thoại không
+      const isPhoneNumber = /^\d+$/.test(newValue.trim())
+      
+      searchParams.push({
+        key: isPhoneNumber ? 'mainPhoneNumber' : 'fullName', // Gửi trực tiếp key phù hợp
+        value: newValue.trim()
+      })
+    }
+
+    console.log('Search params from table:', searchParams) // Debug
+
+    // Emit cả hai event để đảm bảo update
+    emit('filter-change', searchParams)
     emit('page-change', {
       pageIndex: 1,
       pageSize: props.pageSize,
-      searchParams: [
-        ...currentFilters.filter(f => f.key !== 'fullName'), // Loại bỏ fullName filter cũ nếu có
-        ...(newValue.trim() ? [{ // Chỉ thêm fullName filter khi có giá trị search
-          key: 'fullName',
-          value: newValue.trim()
-        }] : [])
-      ]
+      searchParams: searchParams
     })
   } finally {
     searchLoading.value = false
@@ -600,7 +614,7 @@ const handleExport = async () => {
       'Address': member.defaultAddress,
       'Level Name': member.levelName,
       'Join Date': member.registeredTime,
-      'Website': member.websiteId
+      'Website': getWebsiteName(member.websiteId)
     }))
 
     // Tạo workbook và worksheet
@@ -707,16 +721,6 @@ const handleLevelChange = (value: number | null) => {
     sortField: props.sortField,
     sortType: props.sortType
   })
-}
-
-// Style cho level
-const getLevelStyle = (levelName: string) => {
-  const styles = {
-    'Silver': 'text-gray-600 bg-gray-100',
-    'Gold': 'text-yellow-600 bg-yellow-100',
-    'Platinum': 'text-purple-600 bg-purple-100'
-  }
-  return `px-2 py-1 rounded-full text-sm ${styles[levelName] || 'text-gray-600 bg-gray-100'}`
 }
 
 const handlePointReward = (member: Member) => {

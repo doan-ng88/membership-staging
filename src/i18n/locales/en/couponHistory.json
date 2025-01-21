@@ -46,13 +46,8 @@
         "usage": "Usage",
         "actions": "Actions"
       },
-      "discountTypes": {
-        "fixed_cart": "Order",
-        "percent": "%",
-        "fixed_product": "Product"
-      },
       "status": {
-        "publish": "Active",
+        "publish": "Publish",
         "draft": "Draft",
         "trash": "Deleted",
         "private": "Private",
@@ -68,8 +63,34 @@
     },
     "messages": {
       "error": {
-        "load": "Cannot load discount code list"
+        "load": "Cannot load discount code list",
+        "loadDetails": "Cannot load coupon details"
       }
+    },
+    "modal": {
+      "title": "Discount Code Usage Details",
+      "couponInfo": "Coupon Information",
+      "code": "Code",
+      "status": "Status",
+      "discount": "Discount",
+      "discountType": "Discount Type",
+      "couponAmount": "Coupon Amount",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "usageLimit": "Usage Limit",
+      "totalUsed": "Total Used",
+      "minimumAmount": "Minimum Order Amount",
+      "maximumAmount": "Maximum Order Amount",
+      "restrictions": "Usage Restrictions",
+      "individualUse": "Individual Use Only",
+      "usageLimitPerUser": "Usage Limit Per User",
+      "customerInfo": "Customer Information",
+      "customerEmail": "Customer Email",
+      "customerUsed": "Customer Used"
     }
+  },
+  "common": {
+    "yes": "Yes",
+    "no": "No"
   }
 } 

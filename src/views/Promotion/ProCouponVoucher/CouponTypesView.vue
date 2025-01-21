@@ -125,6 +125,7 @@
               <a-date-picker 
                 v-model:value="formData.StartDate" 
                 format="YYYY-MM-DD" 
+                :disabledDate="disabledStartDate"
                 style="width: 100%" 
               />
             </a-form-item>
@@ -312,6 +313,10 @@ const formatCurrency = (value: number) => {
 const disabledDate = (current: dayjs.Dayjs) => {
   return current && current < dayjs().endOf('day')
 }
+
+const disabledStartDate = (current: dayjs.Dayjs) => {
+  return current && current < dayjs().endOf('day');
+};
 
 const handleSubmit = async () => {
   try {

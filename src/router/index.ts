@@ -384,8 +384,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  // Fix bug 
-  history: createWebHistory('/'),
+  history: createWebHistory(),
   routes,
   scrollBehavior(to, from, savedPosition) {
     return savedPosition || { left: 0, top: 0 }
@@ -396,18 +395,49 @@ router.beforeEach((to, from, next) => {
   document.title = `${to.meta.title}`
   const authStore = useAuthStore();
   const isAuthenticated = authStore.isAuthenticated;
-  // Nếu route yêu cầu auth và chưa đăng nhập -> chuyển đến login
+
+  // Nếu route yêu cầu guest (login/register) và đã đăng nhập
+  if (to.meta.requiresGuest && isAuthenticated) {
+    next('/member-information/profile-management'); // Redirect tới profile
+    return;
+  }
+
+  // Nếu route yêu cầu auth và chưa đăng nhập
   if (to.meta.requiresAuth && !isAuthenticated) {
     next('/login');
     return;
   }
-  // Nếu đã đăng nhập và cố truy cập trang login/register -> chuyển về home
-  if (to.meta.requiresGuest && isAuthenticated) {
-    next('/');
+
+  // Nếu đã đăng nhập và đang ở root path
+  if (isAuthenticated && to.path === '/') {
+    next('/member-information/profile-management');
     return;
   }
-  // Cho phép truy cập các route khác
+
   next();
 })
 
 export default router
+
+
+// Phân tích các thay đổi chính:
+// Route Configuration:
+// Login và Register có meta requiresGuest: true
+// Root path (/) có meta requiresAuth: true
+// Có redirect cho unknown routes về login
+// 2. Navigation Guard Logic:
+// Kiểm tra isAuthenticated từ auth store
+// 3 điều kiện redirect chính:
+// Đã login -> cố vào login/register -> profile
+// Chưa login -> vào protected route -> login
+// Đã login -> vào root path -> profile
+// Redirect Path:
+// Sử dụng /member-information/profile-management làm default redirect sau login
+// Path này phải match với route configuration của Profile Management view
+// Auth Store Integration:
+// Sử dụng Pinia auth store để check login status
+// isAuthenticated getter từ store quyết định redirect logic
+// Đảm bảo rằng:
+// Profile Management route đã được định nghĩa
+// Auth store có getter isAuthenticated
+// Login flow cập nhật auth state đúng cách
