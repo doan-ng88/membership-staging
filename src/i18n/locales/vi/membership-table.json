@@ -73,7 +73,7 @@
         "orderId": "Mã đơn hàng",
         "action": "Hành động",
         "points": "Điểm",
-        "totalPoints": "Tổng điểm"
+        "remainingPoints": "Điểm còn lại"
       },
       "noData": "Không tìm thấy giao dịch điểm nào"
     },
@@ -84,7 +84,7 @@
     "tabs": {
       "date-join-member": "Ngày tham gia",
       "date-of-birth": "Ngày sinh",
-      "history": "Lịch sử"
+      "order-date": "Ngày mua hàng"
     }
   }
 } 

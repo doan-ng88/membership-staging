@@ -40,7 +40,7 @@
       }
     },
     "edit": {
-      "title": "Chỉnh sửa chiến dịch",
+      "title": "Chỉnh sửa chiến dịch Email",
       "validation": {
         "nameRequired": "Vui lòng nhập tên chiến dịch",
         "websiteRequired": "Vui lòng chọn website",

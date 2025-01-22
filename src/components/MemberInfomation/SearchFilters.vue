@@ -61,21 +61,24 @@
           </a-form-item>
         </template>
 
-        <!-- History Tab -->
-        <template v-else-if="tab === 'history'">
-          <a-form-item :label="t('profileManagement.filter.purchaseDate')">
+        <!-- Order Date Tab -->
+        <template v-else-if="tab === 'order-date'">
+          <a-form-item :label="t('profileManagement.filter.orderDate')">
             <a-range-picker
-              v-model:value="filterForm.purchaseDateRange"
+              v-model:value="filterForm.orderDateRange"
               style="width: 100%"
+              :disabled-date="disabledDate"
             />
           </a-form-item>
 
           <a-form-item :label="t('profileManagement.filter.platformWebsite')">
             <a-select v-model:value="filterForm.websiteId">
               <a-select-option value="">{{ t('profileManagement.filter.allWebsites') }}</a-select-option>
-              <a-select-option v-for="website in websites" 
-                              :key="website.websiteId" 
-                              :value="website.websiteId">
+              <a-select-option 
+                v-for="website in websites" 
+                :key="website.websiteId" 
+                :value="website.websiteId"
+              >
                 {{ website.name }}
               </a-select-option>
             </a-select>
@@ -126,6 +129,7 @@ import type { Dayjs } from 'dayjs'
 import type { TabType } from '@/types/profile'
 import { websites } from '@/api/types/website'
 import { memberLevels, getLevelNameById } from '@/api/types/member'
+import dayjs from 'dayjs'
 
 const { t } = useI18nGlobal()
 
@@ -146,7 +150,7 @@ interface FilterForm {
   birthdayMonth: Dayjs | null
   websiteId: string | number
   levelId: string | number
-  purchaseDateRange: [Dayjs, Dayjs] | null
+  orderDateRange: [Dayjs, Dayjs] | null
 }
 
 const filterForm = reactive<FilterForm>({
@@ -154,24 +158,11 @@ const filterForm = reactive<FilterForm>({
   birthdayMonth: null,
   websiteId: '',
   levelId: '',
-  purchaseDateRange: null
+  orderDateRange: null
 })
-
-// Watch for tab changes
-watch(() => props.tab, (newTab) => {
-  // Reset form khi chuyển tab
-  filterForm.registeredTimeRange = null;
-  filterForm.birthdayMonth = null;
-  filterForm.websiteId = '';
-  filterForm.levelId = '';
-
-  // Emit reset để parent component fetch lại data
-  emit('reset');
-}, { immediate: true });
 
 const handleSearch = () => {
   const params: Array<{key: string, value: any}> = []
-
   if (props.tab === 'date-join-member') {
     // 1. Date Join Member Range
     if (filterForm.registeredTimeRange?.[0] && filterForm.registeredTimeRange?.[1]) {
@@ -189,7 +180,6 @@ const handleSearch = () => {
         })
       }
     }
-
     // 2. Website Filter
     if (filterForm.websiteId) {
       params.push({ 
@@ -197,7 +187,6 @@ const handleSearch = () => {
         value: filterForm.websiteId 
       })
     }
-
     // 3. Member Level
     if (!props.hideMemberLevel && filterForm.levelId) {
       const levelName = getLevelNameById(Number(filterForm.levelId))
@@ -222,16 +211,21 @@ const handleSearch = () => {
         value: filterForm.websiteId.toString()
       })
     }
-  } else if (props.tab === 'history') {
-    if (filterForm.purchaseDateRange?.[0] && filterForm.purchaseDateRange?.[1]) {
-      params.push({ 
-        key: 'orderDateFrom', 
-        value: filterForm.purchaseDateRange[0].format('YYYY-MM-DD') 
-      })
-      params.push({ 
-        key: 'orderDateTo', 
-        value: filterForm.purchaseDateRange[1].format('YYYY-MM-DD') 
-      })
+  } else if (props.tab === 'order-date') {
+    if (filterForm.orderDateRange?.[0] && filterForm.orderDateRange?.[1]) {
+      const startDate = filterForm.orderDateRange[0]
+      const endDate = filterForm.orderDateRange[1]
+      
+      if (startDate.isValid() && endDate.isValid()) {
+        params.push({ 
+          key: 'orderDateFrom', 
+          value: startDate.format('YYYY-MM-DD') 
+        })
+        params.push({ 
+          key: 'orderDateTo', 
+          value: endDate.format('YYYY-MM-DD') 
+        })
+      }
     }
     if (filterForm.websiteId) {
       params.push({ 
@@ -240,9 +234,7 @@ const handleSearch = () => {
       })
     }
   }
-
   console.log('Search params:', params) // Debug params
-
   if (params.length > 0) {
     emit('filter', params)
   } else {
@@ -251,16 +243,10 @@ const handleSearch = () => {
 }
 
 const handleReset = () => {
-  // Reset form
-  // filterForm.registeredTimeRange = null;
-  // filterForm.birthdayMonth = null;
-  // filterForm.websiteId = '';
-  // filterForm.levelId = '';
-
   // Emit reset event
   emit('reset');
-  if (props.tab === 'history') {
-    filterForm.purchaseDateRange = null
+  if (props.tab === 'order-date') {
+    filterForm.orderDateRange = null
     filterForm.websiteId = ''
   } else {
     Object.assign(filterForm, {
@@ -275,11 +261,31 @@ const handleReset = () => {
 }
 
 // Thêm watch để reset form khi chuyển tab
-watch(() => props.tab, (newTab) => {
-  if (newTab === 'date-of-birth') {
-    filterForm.birthdayMonth = null
-    filterForm.websiteId = ''
+// Watch for tab changes
+watch(() => props.tab, (newTab: TabType) => {
+  switch(newTab) {
+    case 'date-of-birth':
+      filterForm.birthdayMonth = null
+      filterForm.websiteId = ''
+      break
+      
+    case 'order-date':
+      filterForm.orderDateRange = null
+      filterForm.websiteId = ''
+      break
+      
+    case 'date-join-member':
+      filterForm.registeredTimeRange = null
+      filterForm.websiteId = ''
+      filterForm.levelId = ''
+      break
   }
+  
   emit('reset')
-}, { immediate: true })
+}, { immediate: true });
+
+// Thêm hàm disabledDate
+const disabledDate = (current: Dayjs) => {
+  return current && current > dayjs().endOf('day')
+}
 </script>

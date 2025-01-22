@@ -300,7 +300,7 @@
                       <th class="border p-2">{{ t('membershipTable.pointHistory.headers.orderId') }}</th>
                       <th class="border p-2">{{ t('membershipTable.pointHistory.headers.action') }}</th>
                       <th class="border p-2">{{ t('membershipTable.pointHistory.headers.points') }}</th>
-                      <th class="border p-2">{{ t('membershipTable.pointHistory.headers.totalPoints') }}</th>
+                      <th class="border p-2">{{ t('membershipTable.pointHistory.headers.remainingPoints') }}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -312,7 +312,7 @@
                       <td class="border p-2" :class="point.point > 0 ? 'text-green-600' : 'text-red-600'">
                         {{ point.point > 0 ? '+' : '' }}{{ point.point }}
                       </td>
-                      <td class="border p-2">{{ point.totalPoint }}</td>
+                        <td class="border p-2">{{ point.totalPoint }}</td>
                     </tr>
                     <tr v-if="!pointHistory.length">
                       <td colspan="5" class="text-center p-4 text-gray-500">

@@ -4,7 +4,14 @@
       <h1 class="text-2xl font-bold text-center mb-8">{{ t('profileManagement.title') }}</h1>
       <ProfileTabs v-model="activeTab" />
       <div class="mt-4">
-        <SearchFilters :tab="activeTab" @filter="handleFilterChange" @reset="handleReset" />
+        <SearchFilters 
+          :tab="activeTab"
+          :hide-order-point="false"
+          :hide-level-up-condition="false"
+          :hide-member-level="false"
+          @filter="handleFilterChange"
+          @reset="handleReset"
+        />
         <MembershipTable 
           :tab="activeTab" 
           :members="members" 
@@ -24,7 +31,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
-import type { TabType, FilterParams, Member } from '@/types/profile'
+import type { TabType, FilterParams, Member, MemberListResponse } from '@/types/profile'
 import ProfileTabs from '@/components/MemberInfomation/ProfileTabs.vue'
 import SearchFilters from '@/components/MemberInfomation/SearchFilters.vue'
 import MembershipTable from '@/components/MemberInfomation/MembershipTable.vue'
@@ -68,23 +75,27 @@ const handleSizeChange = (newPageSize: number) => {
 }
 
 const fetchMembers = async (
-  pageIndex: number = 1, 
-  pageSizeParam: number = 20, 
+  pageIndex: number = 1,
+  pageSizeParam: number = 20,
   searchParams: Array<{key: string, value: any}> = []
 ) => {
   try {
     loading.value = true
-    console.log('pageIndex', pageIndex)
+    console.log('Calling API with params:', {
+      pageIndex,
+      pageSizeParam,
+      searchParams
+    })
+
     const response = await membershipAPI.getList(
       'MembershipsWebsitesId',
       'DESC',
       pageSizeParam,
       pageIndex,
-      searchParams || currentFilters.value
-    )
+      searchParams
+    ) 
     
     if (response) {
-      console.log('response', response)
       const { data, totalCount: total, pageIndex: page, pageSize: limit } = response
       members.value = data
       totalCount.value = total
@@ -92,8 +103,8 @@ const fetchMembers = async (
       pageSize.value = limit || pageSizeParam
     }
   } catch (error) {
-    console.error('Error fetching members:', error)
-    message.error('Không thể tải danh sách thành viên')
+    console.error('Error:', error)
+    message.error(t('profileManagement.messages.error.fetchMembers'))
   } finally {
     loading.value = false
   }

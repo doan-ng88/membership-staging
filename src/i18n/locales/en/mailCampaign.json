@@ -40,7 +40,7 @@
       }
     },
     "edit": {
-      "title": "Edit Campaign",
+      "title": "Edit Email Campaign",
       "validation": {
         "nameRequired": "Please enter campaign name",
         "websiteRequired": "Please select website",

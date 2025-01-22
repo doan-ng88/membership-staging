@@ -9,7 +9,7 @@
         <div class="flex-1">
           <div class="mb-6">
             <label for="brandSelect" class="block text-sm font-medium text-gray-700">
-              <h3 class="text-lg leading-6 font-medium text-gray-900">{{ t('benefit.selectBrand') }}</h3>
+              <h3 class="text-lg leading-6 font-medium text-gray-900">{{ t('benefit.filters.selectWebsite') }}</h3>
             </label>
             <select
               id="brandSelect"
@@ -61,6 +61,8 @@
         <table class="w-full border-collapse border border-gray-300 mt-4">
           <thead class="bg-gray-100">
             <tr>
+              <th class="border border-gray-300 p-2">{{ t('purchaseHistory.table.headers.customerName') }}</th>
+              <th class="border border-gray-300 p-2">{{ t('purchaseHistory.table.headers.phoneNumber') }}</th>
               <th class="border border-gray-300 p-2">{{ t('purchaseHistory.table.headers.orderId') }}</th>
               <th class="border border-gray-300 p-2">{{ t('purchaseHistory.table.headers.date') }}</th>
               <th class="border border-gray-300 p-2">{{ t('purchaseHistory.table.headers.items') }}</th>
@@ -70,6 +72,8 @@
           </thead>
           <tbody>
             <tr v-for="order in orders" :key="order.order_id">
+              <td class="border border-gray-300 p-2">{{ order.user_website?.fullName || '-' }}</td>
+              <td class="border border-gray-300 p-2">{{ order.user_website?.phoneNumber || '-' }}</td>
               <td class="border border-gray-300 p-2">#{{ order.order_id }}</td>
               <td class="border border-gray-300 p-2">{{ formatDate(order.order_date) }}</td>
               <td class="border border-gray-300 p-2">
@@ -111,13 +115,14 @@ import { ref, onMounted, watch } from 'vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import { formatDate } from '@/utils/date'
 import { purchaseApi } from '@/api/services/purchaseApi'
+import type { Order as ApiOrder } from '@/api/services/purchaseApi'
 import { message } from 'ant-design-vue'
 import { useI18nGlobal } from '@/i18n'
 import * as XLSX from 'xlsx'
 
 const { t } = useI18nGlobal()
 
-// State
+// State với type annotations
 const brands = ref([
   { id: 1, name: 'Sky007' },
   { id: 2, name: 'Bbia' },
@@ -125,13 +130,15 @@ const brands = ref([
   { id: 4, name: 'Mixsoon' }
 ])
 const selectedBrand = ref<number | null>(null)
-const orders = ref([])
+const orders = ref<ApiOrder[]>([])
 const loading = ref(false)
 const error = ref<string | null>(null)
 const currentPage = ref(1)
 const pageSize = ref(10)
 const totalOrders = ref(0)
 const exporting = ref(false)
+
+type OrderStatus = 'completed' | 'pending' | 'cancelled' | 'processing' | 'on-hold'
 
 // Methods
 const fetchOrders = async () => {
@@ -176,14 +183,19 @@ const formatAmount = (amount: number) => {
   }).format(amount)
 }
 
-const getStatusClass = (status: string) => {
-  const classes = {
+const getStatusClass = (status: string): string => {
+  // Remove 'wc-' prefix and convert to lowercase
+  const cleanStatus = status.replace('wc-', '').toLowerCase() as OrderStatus
+  
+  const classes: Record<OrderStatus, string> = {
     'completed': 'bg-green-100 text-green-800',
     'pending': 'bg-yellow-100 text-yellow-800',
     'cancelled': 'bg-red-100 text-red-800',
-    'processing': 'bg-blue-100 text-blue-800'
+    'processing': 'bg-blue-100 text-blue-800',
+    'on-hold': 'bg-gray-100 text-gray-800'
   }
-  return classes[status.toLowerCase()] || 'bg-gray-100 text-gray-800'
+  
+  return classes[cleanStatus] || 'bg-gray-100 text-gray-800'
 }
 
 const handlePageChange = (page: number) => {
@@ -199,15 +211,16 @@ const handleSizeChange = (_current: number, size: number) => {
 
 const exportToExcel = async () => {
   if (!orders.value.length) return
-  
   exporting.value = true
   try {
     const exportData = orders.value.map(order => ({
-      'Mã đơn hàng': `#${order.order_id}`,
-      'Ngày': formatDate(order.order_date),
-      'Sản phẩm': order.items.map(item => `${item.order_item_name} (x${item.product_quantity})`).join(', '),
-      'Tổng tiền': formatAmount(order.order_total),
-      'Trạng thái': t(`purchaseHistory.status.${order.order_status.replace('wc-', '')}`)
+      'Customer Name': order.user_website?.fullName || '-',
+      'Phone Number': order.user_website?.phoneNumber || '-',
+      'Order ID': `#${order.order_id}`,
+      'Date': formatDate(order.order_date),
+      'Items': order.items.map(item => `${item.order_item_name} (x${item.product_quantity})`).join(', '),
+      'Total Amount': formatAmount(order.order_total),
+      'Status': t(`purchaseHistory.status.${order.order_status.replace('wc-', '')}`)
     }))
 
     const ws = XLSX.utils.json_to_sheet(exportData)
@@ -215,7 +228,7 @@ const exportToExcel = async () => {
     XLSX.utils.book_append_sheet(wb, ws, 'Orders')
 
     const brandName = brands.value.find(b => b.id === selectedBrand.value)?.name || 'unknown'
-    const fileName = `purchase-history-${brandName}-${formatDate(new Date())}.xlsx`
+    const fileName = `purchase-history-${brandName}-${formatDate(new Date().toISOString())}.xlsx`
     
     XLSX.writeFile(wb, fileName)
     message.success(t('common.exportSuccess'))
@@ -232,15 +245,12 @@ const exportToExcel = async () => {
 .ant-pagination {
   @apply flex items-center;
 }
-
 .ant-pagination-item {
   @apply mx-1;
 }
-
 .ant-pagination-item-active {
   @apply bg-blue-600 border-blue-600 text-white;
 }
-
 .ant-select-selector {
   @apply h-8 min-w-[90px];
 }

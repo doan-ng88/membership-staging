@@ -3,10 +3,13 @@
     "title": "Lịch sử mua hàng",
     "loading": "Đang tải lịch sử mua hàng...",
     "error": "Không thể tải lịch sử mua hàng",
+    "selectBrandFirst": "Vui lòng chọn thương hiệu trước",
     "table": {
       "headers": {
         "orderId": "Mã đơn hàng",
         "date": "Ngày",
+        "customerName": "Tên khách hàng",
+        "phoneNumber": "Số điện thoại",
         "items": "Sản phẩm",
         "totalAmount": "Tổng tiền",
         "status": "Trạng thái"
@@ -16,10 +19,12 @@
       "total": "Tổng {count} đơn hàng"
     },
     "status": {
-      "completed": "hoàn thành",
-      "pending": "chờ xử lý",
-      "cancelled": "đã hủy",
-      "processing": "đang xử lý"
+      "completed": "Hoàn thành",
+      "pending": "Chờ xử lý",
+      "cancelled": "Đã hủy",
+      "processing": "Đang xử lý",
+      "on-hold": "Tạm giữ",
+      "trash": "Đã xóa"
     },
     "common": {
       "exportExcel": "Xuất Excel",
@@ -27,5 +32,11 @@
       "exportSuccess": "Xuất file Excel thành công",
       "exportError": "Có lỗi xảy ra khi xuất file"
     }
+  },
+  "common": {
+    "exportSuccess": "Xuất file thành công",
+    "exportError": "Xuất file thất bại",
+    "loading": "Đang tải...",
+    "error": "Đã xảy ra lỗi"
   }
 } 

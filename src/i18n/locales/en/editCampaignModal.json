@@ -1,6 +1,6 @@
 {
   "editCampaign": {
-    "title": "Edit Campaign",
+    "title": "Edit Call Campaign",
     "form": {
       "name": "Campaign Name",
       "description": "Description",

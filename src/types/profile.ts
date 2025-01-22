@@ -1,4 +1,4 @@
-export type TabType = 'date-join-member' | 'date-of-birth';
+export type TabType = 'date-join-member' | 'date-of-birth' | 'order-date';
 export type PlatformWebsite = 'hince' | 'BBIA' | 'mixsoon' | 'sky007';
 export type ModalType = 'details' | 'history' | null;
 
@@ -87,4 +87,16 @@ export interface PurchaseHistory {
   createTime: string
   orderStatus: string
   ProductList: any[]
+}
+
+export interface MemberListResponse {
+  result: string
+  data: MemberListData
+}
+
+export interface MemberListData {
+  data: Member[]
+  totalCount: number
+  pageIndex: number
+  pageSize: number
 }

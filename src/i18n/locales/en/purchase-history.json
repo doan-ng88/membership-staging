@@ -3,10 +3,13 @@
     "title": "Purchase History",
     "loading": "Loading purchase history...",
     "error": "Failed to load purchase history",
+    "selectBrandFirst": "Please select a brand first",
     "table": {
       "headers": {
         "orderId": "Order ID",
         "date": "Date",
+        "customerName": "Customer Name",
+        "phoneNumber": "Phone Number",
         "items": "Items",
         "totalAmount": "Total Amount",
         "status": "Status"
@@ -16,10 +19,12 @@
       "total": "Total {count} orders"
     },
     "status": {
-      "completed": "completed",
-      "pending": "pending",
-      "cancelled": "cancelled",
-      "processing": "processing"
+      "completed": "Completed",
+      "pending": "Pending",
+      "cancelled": "Cancelled",
+      "processing": "Processing",
+      "on-hold": "On Hold",
+      "trash": "Deleted"
     },
     "common": {
       "exportExcel": "Export Excel",
@@ -27,5 +32,11 @@
       "exportSuccess": "Export to Excel successfully",
       "exportError": "An error occurred while exporting"
     }
+  },
+  "common": {
+    "exportSuccess": "Export successfully",
+    "exportError": "Export failed",
+    "loading": "Loading...",
+    "error": "Error occurred"
   }
 } 

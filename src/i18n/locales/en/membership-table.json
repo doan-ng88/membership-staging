@@ -82,14 +82,14 @@
         "orderId": "Order ID",
         "action": "Action",
         "points": "Points",
-        "totalPoints": "Total Points"
+        "remainingPoints": "Remaining Points"
       },
       "noData": "No point transactions found"
     },
     "tabs": {
       "date-join-member": "Date Join Member",
       "date-of-birth": "Date of Birth",
-      "history": "History"
+      "order-date": "Order Date"
     }
   }
 } 

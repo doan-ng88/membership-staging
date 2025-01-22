@@ -1,10 +1,13 @@
 // src/features/call-campaign/types/campaign.types.ts
 export interface Campaign {
-  Id: number;
+  id: number | string;
+  name: string;
+  websiteId: number;
+  startDate: string;
+  endDate: string;
+  status: string;
   CampaignName: string;
   Description: string;
-  StartDate: string | null;
-  DueDate: string | null;
   Issue: string;
   PriorityLevel: 'High' | 'Medium' | 'Low' | 'Not Set';
   Status: 'Created' | 'Planning' | 'In Progress' | 'On Hold' | 'Completed' | 'Closed' | 'Cancelled';

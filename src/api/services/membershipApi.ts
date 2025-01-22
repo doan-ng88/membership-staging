@@ -22,7 +22,7 @@ interface LevelResponse {
   data: LevelInfo[]
 }
 
-interface MemberResponse {
+interface MemberListResponse {
   code: number
   status: string
   message: string
@@ -62,7 +62,7 @@ export const membershipAPI = {
       value: param.value.toString()
     }))
 
-    const response = await axiosInstance.post<MemberResponse>('membership/get/get-membership-list', {
+    const response = await axiosInstance.post<MemberListResponse>('membership/get/get-membership-list', {
       sortField,
       sortType,
       pageSize,

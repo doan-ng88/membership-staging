@@ -99,6 +99,7 @@ const columns = computed<TableColumnsType>(() => [
     dataIndex: 'websiteId',
     slots: { customRender: 'websiteName' },
     width: 120,
+    
   },
   {
     title: t('callCampaign.table.columns.startTime'),

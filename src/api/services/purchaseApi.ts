@@ -16,11 +16,32 @@ export interface Order {
   order_date: string
   order_status: string
   order_total: number
+  items: {
+    order_item_name: string
+    product_id: number
+    product_quantity: number
+  }[]
+  user_website: {
+    fullName: string
+    phoneNumber: string
+    website: {
+      websiteId: number
+      name: string
+    }
+    userId: number
+    birthday: string
+    points: number
+    level: {
+      levelId: number
+      Name: string
+      thresholdAmount: number
+      durationExpried: number
+    }
+  }
   payment_method: string
   payment_method_title: string
   shipping_fee: number
   shipping_type: string
-  items: OrderItem[]
   user: {
     user_id: number
   }
