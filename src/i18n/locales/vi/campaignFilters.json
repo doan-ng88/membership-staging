@@ -25,6 +25,10 @@
         "On Hold": "Tạm dừng"
       }
     },
+    "website": {
+      "placeholder": "Chọn Website",
+      "all": "Tất cả Website"
+    },
     "pic": {
       "placeholder": "Người phụ trách",
       "options": {

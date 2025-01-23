@@ -19,9 +19,12 @@
           :current-page="currentPage"
           :total-count="totalCount"
           :page-size="pageSize"
+          :sort-field="'MembershipsWebsitesId'"
+          :sort-type="'DESC'"
           @view="handleViewMember"
           @page-change="handlePageChange"
           @size-change="handleSizeChange"
+          @filter-change="handleFilterChange"
         />
       </div>
     </div>
@@ -52,8 +55,10 @@ const currentFilters = ref<Array<{key: string, value: any}>>([])
 
 // Methods
 const handleFilterChange = (searchParams: Array<{key: string, value: any}>) => {
-  currentFilters.value = searchParams
-  fetchMembers(1, pageSize.value, searchParams)
+  console.log('Filter changed:', searchParams);
+  currentFilters.value = searchParams;
+  currentPage.value = 1; // Reset về trang 1 khi filter thay đổi
+  fetchMembers(1, pageSize.value, searchParams);
 }
 
 const handleReset = () => {
@@ -80,12 +85,12 @@ const fetchMembers = async (
   searchParams: Array<{key: string, value: any}> = []
 ) => {
   try {
-    loading.value = true
-    console.log('Calling API with params:', {
+    loading.value = true;
+    console.log('Fetching with params:', {
       pageIndex,
       pageSizeParam,
       searchParams
-    })
+    });
 
     const response = await membershipAPI.getList(
       'MembershipsWebsitesId',
@@ -93,20 +98,21 @@ const fetchMembers = async (
       pageSizeParam,
       pageIndex,
       searchParams
-    ) 
+    );
     
-    if (response) {
-      const { data, totalCount: total, pageIndex: page, pageSize: limit } = response
-      members.value = data
-      totalCount.value = total
-      currentPage.value = page
-      pageSize.value = limit || pageSizeParam
+    if (response?.data) {
+      members.value = response.data;
+      totalCount.value = response.totalCount || 0;
+      currentPage.value = response.pageIndex || pageIndex;
+      pageSize.value = response.pageSize || pageSizeParam;
+      console.log('Updated members:', members.value);
     }
   } catch (error) {
-    console.error('Error:', error)
-    message.error(t('profileManagement.messages.error.fetchMembers'))
+    console.error('Error:', error);
+    message.error(t('profileManagement.messages.error.fetchMembers'));
+    members.value = [];
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 

@@ -10,7 +10,7 @@
             type="text" 
             v-model="searchTerm"
             class="w-full p-2 border rounded-lg pr-8" 
-            :placeholder="t('membershipTable.search.placeholder')"
+            :placeholder="t('membershipTable.search.placeholder', { default: 'Search by name or phone number...' })"
           >
           <span v-if="searchLoading" class="absolute right-2 top-1/2 -translate-y-1/2">
             <a-spin size="small" />
@@ -44,7 +44,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(member, index) in filteredMembers" 
+          <tr v-for="(member, index) in props.members" 
               :key="`member-${member.membershipId}-${member.websiteId}-${member.email}-${index}`">
             <td class="border border-gray-300 p-2">{{ member.fullName }}</td>
             <td class="border border-gray-300 p-2">{{ member.email }}</td>
@@ -434,39 +434,41 @@ interface MemberLevel {
 // Add watcher for search term
 watch(searchTerm, debounce(async (newValue: string) => {
   try {
-    searchLoading.value = true
-    const currentFilters = Array.isArray(props.filters) ? props.filters : []
+    searchLoading.value = true;
+    const currentFilters = Array.isArray(props.filters) ? props.filters : [];
     
     // Remove existing search filters
     const filtersWithoutSearch = currentFilters.filter(f => 
       f.key !== 'search' && f.key !== 'fullName' && f.key !== 'mainPhoneNumber'
-    )
+    );
     
-    let searchParams = [...filtersWithoutSearch]
+    let searchParams = [...filtersWithoutSearch];
     
     if (newValue?.trim()) {
-      // Kiểm tra xem input có phải là số điện thoại không
-      const isPhoneNumber = /^\d+$/.test(newValue.trim())
+      const searchValue = newValue.trim();
       
+      // Luôn dùng key 'search' giống như trong MembershipTab
       searchParams.push({
-        key: isPhoneNumber ? 'mainPhoneNumber' : 'fullName', // Gửi trực tiếp key phù hợp
-        value: newValue.trim()
-      })
+        key: 'search',
+        value: searchValue
+      });
     }
 
-    console.log('Search params from table:', searchParams) // Debug
-
-    // Emit cả hai event để đảm bảo update
-    emit('filter-change', searchParams)
+    emit('filter-change', searchParams);
+    
+    // Sau đó emit page-change để fetch data mới
     emit('page-change', {
       pageIndex: 1,
       pageSize: props.pageSize,
-      searchParams: searchParams
-    })
+      searchParams: searchParams,
+      sortField: props.sortField || 'MembershipsWebsitesId',
+      sortType: props.sortType || 'DESC'
+    });
+
   } finally {
-    searchLoading.value = false
+    searchLoading.value = false;
   }
-}, 300))
+}, 300));
 
 // Add debounce utility
 function debounce(fn: Function, delay: number) {
@@ -476,15 +478,6 @@ function debounce(fn: Function, delay: number) {
     timeout = setTimeout(() => fn(...args), delay)
   }
 }
-
-// Computed
-const filteredMembers = computed(() => {
-  if (!searchTerm.value) return props.members
-  
-  return props.members.filter(member => 
-    member.fullName.toLowerCase().includes(searchTerm.value.toLowerCase())
-  )
-})
 
 // Methods
 const formatDate = (date: string) => {

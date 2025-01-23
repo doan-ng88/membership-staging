@@ -37,9 +37,17 @@ export const getWebsiteName = (websiteId: number): string => {
   return website?.name || 'N/A';
 }; 
 
-export interface PaginationParams {
+interface SortParams {
+  field: string;
+  order: 'asc' | 'desc';
+  key: string;
+  value: string | number | boolean;
+}
+
+interface PaginationParams {
   pageIndex: number;
   pageSize: number;
+  sort?: SortParams;
   searchParams?: SearchParams[];
 }
 
@@ -50,4 +58,22 @@ export interface ApiResponse<T> {
       pageSize: number;
       totalCount: number;
     };
+}
+
+// Thêm interface cho raw API response data
+export interface ApiCampaignData {
+  campaignId: number;
+  campaignName: string;
+  websiteId: number;
+  description?: string;
+  startDate: string;
+  dueDate: string;
+  status: CampaignStatus;
+  priorityLevel: PriorityLevel;
+  total: number;
+  remaining: number;
+  isServiceEmail: boolean;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: number | string;
 }

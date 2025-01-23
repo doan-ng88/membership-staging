@@ -20,12 +20,8 @@ export interface Campaign {
 export interface CampaignFilters {
   searchText?: string;
   status?: string;
-  createdBy?: string;
-  pic?: string;
-  dateRange?: {
-    start: string;
-    end: string;
-  };
+  website?: string | number;
+  dateRange?: [string, string];
 }
 
 export interface PaginationParams {

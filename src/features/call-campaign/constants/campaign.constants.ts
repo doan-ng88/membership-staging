@@ -57,12 +57,6 @@ export const getStatusColor = (status: CampaignStatus): string => {
   return STATUS_COLOR_MAP[status] || 'default';
 };
 
-export const PIC_OPTIONS = [
-  { label: 'Nguyễn Văn A', value: 'nguyen_van_a' },
-  { label: 'Nguyễn Văn B', value: 'nguyen_van_b' },
-  { label: 'Trần Thị C', value: 'tran_thi_c' }
-];
-
 export const WEBSITE_OPTIONS = [
   { label: 'Hince', value: 'hince' },
   { label: 'BBIA', value: 'bbia' },

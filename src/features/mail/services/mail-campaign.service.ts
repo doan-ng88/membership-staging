@@ -1,4 +1,9 @@
-import type { MailCampaign, PaginationParams, ApiResponse } from '../types/mail-campaign.types';
+import type { 
+  MailCampaign, 
+  PaginationParams, 
+  ApiResponse,
+  ApiCampaignData 
+} from '../types/mail-campaign.types';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
 import { useAuthStore } from '@/stores/auth';
@@ -45,13 +50,16 @@ class MailCampaignService {
 
   async getMailCampaignList(params: PaginationParams): Promise<ApiResponse<MailCampaign>> {
     try {
+      const defaultSearchParams = [
+        { key: 'isServiceEmail', value: 'true' }
+      ];
+
       const requestBody = {
         pageIndex: params.pageIndex || 1,
         pageSize: params.pageSize || 10,
-        searchParams: [
-          { key: 'isServiceEmail', value: 'true' },
-          ...(params.searchParams || [])
-        ]
+        sortField: 'CreatedAt',
+        sortType: 'DESC',
+        searchParams: params.searchParams || defaultSearchParams
       };
 
       console.log('Request body:', requestBody);
@@ -60,7 +68,7 @@ class MailCampaignService {
       console.log('API Response:', response.data);
 
       return {
-        data: response.data.data.map((item) => this.transformCampaign(item)),
+        data: response.data.data.map((item: ApiCampaignData) => this.transformCampaign(item)),
         pagination: {
           pageIndex: Number(response.data.pageIndex),
           pageSize: Number(response.data.pageSize),
@@ -73,7 +81,7 @@ class MailCampaignService {
     }
   }
 
-  private transformCampaign(data: any): MailCampaign {
+  private transformCampaign(data: ApiCampaignData): MailCampaign {
     return {
       id: data.campaignId,
       name: data.campaignName,
@@ -114,10 +122,6 @@ class MailCampaignService {
       return response
     } catch (error) {
       console.error('Error fetching campaign detail:', error)
-      console.error('Error details:', {
-        status: error.response?.status,
-        data: error.response?.data
-      })
       throw error
     }
   }

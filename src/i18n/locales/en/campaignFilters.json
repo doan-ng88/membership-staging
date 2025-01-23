@@ -23,8 +23,11 @@
         "Planning": "Planning",
         "In Progress": "In Progress",
         "On Hold": "On Hold"
-
       }
+    },
+    "website": {
+      "placeholder": "Select Website",
+      "all": "All Websites"
     },
     "pic": {
       "placeholder": "PIC",

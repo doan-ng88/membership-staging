@@ -101,7 +101,11 @@ import { useAuthStore } from '@/stores/auth';
       loading.value = true;
       const response = await mailCampaignService.getMailCampaignList({
         pageIndex: pagination.value.current,
-        pageSize: pagination.value.pageSize
+        pageSize: pagination.value.pageSize,
+        // sort: {
+        //   field: 'createdAt',
+        //   order: 'desc'
+        // }
       });
       
       console.log('Fetched campaigns:', response);

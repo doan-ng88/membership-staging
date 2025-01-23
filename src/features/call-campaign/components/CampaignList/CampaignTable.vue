@@ -93,6 +93,8 @@ const columns = computed<TableColumnsType>(() => [
     dataIndex: 'name',
     key: 'name',
     width: '25%',
+    defaultSortOrder: 'descend',
+    sorter: true
   },
   {
     title: t('callCampaign.table.columns.website'),

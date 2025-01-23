@@ -16,6 +16,7 @@
         class="w-32"
         @change="emitFilters"
       >
+
         <a-select-option 
           v-for="status in CAMPAIGN_STATUS_OPTIONS" 
           :key="status.value" 
@@ -26,17 +27,20 @@
       </a-select>
 
       <a-select
-        v-model:value="localFilters.pic"
-        :placeholder="t('campaignFilters.pic.placeholder')"
+        v-model:value="localFilters.website"
+        :placeholder="t('campaignMailFilters.website.placeholder')"
         class="w-48"
         @change="emitFilters"
       >
+        <a-select-option value="">
+          {{ t('campaignMailFilters.website.all') }}
+        </a-select-option>
         <a-select-option 
-          v-for="pic in PIC_OPTIONS" 
-          :key="pic.value" 
-          :value="pic.value"
+          v-for="website in websites" 
+          :key="website.websiteId" 
+          :value="website.websiteId"
         >
-          {{ pic.value }}
+          {{ website.name }}
         </a-select-option>
       </a-select>
 
@@ -46,10 +50,10 @@
       />
 
       <a-button type="primary" @click="emitFilters">
-        {{ t('campaignFilters.buttons.filter') }}
+        {{ t('campaignMailFilters.buttons.filter') }}
       </a-button>
       <a-button @click="resetFilters">
-        {{ t('campaignFilters.buttons.reset') }}
+        {{ t('campaignMailFilters.buttons.reset') }}
       </a-button>
     </div>
   </div>
@@ -59,12 +63,15 @@
 import { ref, watch, onUnmounted } from 'vue';
 import { SearchOutlined } from '@ant-design/icons-vue';
 import type { CampaignFilters } from '../../types/campaign.types';
-import { CAMPAIGN_STATUS_OPTIONS, PIC_OPTIONS } from '../../constants/campaign.constants';
+import { CAMPAIGN_STATUS_OPTIONS } from '../../constants/campaign.constants';
 import { useI18nGlobal } from '@/i18n';
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
+import { websites } from '@/api/types/website';
 
 const { t } = useI18nGlobal();
+
+console.log('Translation value:', t('campaignMailFilters.status.placeholder'));
 
 const props = defineProps<{
   filters: CampaignFilters;
