@@ -147,7 +147,7 @@ export default defineComponent({
         console.log('Fetching campaign data for ID:', props.campaignId)
         
         // Sử dụng URL trực tiếp từ bạn cung cấp
-        const response = await axios.get(`https://actsone.vercel.app/api/membership/get/get-campaign/${props.campaignId}`, {
+        const response = await axios.get(`https://membership.actsone.io.vn/api/membership/get/get-campaign/${props.campaignId}`, {
           headers: {
             'Authorization': `Bearer ${authStore.token}`
           }

@@ -754,8 +754,8 @@ onBeforeUnmount(() => {
 async function fetchImageAsBlob(url: string): Promise<Blob> {
   try {
     // Thử get qua proxy đã cấu hình trong vite.config.ts
-    if (url.includes('actsone.vercel.app')) {
-      const proxyUrl = url.replace('https://actsone.vercel.app', '') // Chuyển sang URL proxy
+    if (url.includes('membership.actsone.io.vn')) {
+      const proxyUrl = url.replace('https://membership.actsone.io.vn', '') // Chuyển sang URL proxy
       const response = await fetch(proxyUrl)
       if (!response.ok) throw new Error('Cannot load image')
       return await response.blob()

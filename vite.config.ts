@@ -22,7 +22,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://actsone.vercel.app',
+        target: 'https://membership.actsone.io.vn',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, '/api')
@@ -32,7 +32,7 @@ export default defineConfig({
   preview: {
     proxy: {
       '/api': {
-        target: 'https://actsone.vercel.app',
+        target: 'https://membership.actsone.io.vn',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
       }

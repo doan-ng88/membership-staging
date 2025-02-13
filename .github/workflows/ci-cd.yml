@@ -1,0 +1,58 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.event_name != 'workflow_dispatch'
+    steps:
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p 2222 -H 171.244.188.27 >> ~/.ssh/known_hosts
+
+      - name: Build on server
+        run: |
+          ssh -p 2222 huythanh@171.244.188.27 "
+            cd /var/docker/fe/membership-staging && \
+            git config --global --add safe.directory /var/docker/fe/membership-staging && \
+            git remote set-url origin https://oauth2:${{ secrets.GIT_TOKEN }}@github.com/doan-ng88/membership-staging.git && \
+            git pull && \
+            docker build -t mbs_fe .
+          "
+
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p 2222 -H 171.244.188.27 >> ~/.ssh/known_hosts
+
+      - name: Deploy on server
+        run: |
+          ssh -p 2222 huythanh@171.244.188.27 "
+            cd /var/docker/fe/membership-staging && \
+            docker stop c_mbs_fe || true && \
+            docker rm c_mbs_fe || true && \
+            docker run -p 8081:3000 -d --name c_mbs_fe --restart always mbs_fe
+          "

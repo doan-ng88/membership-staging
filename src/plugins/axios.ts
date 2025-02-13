@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const axiosInstance = axios.create({
-  baseURL: 'https://actsone.vercel.app/api',
+  baseURL: 'https://membership.actsone.io.vn/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'

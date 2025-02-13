@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://actsone.vercel.app/api/:path*"
+      "destination": "https://membership.actsone.io.vn/api/:path*"
     }
   ],
   "headers": [

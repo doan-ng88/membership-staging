@@ -63,7 +63,7 @@
       </div>
     </div>
 
-    <!-- Summary Cards -->
+    <!-- Summary Cards
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       <div class="bg-blue-50 p-4 rounded-lg">
         <h5 class="text-sm font-medium text-blue-700">{{ t('productSales.category.metrics.revenue.title') }}</h5>
@@ -83,7 +83,7 @@
           {{ completionRate }}%
         </p>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
