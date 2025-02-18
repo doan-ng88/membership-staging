@@ -18,7 +18,7 @@
         "placeholder": "Enter minimum amount"
       },
       "rewardRate": {
-        "label": "Point Earning Rate (%):",
+        "label": "Point Earning Rate (VND/10.000đ):",
         "placeholder": "Enter earning rate"
       },
       "redeemRate": {

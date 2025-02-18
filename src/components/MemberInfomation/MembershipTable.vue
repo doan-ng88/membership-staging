@@ -29,6 +29,9 @@
       <table class="min-w-full border-collapse border border-gray-300">
         <thead class="bg-gray-100">
           <tr>
+            <th class="border border-gray-300 p-2">
+              {{ t('membershipTable.table.headers.customerId', { default: 'ID' }) }}
+            </th>
             <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.customerName') }}</th>
             <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.email') }}</th>
             <th class="border border-gray-300 p-2">{{ t('membershipTable.table.headers.phoneNumber') }}</th>
@@ -46,6 +49,7 @@
         <tbody>
           <tr v-for="(member, index) in props.members" 
               :key="`member-${member.membershipId}-${member.websiteId}-${member.email}-${index}`">
+              <td class="border border-gray-300 p-2">{{ member.membershipId }}</td>
             <td class="border border-gray-300 p-2">{{ member.fullName }}</td>
             <td class="border border-gray-300 p-2">{{ member.email }}</td>
             <td class="border border-gray-300 p-2">{{ member.mainPhoneNumber }}</td>

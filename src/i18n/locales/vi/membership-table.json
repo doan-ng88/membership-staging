@@ -16,6 +16,7 @@
     "table": {
       "headers": {
         "customerName": "Tên Khách hàng",
+        "customerId": "Mã khách hàng",
         "email": "Email",
         "phoneNumber": "Số điện thoại",
         "dateJoinMember": "Ngày tham gia",

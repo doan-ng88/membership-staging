@@ -313,8 +313,8 @@ const handleSubmit = async () => {
       membershipIds: formState.members.map((member: any) => member.id),
       websiteID: formState.websiteId,
       coupons: formState.coupons.map((coupon) => ({ couponCode: coupon })),
-      employeePermissions: formState.adminUsers.map((user) => ({
-        employeeId: user.id,
+      employeePermissions: formState.pic.map((userId) => ({
+        employeeId: userId,
         permissionLevel: 'edit'
       })),
       ...(previousRouteName === 'MailCampaign' && { isServiceEmail: true }),

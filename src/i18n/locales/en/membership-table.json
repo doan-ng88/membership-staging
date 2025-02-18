@@ -16,6 +16,7 @@
     "table": {
       "headers": {
         "customerName": "Customer Name",
+        "customerId": "ID",
         "email": "Email",
         "phoneNumber": "Phone Number",
         "dateJoinMember": "Date Join Member",

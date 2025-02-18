@@ -11,15 +11,15 @@
           </a-button>
         </template>
       </PageHeader>
-
+      
       <!-- Campaign Info Card -->
       <a-card class="mb-6 shadow-lg">
         <div class="flex items-center justify-between">
-          <h2 class="text-2xl font-bold text-blue-600">{{ campaign.campaignName }}</h2>
-          <a-tag :color="getStatusColor(campaign.status)">{{ campaign.status }}</a-tag>
-        </div>
-        <div class="text-gray-600 mt-1">{{ `${formatDate(campaign.startDate)} - ${formatDate(campaign.dueDate)}` }}</div>
-
+           <h2 class="text-2xl font-bold text-blue-600">{{ campaign.campaignName }}</h2>
+           <a-tag :color="getStatusColor(campaign.status)">{{ campaign.status }}</a-tag>
+         </div>
+         <div class="text-gray-600 mt-1">{{ `${formatDate(campaign.startDate)} - ${formatDate(campaign.dueDate)}` }}</div>
+   
         <!-- Members Table Title -->
         <div class="text-base font-semibold mt-8 mb-2">Members List</div>
         <!-- Members Table -->
@@ -54,9 +54,34 @@
         </a-table>
       </a-card>
 
+      <!-- PIC Staff List -->
+      <a-card class="mb-6 shadow-lg">
+        <!-- CHỜ API ENDPOINT -->
+        <div class="text-base mt-8 mb-2">
+          <h3 class="text-lg font-semibold">PIC Staff List</h3>
+          <div v-if="campaign.employees?.length" class="mt-2">
+            <a-table :dataSource="campaign.employees" :pagination="false">
+              <a-table-column title="Name" dataIndex="name" key="name" />
+              <a-table-column title="Email" dataIndex="email" key="email" />
+              <a-table-column title="Employee ID" dataIndex="employeeId" key="employeeId" />
+              <a-table-column title="Permission Level" dataIndex="permissionLevel" key="permissionLevel" />
+              <a-table-column 
+                title="Assigned At" 
+                dataIndex="assignedAt" 
+                key="assignedAt"
+                :customRender="({ text }) => dayjs(text).format('DD/MM/YYYY')"
+              />
+            </a-table>
+          </div>
+          <div v-else class="text-gray-500 font-normal mt-2">
+            No PIC assigned
+          </div>
+        </div>
+      </a-card>
+
       <!-- Coupons List Card -->
       <a-card class="mb-6 shadow-lg">
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center justify-between mb-2">
           <h3 class="text-lg font-semibold">Coupons List</h3>
           <a-button type="primary" @click="showAddCouponModal">
             Add Coupon
@@ -78,9 +103,6 @@
             </template>
             <template v-if="column.key === 'actions'">
               <a-space>
-                <a-button type="link" @click="handleEditCoupon(record)">
-                  <edit-outlined /> Edit
-                </a-button>
                 <a-button type="link" danger @click="handleDeleteCoupon(record)">
                   <delete-outlined /> Delete
                 </a-button>
@@ -93,26 +115,49 @@
       <!-- Add/Edit Coupon Modal -->
       <a-modal
         v-model:visible="isCouponModalVisible"
-        :title="editingCoupon ? 'Edit Coupon' : 'Add Coupon'"
+        title="Add Coupon"
         @ok="handleCouponSubmit"
         @cancel="handleCouponCancel"
       >
         <a-form :model="couponForm" :rules="couponRules" ref="couponFormRef">
-          <a-form-item label="Code" name="code">
-            <a-input v-model:value="couponForm.code" />
-          </a-form-item>
-          <a-form-item label="Description" name="description">
-            <a-textarea v-model:value="couponForm.description" />
-          </a-form-item>
-          <a-form-item label="Value" name="value">
-            <a-input-number v-model:value="couponForm.value" :min="0" />
-          </a-form-item>
-          <a-form-item label="Status" name="status">
-            <a-select v-model:value="couponForm.status">
-              <a-select-option value="active">Active</a-select-option>
-              <a-select-option value="inactive">Inactive</a-select-option>
-            </a-select>
-          </a-form-item>
+          <div class="gap-4">
+            <a-form-item 
+              label="Website" 
+              name="websiteId"
+              :rules="[{ required: true, message: 'Please select website' }]"
+              class="flex-1"
+            >
+              <a-select
+                v-model:value="couponForm.websiteId"
+                placeholder="Select website"
+                @change="handleWebsiteChange"
+              >
+                <a-select-option v-for="web in websites" :key="web.websiteId" :value="web.websiteId">
+                  {{ web.name }}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+
+            <a-form-item
+              :label="couponForm.websiteId ? 'Coupon Code' : 'Please select website first'"
+              name="code"
+              :rules="[{ required: true, message: 'Please select coupon code' }]"
+              class="flex-1"
+            >
+              <a-select
+                v-model:value="couponForm.code"
+                placeholder="Select coupon code"
+                :options="couponOptions"
+                :loading="loadingCoupons"
+                show-search
+                :filter-option="false"
+                @search="handleSearchCoupons"
+                :disabled="!couponForm.websiteId"
+                option-label-prop="label"
+              >
+              </a-select>
+            </a-form-item>
+          </div>
         </a-form>
       </a-modal>
 
@@ -159,6 +204,9 @@ import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import type { FormInstance } from 'ant-design-vue';
+import { Website } from '@/api/types/website'
+import { debounce } from 'lodash';
+import { membershipAPI } from '@/api/services/membershipApi';
 
 enum MailStatus {
   NOT_SENT = 'not_sent',
@@ -279,23 +327,20 @@ const statusOptions = Object.values(MailStatus);
 const loading = ref(true);
 
 const fetchCampaignData = async () => {
-  loading.value = true;
   try {
-    const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/membership/get/get-campaign/${campaignId}`, {
-      headers: {
-        'Authorization': `Bearer ${useAuthStore().token}`
+    loading.value = true;
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_BASE_URL}/membership/get/get-campaign/${campaignId}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${useAuthStore().token}`
+        }
       }
-    });
-    
-    if (response.data.campaign) {
-      campaign.value = response.data.campaign;
-      console.log('Campaign data loaded:', campaign.value);
-    } else {
-      throw new Error('Campaign data not found');
-    }
+    );
+    campaign.value = response.data.campaign;
   } catch (error) {
     console.error('Error fetching campaign data:', error);
-    message.error('Unable to load campaign data');
+    message.error('Failed to fetch campaign data');
   } finally {
     loading.value = false;
   }
@@ -352,14 +397,18 @@ const couponColumns = [
     key: 'code',
   },
   {
-    title: 'Description',
-    dataIndex: 'description',
-    key: 'description',
+    title: 'Total use/Usage-limit',
+    key: 'usage',
+    customRender: ({ record }) => `${record.total_used}/${record.usage_limit}`
   },
   {
-    title: 'Value',
-    dataIndex: 'value',
-    key: 'value',
+    title: 'Date Range',
+    key: 'dateRange',
+    customRender: ({ record }) => {
+      const start = record.start_date ? dayjs(record.start_date).format('DD/MM/YYYY') : 'No start date'
+      const end = record.expiry_date ? dayjs(record.expiry_date).format('DD/MM/YYYY') : 'No end date'
+      return `${start} - ${end}`
+    }
   },
   {
     title: 'Status',
@@ -378,10 +427,8 @@ const isCouponModalVisible = ref(false);
 const editingCoupon = ref<any>(null);
 const couponFormRef = ref<FormInstance>();
 const couponForm = reactive({
-  code: '',
-  description: '',
-  value: 0,
-  status: 'active'
+  websiteId: undefined,
+  code: ''
 });
 
 const couponRules = {
@@ -391,14 +438,17 @@ const couponRules = {
 };
 
 // Coupon methods
+const websites = ref<Website[]>([])
+
 const showAddCouponModal = () => {
-  editingCoupon.value = null;
-  couponForm.code = '';
-  couponForm.description = '';
-  couponForm.value = 0;
-  couponForm.status = 'active';
-  isCouponModalVisible.value = true;
-};
+  websites.value = [
+    { websiteId: 1, name: 'Sky007' },
+    { websiteId: 2, name: 'Bbia' },
+    { websiteId: 3, name: 'Hince' },
+    { websiteId: 4, name: 'Mixsoon' }
+  ]
+  isCouponModalVisible.value = true
+}
 
 const handleEditCoupon = (coupon: any) => {
   editingCoupon.value = coupon;
@@ -411,16 +461,31 @@ const handleEditCoupon = (coupon: any) => {
 
 const handleDeleteCoupon = async (coupon: any) => {
   try {
-    await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/coupons/${coupon.id}`, {
-      headers: {
-        'Authorization': `Bearer ${useAuthStore().token}`
+    const payload = {
+      coupons: [
+        {
+          couponCode: coupon.code,
+          status: "remove"
+        }
+      ]
+    };
+
+    await axios.post(
+      `${import.meta.env.VITE_API_BASE_URL}/membership/update/campaign-coupon/${campaignId}`, 
+      payload,
+      {
+        headers: {
+          'Authorization': `Bearer ${useAuthStore().token}`,
+          'Content-Type': 'application/json'
+        }
       }
-    });
-    message.success('Coupon deleted successfully');
-    fetchCampaignData(); // Refresh data
-  } catch (error) {
-    console.error('Error deleting coupon:', error);
-    message.error('Failed to delete coupon');
+    );
+    
+    message.success('Coupon removed successfully');
+    await fetchCampaignData();
+  } catch (error: any) {
+    console.error('Error removing coupon:', error);
+    message.error(error.response?.data?.message || 'Failed to remove coupon');
   }
 };
 
@@ -429,31 +494,40 @@ const handleCouponSubmit = async () => {
     await couponFormRef.value?.validate();
     
     const payload = {
-      campaignId: campaignId,
-      ...couponForm
+      coupons: [
+        {
+          couponCode: couponForm.code,
+          status: "add"
+        }
+      ]
     };
 
-    if (editingCoupon.value) {
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/coupons/${editingCoupon.value.id}`, payload, {
+    await axios.post(
+      `${import.meta.env.VITE_API_BASE_URL}/membership/update/campaign-coupon/${campaignId}`, 
+      payload,
+      {
         headers: {
-          'Authorization': `Bearer ${useAuthStore().token}`
+          'Authorization': `Bearer ${useAuthStore().token}`,
+          'Content-Type': 'application/json'
         }
-      });
-    } else {
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/coupons`, payload, {
-        headers: {
-          'Authorization': `Bearer ${useAuthStore().token}`
-        }
-      });
-    }
+      }
+    );
 
-    message.success(`Coupon ${editingCoupon.value ? 'updated' : 'added'} successfully`);
+    message.success('Coupon added successfully');
     isCouponModalVisible.value = false;
     fetchCampaignData(); // Refresh data
-  } catch (error) {
+    resetCouponForm();
+  } catch (error: any) {
     console.error('Error submitting coupon:', error);
-    message.error('Failed to submit coupon');
+    message.error(error.response?.data?.message || 'Failed to submit coupon');
   }
+};
+
+const resetCouponForm = () => {
+  Object.assign(couponForm, {
+    websiteId: undefined,
+    code: ''
+  });
 };
 
 const handleCouponCancel = () => {
@@ -467,6 +541,46 @@ const getCouponStatusColor = (status: string) => {
   };
   return statusColors[status.toLowerCase()] || 'default';
 };
+
+// State
+const loadingCoupons = ref(false)
+const couponOptions = ref<{ label: string; value: string }[]>([])
+
+// Methods
+const fetchCoupons = async (search?: string) => {
+  if (!couponForm.websiteId) return
+
+  try {
+    loadingCoupons.value = true
+    const response = await membershipAPI.getCoupons(
+      couponForm.websiteId,
+      1, // pageIndex
+      10, // pageSize
+      search // search term
+    )
+
+    couponOptions.value = response.data.data.map((coupon: any) => ({
+      label: coupon.code,
+      value: coupon.code
+    }))
+  } catch (error) {
+    message.error('Failed to load coupons')
+  } finally {
+    loadingCoupons.value = false
+  }
+}
+
+const handleWebsiteChange = () => {
+  couponForm.code = ''
+  couponOptions.value = []
+  if (couponForm.websiteId) {
+    fetchCoupons()
+  }
+}
+
+const handleSearchCoupons = debounce((value: string) => {
+  fetchCoupons(value)
+}, 300)
 </script>
 
 <style scoped>
