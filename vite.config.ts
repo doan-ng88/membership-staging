@@ -34,7 +34,7 @@ export default defineConfig({
       '/api': {
         target: 'https://membership.actsone.io.vn',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        rewrite: (path) => path.replace(/^\/api/, '/api')
       }
     }
   },
