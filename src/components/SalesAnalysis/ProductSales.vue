@@ -84,7 +84,7 @@
     </div>
 
     <!-- Charts -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+    <div class="grid grid-cols-1 gap-6 mb-6">
       <div class="bg-gray-50 p-4 rounded-lg">
         <h4 class="text-sm font-medium text-gray-700 mb-4">{{ t('productSales.product.charts.orderStatus.title') }}</h4>
         <VueApexCharts
@@ -166,29 +166,125 @@ const orderStatusChartOptions = computed(() => ({
 }))
 
 const topProductsSeries = computed(() => [{
-  name: t('productSales.product.charts.topProducts.series'),
+  name: t('productSales.product.charts.topProducts.series.quantity'),
   data: productStats.value
     .sort((a, b) => b.total_quantity - a.total_quantity)
     .slice(0, 10)
-    .map(p => p.total_quantity)
+    .map(p => ({
+      x: p.product_name,
+      y: p.total_quantity,
+      orders: p.total_orders,
+      avg: (p.total_quantity / p.total_orders).toFixed(1)
+    }))
 }])
 
 const topProductsChartOptions = computed(() => ({
   chart: {
-    type: 'bar'
+    type: 'bar',
+    height: 400,
+    toolbar: {
+      show: true,
+      tools: {
+        download: true,
+        zoom: false,
+        pan: false
+      }
+    }
   },
   plotOptions: {
     bar: {
-      horizontal: true
+      horizontal: true,
+      borderRadius: 4,
+      dataLabels: {
+        position: 'top',
+        hideOverflowingLabels: true
+      }
+    }
+  },
+  colors: ['#3B82F6'],
+  dataLabels: {
+    enabled: true,
+    formatter: (val: number) => val.toLocaleString(),
+    style: {
+      fontSize: '12px',
+      colors: ['#1F2937']
     }
   },
   xaxis: {
-    categories: productStats.value
-      .sort((a, b) => b.total_quantity - a.total_quantity)
-      .slice(0, 10)
-      .map(p => p.product_name)
+    title: {
+      text: t('productSales.product.charts.topProducts.xaxis'),
+      style: {
+        fontSize: '14px',
+        fontWeight: 600
+      }
+    },
+    labels: {
+      formatter: (value: string) => value.length > 20 ? `${value.substring(0, 18)}...` : value
+    }
   },
-  colors: ['#1890ff']
+  yaxis: {
+    title: {
+      text: t('productSales.product.charts.topProducts.yaxis'),
+      style: {
+        fontSize: '14px',
+        fontWeight: 600
+      }
+    },
+    labels: {
+      style: {
+        fontSize: '12px'
+      }
+    }
+  },
+  tooltip: {
+    custom: ({ series, seriesIndex, dataPointIndex }) => {
+      const product = productStats.value
+        .sort((a, b) => b.total_quantity - a.total_quantity)
+        [dataPointIndex]
+      return `
+        <div class="bg-white shadow-md rounded-lg p-3 border border-gray-100">
+          <div class="flex items-center mb-2">
+            <div class="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+            <span class="font-semibold text-sm">${product.product_name}</span>
+          </div>
+          <div class="space-y-1 text-xs">
+            <div class="flex justify-between">
+              <span class="text-gray-500">Số lượng:</span>
+              <span class="font-medium">${product.total_quantity.toLocaleString()}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-500">Đơn hàng:</span>
+              <span class="text-green-600">${product.total_orders.toLocaleString()}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-500">TB/đơn:</span>
+              <span class="text-orange-500">${(product.total_quantity / product.total_orders).toFixed(1)}</span>
+            </div>
+          </div>
+        </div>
+      `
+    }
+  },
+  responsive: [{
+    breakpoint: 640,
+    options: {
+      chart: {
+        height: 500
+      },
+      dataLabels: {
+        style: {
+          fontSize: '10px'
+        }
+      },
+      yaxis: {
+        labels: {
+          style: {
+            fontSize: '10px'
+          }
+        }
+      }
+    }
+  }]
 }))
 
 // Methods

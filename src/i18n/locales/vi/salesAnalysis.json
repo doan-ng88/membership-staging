@@ -65,7 +65,8 @@
       "filters": {
         "product": "Chọn Sản Phẩm",
         "dateRange": "Khoảng Thời Gian",
-        "placeholder": "Chọn sản phẩm"
+        "placeholder": "Chọn sản phẩm",
+        "brand": "Chọn Thương Hiệu"
       },
       "metrics": {
         "totalOrders": {
@@ -93,7 +94,13 @@
         },
         "topProducts": {
           "title": "Top 10 Sản Phẩm Bán Chạy",
-          "series": "Số Lượng Bán"
+          "xaxis": "Tên sản phẩm",
+          "yaxis": "Giá trị",
+          "series": {
+            "quantity": "Số lượng",
+            "orders": "Đơn hàng",
+            "avgQuantity": "TB mỗi đơn"
+          }
         }
       },
       "errors": {
