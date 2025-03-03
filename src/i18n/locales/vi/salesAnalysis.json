@@ -31,16 +31,31 @@
       "charts": {
         "revenue": {
           "title": "Phân Bố Doanh Thu",
-          "yaxis": "Doanh Thu (VND)"
+          "yaxis": "Doanh Thu (VND)",
+          "xaxis": "Danh mục",
+          "revenue": "Doanh thu",
+          "orders": "Đơn hàng",
+          "avgOrderValue": "Trung bình mỗi đơn",
+          "orderStatus": "Trạng thái đơn hàng"
         },
         "orders": {
           "title": "Trạng Thái Đơn Hàng Theo Danh Mục",
           "yaxis": "Số Lượng Đơn Hàng",
           "status": {
-            "completed": "66Hoàn Thành",
+            "completed": "Hoàn Thành",
             "processing": "Đang Xử Lý",
             "onHold": "Tạm Giữ",
             "cancelled": "Đã Hủy"
+          },
+          "series": {
+            "completed": "Hoàn thành",
+            "processing": "Đang xử lý",
+            "onHold": "Tạm giữ",
+            "cancelled": "Đã hủy",
+            "orders": "Đơn hàng",
+            "revenue": "Doanh thu",
+            "avgOrderValue": "Trung bình mỗi đơn",
+            "orderStatus": "Trạng thái đơn hàng"
           }
         }
       },
@@ -99,7 +114,12 @@
           "series": {
             "quantity": "Số lượng",
             "orders": "Đơn hàng",
-            "avgQuantity": "TB mỗi đơn"
+            "orderStatus": "Trạng thái đơn hàng",
+            "avgQuantity": "TB mỗi đơn",
+            "completed": "Hoàn thành",
+            "processing": "Đang xử lý",
+            "onHold": "Tạm giữ",
+            "cancelled": "Đã hủy"
           }
         }
       },

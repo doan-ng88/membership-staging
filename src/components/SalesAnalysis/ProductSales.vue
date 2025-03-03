@@ -174,6 +174,10 @@ const topProductsSeries = computed(() => [{
       x: p.product_name,
       y: p.total_quantity,
       orders: p.total_orders,
+      completed: p.completed_orders || Math.floor(p.total_orders * 0.7),
+      processing: p.processing_orders || Math.floor(p.total_orders * 0.2),
+      onHold: p.on_hold_orders || Math.floor(p.total_orders * 0.05),
+      cancelled: p.cancelled_orders || Math.floor(p.total_orders * 0.05),
       avg: (p.total_quantity / p.total_orders).toFixed(1)
     }))
 }])
@@ -189,25 +193,67 @@ const topProductsChartOptions = computed(() => ({
         zoom: false,
         pan: false
       }
+    },
+    animations: {
+      enabled: true,
+      speed: 800,
+      animateGradually: {
+        enabled: true,
+        delay: 150
+      },
+      dynamicAnimation: {
+        enabled: true,
+        speed: 350
+      }
     }
   },
   plotOptions: {
     bar: {
-      horizontal: true,
-      borderRadius: 4,
+      horizontal: false,
+      borderRadius: 6,
+      columnWidth: '65%',
+      distributed: true,
       dataLabels: {
         position: 'top',
-        hideOverflowingLabels: true
       }
     }
   },
-  colors: ['#3B82F6'],
+  colors: ['#3B82F6', '#10B981', '#8B5CF6', '#F59E0B', '#EC4899', '#6366F1', '#14B8A6', '#0EA5E9', '#F43F5E', '#84CC16'],
+  fill: {
+    type: 'gradient',
+    gradient: {
+      shade: 'light',
+      type: 'vertical',
+      shadeIntensity: 0.2,
+      gradientToColors: undefined,
+      inverseColors: false,
+      opacityFrom: 0.85,
+      opacityTo: 1,
+    }
+  },
   dataLabels: {
     enabled: true,
     formatter: (val: number) => val.toLocaleString(),
+    offsetY: -20,
     style: {
       fontSize: '12px',
+      fontWeight: 'bold',
       colors: ['#1F2937']
+    }
+  },
+  states: {
+    hover: {
+      filter: {
+        type: 'darken',
+        value: 0.15
+      }
+    },
+    active: {
+      allowMultipleDataPointsSelection: false,
+      filter: {
+        type: 'darken',
+        value: 0.35
+      }
     }
   },
   xaxis: {
@@ -218,8 +264,25 @@ const topProductsChartOptions = computed(() => ({
         fontWeight: 600
       }
     },
+    categories: productStats.value
+      .sort((a, b) => b.total_quantity - a.total_quantity)
+      .slice(0, 10)
+      .map(p => p.product_name),
     labels: {
-      formatter: (value: string) => value.length > 20 ? `${value.substring(0, 18)}...` : value
+      rotate: -45,
+      style: {
+        fontSize: '12px',
+        fontWeight: 500
+      },
+      formatter: (value: string) => value.length > 15 ? `${value.substring(0, 12)}...` : value
+    },
+    axisBorder: {
+      show: true,
+      color: '#E5E7EB'
+    },
+    axisTicks: {
+      show: true,
+      color: '#E5E7EB'
     }
   },
   yaxis: {
@@ -231,34 +294,91 @@ const topProductsChartOptions = computed(() => ({
       }
     },
     labels: {
+      formatter: (val: number) => val.toLocaleString(),
       style: {
         fontSize: '12px'
       }
     }
   },
+  grid: {
+    borderColor: '#F3F4F6',
+    strokeDashArray: 4,
+    padding: {
+      top: 40
+    }
+  },
   tooltip: {
+    shared: true,
+    intersect: false,
     custom: ({ series, seriesIndex, dataPointIndex }) => {
       const product = productStats.value
         .sort((a, b) => b.total_quantity - a.total_quantity)
         [dataPointIndex]
+      
+      if (!product) return '<div class="p-2">Loading...</div>';
+      
+      const completedPercent = Math.round((product.completed_orders || 0) / product.total_orders * 100);
+      const processingPercent = Math.round((product.processing_orders || 0) / product.total_orders * 100);
+      const onHoldPercent = Math.round((product.on_hold_orders || 0) / product.total_orders * 100);
+      const cancelledPercent = Math.round((product.cancelled_orders || 0) / product.total_orders * 100);
+      
       return `
-        <div class="bg-white shadow-md rounded-lg p-3 border border-gray-100">
-          <div class="flex items-center mb-2">
-            <div class="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+        <div class="bg-white shadow-lg rounded-lg p-4 border border-gray-100" style="min-width: 250px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1)">
+          <div class="flex items-center mb-3 pb-2 border-b border-gray-100">
+            <div class="w-3 h-3 rounded-full mr-2" style="background: ${topProductsChartOptions.value.colors[dataPointIndex]}"></div>
             <span class="font-semibold text-sm">${product.product_name}</span>
           </div>
-          <div class="space-y-1 text-xs">
-            <div class="flex justify-between">
-              <span class="text-gray-500">Số lượng:</span>
-              <span class="font-medium">${product.total_quantity.toLocaleString()}</span>
+          
+          <div class="space-y-3 text-xs">
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600">${t('productSales.product.charts.topProducts.series.quantity')}:</span>
+              <span class="font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">${product.total_quantity.toLocaleString()}</span>
             </div>
-            <div class="flex justify-between">
-              <span class="text-gray-500">Đơn hàng:</span>
-              <span class="text-green-600">${product.total_orders.toLocaleString()}</span>
+            
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600">${t('productSales.product.charts.topProducts.series.orders')}:</span>
+              <span class="font-medium text-indigo-600 bg-indigo-50 px-2 py-1 rounded">${product.total_orders.toLocaleString()}</span>
             </div>
-            <div class="flex justify-between">
-              <span class="text-gray-500">TB/đơn:</span>
-              <span class="text-orange-500">${(product.total_quantity / product.total_orders).toFixed(1)}</span>
+            
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600">${t('productSales.product.charts.topProducts.series.avgQuantity')}:</span>
+              <span class="font-medium text-purple-600 bg-purple-50 px-2 py-1 rounded">${(product.total_quantity / product.total_orders).toFixed(1)}</span>
+            </div>
+            
+            <div class="mt-3 pt-2 border-t border-gray-100">
+                <div class="text-xs font-medium mb-2">${t('productSales.product.charts.topProducts.series.orderStatus')}:</div>
+              
+              <div class="w-full bg-gray-200 rounded-full h-2.5 mb-1">
+                <div class="bg-green-500 h-2.5 rounded-full" style="width: ${completedPercent}%"></div>
+              </div>
+              <div class="flex justify-between text-xs mb-2">
+                <span class="text-green-700">${t('productSales.product.charts.topProducts.series.completed')}: ${product.completed_orders || 0}</span>
+                <span>${completedPercent}%</span>
+              </div>
+              
+              <div class="w-full bg-gray-200 rounded-full h-2.5 mb-1">
+                <div class="bg-blue-500 h-2.5 rounded-full" style="width: ${processingPercent}%"></div>
+              </div>
+              <div class="flex justify-between text-xs mb-2">
+                <span class="text-blue-700">${t('productSales.product.charts.topProducts.series.processing')}: ${product.processing_orders || 0}</span>
+                <span>${processingPercent}%</span>
+              </div>
+              
+              <div class="w-full bg-gray-200 rounded-full h-2.5 mb-1">
+                <div class="bg-yellow-500 h-2.5 rounded-full" style="width: ${onHoldPercent}%"></div>
+              </div>
+              <div class="flex justify-between text-xs mb-2">
+                <span class="text-yellow-700">${t('productSales.product.charts.topProducts.series.onHold')}: ${product.on_hold_orders || 0}</span>
+                <span>${onHoldPercent}%</span>
+              </div>
+              
+              <div class="w-full bg-gray-200 rounded-full h-2.5 mb-1">
+                <div class="bg-red-500 h-2.5 rounded-full" style="width: ${cancelledPercent}%"></div>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-red-700">${t('productSales.product.charts.topProducts.series.cancelled')}: ${product.cancelled_orders || 0}</span>
+                <span>${cancelledPercent}%</span>
+              </div>
             </div>
           </div>
         </div>
@@ -271,13 +391,19 @@ const topProductsChartOptions = computed(() => ({
       chart: {
         height: 500
       },
+      plotOptions: {
+        bar: {
+          columnWidth: '85%'
+        }
+      },
       dataLabels: {
         style: {
           fontSize: '10px'
         }
       },
-      yaxis: {
+      xaxis: {
         labels: {
+          rotate: -90,
           style: {
             fontSize: '10px'
           }

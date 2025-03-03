@@ -15,7 +15,6 @@
       }
     },
     "products": {
-
       "laptop": "Laptop",
       "smartphone": "Smartphone",
       "tablet": "Tablet",
@@ -32,16 +31,32 @@
       "charts": {
         "revenue": {
           "title": "Revenue Distribution",
-          "yaxis": "Revenue (VND)"
+          "yaxis": "Revenue (VND)",
+          "xaxis": "Category",
+          "revenue": "Revenue",
+          "orders": "Orders",
+          "avgOrderValue": "Average Order Value",
+          "orderStatus": "Order Status"
         },
         "orders": {
           "title": "Order Status by Category",
           "yaxis": "Number of Orders",
+          "xaxis": "Category",
           "status": {
             "completed": "Completed",
             "processing": "Processing",
             "onHold": "On Hold",
             "cancelled": "Cancelled"
+          },
+          "series": {
+            "completed": "Completed",
+            "processing": "Processing",
+            "onHold": "On Hold",
+            "cancelled": "Cancelled",
+            "orders": "Orders",
+            "revenue": "Revenue",
+            "avgOrderValue": "Average Order Value",
+            "orderStatus": "Order Status"
           }
         }
       },
@@ -95,7 +110,18 @@
         },
         "topProducts": {
           "title": "Top 10 Best-Selling Products",
-          "series": "Sales Quantity"
+          "series": {
+            "quantity": "Sales Quantity",
+            "orders": "Orders",
+            "orderStatus": "Order Status",
+            "avgQuantity": "Average Quantity per Order",
+            "completed": "Completed",
+            "processing": "Processing",
+            "onHold": "On Hold",
+            "cancelled": "Cancelled"
+          },
+          "xaxis": "Product Name",
+          "yaxis": "Sales Value"
         }
       },
       "errors": {
