@@ -4,7 +4,7 @@
       <h2 class="text-3xl font-bold mb-6">{{ t('purchasePattern.title') }}</h2>
 
       <!-- Brand Selection -->
-      <div class="mb-8 flex items-center bg-white p-6 rounded shadow">
+      <!-- <div class="mb-8 flex items-center bg-white p-6 rounded shadow">
         <label for="brandSelection" class="text-gray-700 font-medium mr-4">
           {{ t('purchasePattern.brand.label') }}
         </label>
@@ -21,7 +21,7 @@
             {{ option.label }}
           </option>
         </select>
-      </div>
+      </div> -->
 
       <PurchaseCycleChart :brand="selectedBrand" />
       <ProductPreferenceChart :brand="selectedBrand" />

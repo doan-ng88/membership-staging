@@ -20,5 +20,16 @@
         "loadStats": "Không thể tải thống kê cấp độ thành viên"
       }
     }
-  }
+  },
+  "memberAnalysis": {
+    "transitionChart": {
+      "title": "Phân tích chuyển đổi cấp độ",
+      "yAxisTitle": "Số lượng thành viên",
+      "noData": "Không có dữ liệu chuyển đổi",
+      "upgrade": "Nâng cấp",
+      "downgrade": "Hạ cấp",
+      "extend": "Gia hạn",
+      "details": "Chi tiết chuyển đổi"
+    }
+  } 
 } 

@@ -20,5 +20,16 @@
         "loadStats": "Unable to load member rank statistics"
       }
     }
+  },
+  "memberAnalysis": {
+    "transitionChart": {
+      "title": "Level Transition Analysis",
+      "yAxisTitle": "Number of Members",
+      "noData": "No data",
+      "upgrade": "Upgrade",
+      "downgrade": "Downgrade",
+      "extend": "Extend",
+      "details": "Transition Level Details"
+    }
   }
 } 

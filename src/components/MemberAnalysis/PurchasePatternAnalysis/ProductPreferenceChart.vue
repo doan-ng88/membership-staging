@@ -50,12 +50,17 @@
       </div>
     </div>
 
-    <apexchart
-      type="bar"
-      height="350"
-      :options="chartOptions"
-      :series="series"
-    />
+    <div class="relative">
+      <apexchart
+        type="bar"
+        height="350"
+        :options="chartOptions"
+        :series="series"
+      />
+      <div v-if="loading" class="absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center">
+        <a-spin size="large" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -111,53 +116,214 @@ export default defineComponent({
 
     const series = computed(() => [{
       name: t('purchasePattern.productPreference.chart.series.salesQuantity'),
-      data: productData.value.map(item => item.total_quantity)
+      data: productData.value.map(item => ({
+        x: item.product_name, 
+        y: item.total_quantity,
+        orders: item.total_orders,
+        avg: item.avg_quantity,
+        percentage: item.percentage
+      }))
     }])
 
     const chartOptions = computed(() => ({
       chart: {
         type: 'bar',
+        height: 400,
         toolbar: {
-          show: true
-        }
+          show: true,
+          tools: {
+            download: true,
+            zoom: false,
+            pan: false
+          }
+        },
+        animations: {
+          enabled: true,
+          speed: 800,
+          animateGradually: {
+            enabled: true,
+            delay: 150
+          },
+          dynamicAnimation: {
+            enabled: true,
+            speed: 350
+          }
+        },
+        fontFamily: 'Inter, system-ui, sans-serif',
+        background: '#FFFFFF',
+        foreColor: '#4B5563'
       },
       plotOptions: {
         bar: {
-          horizontal: true,
-          columnWidth: '55%',
-          endingShape: 'rounded'
+          horizontal: false,
+          borderRadius: 6,
+          columnWidth: '65%',
+          distributed: true,
+          dataLabels: {
+            position: 'top'
+          }
         }
       },
       dataLabels: {
-        enabled: true
+        enabled: true,
+        formatter: (val: number) => val.toLocaleString(),
+        offsetY: -20,
+        style: {
+          fontSize: '12px',
+          fontWeight: 'bold',
+          colors: ['#1F2937']
+        },
+        dropShadow: {
+          enabled: true,
+          top: 1,
+          left: 1,
+          blur: 2,
+          opacity: 0.2
+        }
+      },
+      colors: [
+        '#3B82F6', '#10B981', '#8B5CF6', '#F59E0B', 
+        '#EC4899', '#6366F1', '#14B8A6', '#0EA5E9', 
+        '#F43F5E', '#84CC16'
+      ],
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shade: 'light',
+          type: 'vertical',
+          shadeIntensity: 0.2,
+          gradientToColors: undefined,
+          inverseColors: false,
+          opacityFrom: 0.85,
+          opacityTo: 1,
+        }
+      },
+      stroke: {
+        width: 1,
+        colors: ['#fff']
       },
       xaxis: {
-        categories: productData.value.map(item => item.product_name),
         title: {
-          text: t('purchasePattern.productPreference.chart.xaxis')
+          text: t('purchasePattern.productPreference.chart.xaxis'),
+          style: {
+            fontSize: '14px',
+            fontWeight: 600
+          }
+        },
+        categories: productData.value.map(item => item.product_name),
+        labels: {
+          rotate: -45,
+          style: {
+            fontSize: '12px',
+            fontWeight: 500
+          },
+          formatter: (value: string) => value.length > 15 ? `${value.substring(0, 12)}...` : value
+        },
+        axisBorder: {
+          show: true,
+          color: '#E5E7EB'
+        },
+        axisTicks: {
+          show: true,
+          color: '#E5E7EB'
         }
       },
       yaxis: {
         title: {
-          text: t('purchasePattern.productPreference.chart.yaxis')
-        }
-      },
-      colors: ['#4299E1'],
-      title: {
-        text: t('purchasePattern.productPreference.chart.title'),
-        align: 'center'
-      },
-      tooltip: {
-        y: {
-          formatter: function(value: number, { dataPointIndex }: any) {
-            const item = productData.value[dataPointIndex]
-            return `${t('purchasePattern.productPreference.chart.tooltip.quantity')}: ${value}
-${t('purchasePattern.productPreference.chart.tooltip.orders')}: ${item.total_orders}
-${t('purchasePattern.productPreference.chart.tooltip.avgOrder')}: ${item.avg_quantity}
-${t('purchasePattern.productPreference.chart.tooltip.percentage')}: ${item.percentage}%`
+          text: t('purchasePattern.productPreference.chart.yaxis'),
+          style: {
+            fontSize: '14px',
+            fontWeight: 600
+          }
+        },
+        labels: {
+          formatter: (val: number) => val.toLocaleString(),
+          style: {
+            fontSize: '12px'
           }
         }
-      }
+      },
+      grid: {
+        borderColor: '#F3F4F6',
+        strokeDashArray: 4,
+        padding: {
+          top: 40
+        }
+      },
+      states: {
+        hover: {
+          filter: {
+            type: 'darken',
+            value: 0.15
+          }
+        },
+        active: {
+          filter: {
+            type: 'darken',
+            value: 0.35
+          }
+        }
+      },
+      tooltip: {
+        shared: true,
+        intersect: false,
+        custom: ({ series, seriesIndex, dataPointIndex }: any) => {
+          const item = productData.value[dataPointIndex]
+          if (!item) return '<div class="p-2">Loading...</div>';
+          
+          return `
+            <div style="min-width: 200px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; font-family: 'Inter', sans-serif;">
+              <div style="background: ${chartOptions.value.colors[dataPointIndex % chartOptions.value.colors.length]}; padding: 10px 15px; color: white; font-weight: 600; font-size: 14px;">
+                ${item.product_name}
+              </div>
+              <div style="background: white; padding: 15px; border-bottom: 1px solid #E5E7EB;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <span style="color: #6B7280; font-size: 13px;">${t('purchasePattern.productPreference.chart.tooltip.quantity')}:</span>
+                  <span style="font-weight: 700; color: #2563EB; font-size: 15px; background: #EFF6FF; padding: 2px 8px; border-radius: 4px;">${item.total_quantity.toLocaleString()}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <span style="color: #6B7280; font-size: 13px;">${t('purchasePattern.productPreference.chart.tooltip.orders')}:</span>
+                  <span style="font-weight: 600; color: #10B981; font-size: 13px; background: #ECFDF5; padding: 2px 8px; border-radius: 4px;">${item.total_orders.toLocaleString()}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: #6B7280; font-size: 13px;">${t('purchasePattern.productPreference.chart.tooltip.avgOrder')}:</span>
+                  <span style="font-weight: 600; color: #8B5CF6; font-size: 13px; background: #F5F3FF; padding: 2px 8px; border-radius: 4px;">${item.avg_quantity}</span>
+                </div>
+              </div>
+              <div style="background: #F9FAFB; padding: 8px 15px; font-size: 12px; color: #374151; display: flex; justify-content: space-between;">
+                <span>${t('purchasePattern.productPreference.chart.tooltip.percentage')}:</span>
+                <span style="font-weight: 600;">${item.percentage}%</span>
+              </div>
+            </div>
+          `;
+        }
+      },
+      responsive: [{
+        breakpoint: 640,
+        options: {
+          chart: {
+            height: 500
+          },
+          plotOptions: {
+            bar: {
+              columnWidth: '85%'
+            }
+          },
+          dataLabels: {
+            style: {
+              fontSize: '10px'
+            }
+          },
+          xaxis: {
+            labels: {
+              rotate: -90,
+              style: {
+                fontSize: '10px'
+              }
+            }
+          }
+        }
+      }]
     }))
 
     // Methods
@@ -182,6 +348,7 @@ ${t('purchasePattern.productPreference.chart.tooltip.percentage')}: ${item.perce
       } catch (error) {
         console.error('Error fetching product preference:', error)
         message.error('Unable to load product preference data')
+        productData.value = []
       } finally {
         loading.value = false
       }
