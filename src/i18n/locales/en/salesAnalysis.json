@@ -101,11 +101,15 @@
       "charts": {
         "orderStatus": {
           "title": "Order Status",
+          "total": "Total",
           "labels": {
             "completed": "Completed",
             "processing": "Processing",
             "onHold": "On Hold",
-            "cancelled": "Cancelled"
+            "cancelled": "Cancelled",
+            "quantity": "Quantity",
+            "percentage": "Percentage",
+            "total": "Total"
           }
         },
         "topProducts": {

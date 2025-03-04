@@ -100,11 +100,15 @@
       "charts": {
         "orderStatus": {
           "title": "Trạng Thái Đơn Hàng",
+          "total": "Tổng",
           "labels": {
-            "completed": "77Hoàn Thành",
+            "completed": "Hoàn Thành",
             "processing": "Đang Xử Lý",
             "onHold": "Tạm Giữ",
-            "cancelled": "Đã Hủy"
+            "cancelled": "Đã Hủy",
+            "quantity": "Số lượng",
+            "percentage": "Phần trăm",
+            "total": "Tổng"
           }
         },
         "topProducts": {
