@@ -3,9 +3,11 @@
     <div class="p-6">
       <h2 class="text-2xl font-bold mb-6">{{ t('couponHistory.title') }}</h2>
 
-      <!-- Filters -->
+      <!-- Filters Coupon History -->
       <div class="mb-6 bg-white p-4 rounded shadow">
+        <h3 class="text-xl font-medium text-gray-900 mb-5">{{ t('couponHistory.filters.title') }}</h3>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <!-- Website -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
               {{ t('couponHistory.filters.website.label') }}
@@ -26,6 +28,7 @@
             </a-select>
           </div>
 
+          <!-- Status -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
               {{ t('couponHistory.filters.status.label') }}
@@ -43,6 +46,7 @@
             </a-select>
           </div>
 
+          <!-- Search -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
               {{ t('couponHistory.filters.search.label') }}
@@ -59,6 +63,7 @@
             </a-input>
           </div>
 
+          <!-- Date Range -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
               {{ t('couponHistory.filters.dateRange.label') }}
@@ -85,38 +90,49 @@
         </div>
       </div>
 
-      <!-- Table -->
-      <a-table
-        :columns="columns"
-        :data-source="coupons"
-        :loading="loading"
-        :pagination="pagination"
-        @change="handleTableChange"
-      >
-        <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'status'">
-            <a-tag :color="getStatusColor(record.status)">
-              {{ getStatusText(record.status) }}
-            </a-tag>
-          </template>
-          
-          <template v-if="column.key === 'discount'">
-            {{ formatDiscount(record.discount_type, record.amount) }}
-          </template>
+      <!-- Table List Coupon History -->
+      <div class="mb-6 bg-white p-4 rounded shadow">
+        <h3 class="text-xl font-medium text-gray-900 mb-5">{{ t('couponHistory.table.title') }}</h3>
+        <a-table
+          :columns="columns"
+          :data-source="coupons"
+          :loading="loading"
+          :pagination="pagination"
+          @change="handleTableChange"
+        >
+          <template #bodyCell="{ column, record }">
+            <template v-if="column.key === 'status'">
+              <a-tag :color="getStatusColor(record.status)">
+                {{ getStatusText(record.status) }}
+              </a-tag>
+            </template>
+            
+            <template v-if="column.key === 'discount'">
+              {{ formatDiscount(record.discount_type, record.amount) }}
+            </template>
 
-          <template v-if="column.key === 'usage'">
-            {{ record.times_used }}/{{ record.usage_limit || '∞' }}
-          </template>
+            <template v-if="column.key === 'usage'">
+              {{ record.times_used }}/{{ record.usage_limit || '∞' }}
+            </template>
 
-          <template v-if="column.key === 'action'">
-            <a-space>
-              <a-button type="link" @click="viewDetails(record)">
-                {{ t('couponHistory.table.actions.details') }}
-              </a-button>
-            </a-space>
+            <template v-if="column.key === 'action'">
+              <a-space>
+                <a-button type="link" @click="viewDetails(record)">
+                  {{ t('couponHistory.table.actions.details') }}
+                </a-button>
+                <a-button type="link" @click="handleEdit(record)">{{ t('couponHistory.table.actions.edit') }}</a-button>
+                <a-popconfirm
+                  :title="t('couponHistory.table.actions.warning')"
+                  @confirm="handleDelete(record)"
+                >
+                  <a-button type="link" danger>{{ t('couponHistory.table.actions.delete') }}</a-button>
+                </a-popconfirm>
+              </a-space>
+            </template>
           </template>
-        </template>
-      </a-table>
+        </a-table>
+      
+      </div>
 
       <!-- Modal -->
       <a-modal
@@ -134,7 +150,7 @@
                 <h4 class="font-medium mb-3">{{ t('couponHistory.modal.couponInfo') }}</h4>
                 <div class="grid grid-cols-2 gap-4">
                   <div>
-                    <span class="text-gray-500">{{ t('couponHistory.modal.code') }}:</span>
+                    <span class="text-gray-500">{{ t('couponHistory.modal.couponCode') }}:</span>
                     <span class="ml-2 font-medium">{{ selectedRecord.code }}</span>
                   </div>
                   <div>
@@ -216,6 +232,88 @@
             </div>
           </template>
         </a-spin>
+      </a-modal>
+
+      <!-- Modal Edit -->
+      <a-modal
+        v-model:open="showEditModal"
+        :title="t('couponHistory.modal.editTitle')"
+        @ok="handleUpdate"
+        @cancel="showEditModal = false"
+        :confirm-loading="updateLoading"
+        width="800px"
+      >
+        <a-form :model="editForm" :rules="rules" layout="vertical">
+          <div class="grid grid-cols-2 gap-4">
+            <a-form-item :label="t('couponHistory.modal.couponCode')">
+              <a-input v-model:value="editForm.code" />
+            </a-form-item>
+            
+            <a-form-item :label="t('couponHistory.modal.discountType')">
+              <a-select v-model:value="editForm.discountType">
+                <a-select-option value="fixed_product">Giảm giá sản phẩm</a-select-option>
+                <a-select-option value="fixed_cart">Giảm giá đơn hàng</a-select-option>
+                <a-select-option value="percent">Phần trăm</a-select-option>
+              </a-select>
+            </a-form-item>
+
+            <a-form-item :label="t('couponHistory.modal.amount')">
+              <a-input-number v-model:value="editForm.amount" :min="0" class="w-full" />
+            </a-form-item>
+
+            <a-form-item :label="t('couponHistory.modal.startDate')">
+              <a-date-picker 
+                v-model:value="editForm.startDate"
+                format="YYYY-MM-DD"
+                value-format="YYYY-MM-DD"
+                class="w-full"
+                :show-today="false"
+              />
+            </a-form-item>
+
+            <a-form-item :label="t('couponHistory.modal.expiryDate')">
+              <a-date-picker
+                v-model:value="editForm.expiryDate"
+                format="YYYY-MM-DD"
+                value-format="YYYY-MM-DD"
+                class="w-full"
+                :show-today="false"
+              />
+            </a-form-item>
+
+            <a-form-item :label="t('couponHistory.modal.minimumAmount')">
+              <a-input-number 
+                v-model:value="editForm.minimumAmount" 
+                :min="0" 
+                class="w-full"
+              />
+            </a-form-item>
+
+            <a-form-item :label="t('couponHistory.modal.maximumAmount')">
+              <a-input-number
+                v-model:value="editForm.maximumAmount"
+                :min="0"
+                class="w-full"
+              />
+            </a-form-item>
+
+            <a-form-item :label="t('couponHistory.modal.usageLimit')">
+              <a-input-number
+                v-model:value="editForm.usageLimit"
+                :min="0"
+                class="w-full"
+              />
+            </a-form-item>
+
+            <a-form-item :label="t('couponHistory.modal.usageLimitPerUser')">
+              <a-input-number
+                v-model:value="editForm.usageLimitPerUser"
+                :min="0"
+                class="w-full"
+              />
+            </a-form-item>
+          </div>
+        </a-form>
       </a-modal>
     </div>
   </DefaultLayout>
@@ -364,6 +462,52 @@ const selectedRecord = ref<any>(null)
 
 // Thêm state cho loading modal
 const modalLoading = ref(false)
+
+// Thêm state cho modal chỉnh sửa
+const showEditModal = ref(false)
+const editForm = reactive({
+  couponId: 0,
+  websiteId: 0,
+  code: '',
+  description: '',
+  discountType: 'fixed_product',
+  amount: 0,
+  startDate: null as dayjs.Dayjs | null,
+  expiryDate: null as dayjs.Dayjs | null,
+  minimumAmount: 0,
+  maximumAmount: 0,
+  usageLimit: 0,
+  usageLimitPerUser: 0,
+  individualUse: false,
+  productIds: [] as number[],
+  productCategories: [] as number[],
+  excludeProductIds: [] as number[],
+  excludeCategories: [] as number[],
+  allowedEmails: [] as string[],
+  excludesSaleItems: false
+})
+
+// Thêm rules validation
+const rules = reactive({
+  code: [{ required: true, message: 'Vui lòng nhập mã coupon' }],
+  discountType: [{ required: true, message: 'Vui lòng chọn loại giảm giá' }],
+  startDate: [{ 
+    required: true, 
+    message: 'Vui lòng chọn ngày bắt đầu',
+    validator: (_rule, value) => value ? Promise.resolve() : Promise.reject()
+  }],
+  expiryDate: [{ 
+    required: true,
+    validator: (_rule, value) => {
+      if (!value) return Promise.reject('Vui lòng chọn ngày hết hạn')
+      if (value.isBefore(dayjs())) return Promise.reject('Ngày hết hạn không hợp lệ')
+      return Promise.resolve()
+    }
+  }]
+})
+
+// Thêm loading state cho modal
+const updateLoading = ref(false)
 
 // Methods
 const buildSearchParams = () => {
@@ -570,6 +714,114 @@ const initializeFilters = () => {
 const handleCloseModal = () => {
   showDetailModal.value = false
   selectedRecord.value = null
+}
+
+// Xử lý xóa coupon
+const handleDelete = async (record: any) => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/membership/update/delete-coupon`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authStore.token}`
+        },
+        body: JSON.stringify({
+          couponId: record.id,
+          websiteId: filters.websiteId
+        })
+      }
+    )
+
+    if (!response.ok) throw new Error('Xóa thất bại')
+    
+    message.success('Xóa coupon thành công')
+    fetchCoupons()
+  } catch (error) {
+    console.error('Lỗi khi xóa coupon:', error)
+    message.error('Xóa coupon thất bại')
+  }
+}
+
+// Xử lý mở modal chỉnh sửa
+const handleEdit = (record: any) => {
+  Object.assign(editForm, {
+    couponId: record.id,
+    websiteId: filters.websiteId,
+    code: record.code,
+    description: record.description,
+    discountType: record.discount_type,
+    amount: record.amount,
+    startDate: record.start_date ? dayjs(record.start_date) : null,
+    expiryDate: record.expiry_date ? dayjs(record.expiry_date) : null,
+    minimumAmount: record.minimum_amount,
+    maximumAmount: record.maximum_amount,
+    usageLimit: record.usage_limit,
+    usageLimitPerUser: record.usage_limit_per_user,
+    individualUse: record.individual_use === 'yes',
+    productIds: record.product_ids || [],
+    productCategories: record.product_categories || [],
+    excludeProductIds: record.exclude_product_ids || [],
+    excludeCategories: record.exclude_product_categories || [],
+    allowedEmails: record.allowed_emails || [],
+    excludesSaleItems: record.excludes_sale_items || false
+  })
+  showEditModal.value = true
+}
+
+// Gửi yêu cầu cập nhật
+const handleUpdate = async () => {
+  try {
+    updateLoading.value = true
+    const payload = {
+      couponId: editForm.couponId,
+      websiteId: editForm.websiteId,
+      couponCode: editForm.code,
+      description: editForm.description,
+      discountType: editForm.discountType,
+      discountAmount: editForm.amount,
+      startDate: editForm.startDate?.format('YYYY-MM-DD') || null,
+      expiryDate: editForm.expiryDate?.format('YYYY-MM-DD') || null,
+      minimumAmount: editForm.minimumAmount,
+      maximumAmount: editForm.maximumAmount,
+      usageLimit: editForm.usageLimit,
+      usageLimitPerUser: editForm.usageLimitPerUser,
+      individualUse: editForm.individualUse,
+      productIds: editForm.productIds,
+      productCategories: editForm.productCategories,
+      excludeProductIds: editForm.excludeProductIds,
+      excludeCategories: editForm.excludeCategories,
+      allowedEmails: editForm.allowedEmails,
+      excludesSaleItems: editForm.excludesSaleItems
+    }
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/coupons`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authStore.token}`
+        },
+        body: JSON.stringify(payload)
+      }
+    )
+
+    if (!response.ok) {
+      const errorResponse = await response.json()
+      throw new Error(errorResponse.message || 'Cập nhật thất bại')
+    }
+    
+    message.success('Cập nhật coupon thành công')
+    showEditModal.value = false
+    fetchCoupons()
+  } catch (error) {
+    console.error('Lỗi khi cập nhật coupon:', error)
+    message.error(error.message || 'Cập nhật coupon thất bại')
+  } finally {
+    updateLoading.value = false
+  }
 }
 
 onMounted(() => {

@@ -127,7 +127,7 @@ const chartSeries = computed(() => {
   return ['up', 'down', 'extend'].map(action => {
     const details = websiteData.value.find(d => d.action === action)?.details || []
     return {
-      name: action === 'up' ? 'Nâng cấp' : action === 'down' ? 'Hạ cấp' : 'Gia hạn',
+      name: action === 'up' ? t('memberAnalysis.transitionChart.upgrade') : action === 'down' ? t('memberAnalysis.transitionChart.downgrade') : t('memberAnalysis.transitionChart.extend'),
       data: details.map(d => Math.abs(d.count))
     }
   })
@@ -168,13 +168,13 @@ const chartOptions = computed(() => ({
       .flatMap(d => d.details)
       .map(d => {
         if (d.reason.includes('Upgrade Level from')) {
-          return d.reason.replace('Upgrade Level from ', 'Nâng cấp từ ')
+          return d.reason.replace('Upgrade Level from ', t('memberAnalysis.transitionChart.upgradeFrom'))
         }
         if (d.reason.includes('Downgrade Level from')) {
-          return d.reason.replace('Downgrade Level from ', 'Hạ cấp từ ')
+          return d.reason.replace('Downgrade Level from ', t('memberAnalysis.transitionChart.downgradeFrom'))
         }
         if (d.reason.includes('Extend Level')) {
-          return d.reason.replace('Extend Level ', 'Gia hạn cấp ') + ' tháng'
+          return d.reason.replace('Extend Level ', t('memberAnalysis.transitionChart.extendLevel')) + ' tháng'
         }
         return d.reason
       })

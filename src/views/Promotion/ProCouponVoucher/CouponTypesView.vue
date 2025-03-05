@@ -311,11 +311,11 @@ const formatCurrency = (value: number) => {
 }
 
 const disabledDate = (current: dayjs.Dayjs) => {
-  return current && current < dayjs().endOf('day')
+  return current && current < dayjs().startOf('day')
 }
 
 const disabledStartDate = (current: dayjs.Dayjs) => {
-  return current && current < dayjs().endOf('day');
+  return current && current < dayjs().startOf('day');
 };
 
 const handleSubmit = async () => {

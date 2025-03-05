@@ -2,6 +2,7 @@
   "couponHistory": {
     "title": "Discount Code Usage History",
     "filters": {
+      "title": "Filters Coupon History",
       "website": {
         "label": "Website",
         "placeholder": "Select website"
@@ -36,6 +37,7 @@
       }
     },
     "table": {
+      "title": "List Coupon History",
       "columns": {
         "code": "Discount code",
         "status": "Status",
@@ -55,7 +57,10 @@
         "expired": "Expired"
       },
       "actions": {
-        "details": "Details"
+        "details": "Details",
+        "edit": "Edit",
+        "delete": "Delete",
+        "warning": "Are you sure you want to delete this coupon?"
       },
       "pagination": {
         "total": "Total {total} discount codes"
@@ -70,7 +75,7 @@
     "modal": {
       "title": "Discount Code Usage Details",
       "couponInfo": "Coupon Information",
-      "code": "Code",
+      "couponCode": "Coupon Code",
       "status": "Status",
       "discount": "Discount",
       "discountType": "Discount Type",
@@ -86,7 +91,25 @@
       "usageLimitPerUser": "Usage Limit Per User",
       "customerInfo": "Customer Information",
       "customerEmail": "Customer Email",
-      "customerUsed": "Customer Used"
+      "customerUsed": "Customer Used",
+      "editTitle": "Edit Coupon",
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirmDelete": "Are you sure you want to delete this coupon?",
+      "cancel": "Cancel",
+      "save": "Save",
+      "update": "Update",
+      "create": "Create",
+      "reset": "Reset",
+      "search": "Search",
+      "expiryDate": "Expiry Date",
+      "productIds": "Product IDs",
+      "productCategories": "Product Categories",
+      "excludeProductIds": "Exclude Product IDs",
+      "excludeCategories": "Exclude Categories",
+      "allowedEmails": "Allowed Emails",
+      "excludesSaleItems": "Exclude Sale Items",
+      "amount": "Amount"
     }
   },
   "common": {

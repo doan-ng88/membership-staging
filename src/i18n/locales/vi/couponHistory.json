@@ -2,6 +2,7 @@
   "couponHistory": {
     "title": "Lịch Sử Sử Dụng Mã Giảm Giá",
     "filters": {
+      "title": "Bộ Lọc Lịch Sử Sử Dụng Mã Giảm Giá",
       "website": {
         "label": "Website",
         "placeholder": "Chọn website"
@@ -36,6 +37,7 @@
       }
     },
     "table": {
+      "title": "Danh sách lịch sử sử dụng mã giảm giá",
       "columns": {
         "code": "Mã giảm giá",
         "status": "Trạng thái",
@@ -55,7 +57,10 @@
         "expired": "Hết hạn"
       },
       "actions": {
-        "details": "Chi tiết"
+        "details": "Chi tiết",
+        "edit": "Sửa",
+        "delete": "Xóa",
+        "warning": "Bạn có chắc chắn muốn xóa mã giảm giá này?"
       },
       "pagination": {
         "total": "Tổng {total} mã giảm giá"
@@ -70,7 +75,7 @@
     "modal": {
       "title": "Chi tiết sử dụng mã giảm giá",
       "couponInfo": "Thông tin mã giảm giá",
-      "code": "Mã",
+      "couponCode": "Mã giảm giá",
       "status": "Trạng thái",
       "discount": "Giảm giá",
       "discountType": "Loại giảm giá",
@@ -86,7 +91,25 @@
       "usageLimitPerUser": "Giới hạn sử dụng/người dùng",
       "customerInfo": "Thông tin khách hàng",
       "customerEmail": "Email khách hàng",
-      "customerUsed": "Số lần khách hàng đã dùng"
+      "customerUsed": "Số lần khách hàng đã dùng",
+      "editTitle": "Chỉnh sửa Coupon",
+      "edit": "Chỉnh sửa",
+      "delete": "Xóa",
+      "confirmDelete": "Bạn có chắc chắn muốn xóa mã giảm giá này?",
+      "cancel": "Hủy bỏ",
+      "save": "Lưu",
+      "update": "Cập nhật",
+      "create": "Tạo mới",
+      "reset": "Đặt lại",
+      "search": "Tìm kiếm",
+      "expiryDate": "Ngày hết hạn",
+      "productIds": "Mã sản phẩm",
+      "productCategories": "Danh mục sản phẩm",
+      "excludeProductIds": "Mã sản phẩm loại trừ",
+      "excludeCategories": "Danh mục sản phẩm loại trừ",
+      "allowedEmails": "Email được phép",
+      "excludesSaleItems": "Loại trừ sản phẩm khuyến mãi",
+      "amount": "Số tiền"
     }
   },
   "common": {

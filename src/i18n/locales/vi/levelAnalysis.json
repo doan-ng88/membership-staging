@@ -29,7 +29,10 @@
       "upgrade": "Nâng cấp",
       "downgrade": "Hạ cấp",
       "extend": "Gia hạn",
-      "details": "Chi tiết chuyển đổi"
+      "details": "Chi tiết chuyển đổi",
+      "upgradeFrom": "Nâng cấp từ",
+      "downgradeFrom": "Hạ cấp từ",
+      "extendLevel": "Gia hạn cấp"
     }
   } 
 } 

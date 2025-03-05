@@ -29,7 +29,10 @@
       "upgrade": "Upgrade",
       "downgrade": "Downgrade",
       "extend": "Extend",
-      "details": "Transition Level Details"
+      "details": "Transition Level Details",
+      "upgradeFrom": "Upgrade from",
+      "downgradeFrom": "Downgrade from",
+      "extendLevel": "Extend level"
     }
   }
 } 

@@ -108,7 +108,6 @@ const chartOptions = computed(() => ({
 }))
 
 watch(() => props.brand, () => {
-  // Implement API call when brand changes
   console.log('Brand changed:', props.brand)
 })
 </script>

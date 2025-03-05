@@ -23,7 +23,7 @@
       <template v-if="selectedBrand">
         <MemberStatistics :statistics="memberStats" />
         <TransitionChart :brand="selectedBrand" :key="selectedBrand" />
-        <BehaviorChart :brand="selectedBrand" :key="selectedBrand" />
+        <!-- <BehaviorChart :brand="selectedBrand" :key="selectedBrand" /> -->
       </template>
     </div>
   </DefaultLayout>
@@ -35,7 +35,7 @@ import { useI18nGlobal } from '@/i18n'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import MemberStatistics from '@/components/MemberAnalysis/LevelAnalysis/MemberStatistic.vue'
 import TransitionChart from '@/components/MemberAnalysis/LevelAnalysis/TransitionChart.vue'
-import BehaviorChart from '@/components/MemberAnalysis/LevelAnalysis/BehaviorChart.vue'
+// import BehaviorChart from '@/components/MemberAnalysis/LevelAnalysis/BehaviorChart.vue'
 import { levelService as rankService } from '@/api/services/levelService'
 import { message } from 'ant-design-vue'
 import dayjs, { type Dayjs } from 'dayjs'
