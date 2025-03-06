@@ -146,10 +146,13 @@
           <h3 class="text-lg font-semibold mb-4">{{ t('couponTypes.form.scope.title') }}</h3>
           <div class="grid grid-cols-2 gap-6">
             <a-form-item :label="t('couponTypes.form.scope.products.label')">
-              <a-select 
-                v-model:value="formData.ProductIds" 
-                mode="multiple" 
-                :placeholder="t('couponTypes.form.scope.products.placeholder')"
+              <a-select
+                v-model:value="formData.ProductIds"
+                mode="multiple"
+                :disabled="!formData.websiteId"
+                :placeholder="formData.websiteId 
+                  ? t('couponTypes.form.scope.products.placeholder')
+                  : ' ' + t('couponTypes.form.scope.products.placeholderPleaseChooseWebsite')"
                 :options="productOptions" 
                 :loading="loadingProducts" 
                 show-search 
@@ -159,13 +162,19 @@
                 option-label-prop="label"
               >
               </a-select>
+              <div v-if="!formData.websiteId" class="ant-form-item-explain ant-form-item-explain-error">
+                <div class="ant-form-item-explain-error">{{ t('couponTypes.form.scope.products.chooseWebsiteFirstChooseProducts') }}</div>
+              </div>
             </a-form-item>
 
             <a-form-item :label="t('couponTypes.form.scope.categories.label')">
-              <a-select 
-                v-model:value="formData.ProductCategories" 
-                mode="multiple" 
-                :placeholder="t('couponTypes.form.scope.categories.placeholder')"
+              <a-select
+                v-model:value="formData.ProductCategories"
+                mode="multiple"
+                :disabled="!formData.websiteId"
+                :placeholder="formData.websiteId 
+                  ? t('couponTypes.form.scope.categories.placeholder')
+                  : ' ' + t('couponTypes.form.scope.categories.placeholderPleaseChooseWebsite')"
                 :options="categoryOptions" 
                 :loading="loadingCategories" 
                 show-search 
@@ -175,13 +184,19 @@
                 option-label-prop="label"
               >
               </a-select>
+              <div v-if="!formData.websiteId" class="ant-form-item-explain ant-form-item-explain-error">
+                <div class="ant-form-item-explain-error">{{ t('couponTypes.form.scope.categories.chooseWebsiteFirstChooseCategories') }}</div>
+              </div>
             </a-form-item>
 
             <a-form-item :label="t('couponTypes.form.scope.excludeProducts.label')">
-              <a-select 
-                v-model:value="formData.ExcludeProductIds" 
-                mode="multiple" 
-                :placeholder="t('couponTypes.form.scope.excludeProducts.placeholder')"
+              <a-select
+                v-model:value="formData.ExcludeProductIds"
+                mode="multiple"
+                :disabled="!formData.websiteId"
+                :placeholder="formData.websiteId 
+                  ? t('couponTypes.form.scope.excludeProducts.placeholder')
+                  : ' ' + t('couponTypes.form.scope.excludeProducts.placeholderPleaseChooseWebsite')"
                 :options="productOptions" 
                 :loading="loadingProducts" 
                 show-search 
@@ -191,13 +206,19 @@
                 option-label-prop="label"
               >
               </a-select>
+              <div v-if="!formData.websiteId" class="ant-form-item-explain ant-form-item-explain-error">
+                <div class="ant-form-item-explain-error">{{ t('couponTypes.form.scope.excludeProducts.chooseWebsiteFirstChooseExcludeProducts') }}</div>
+              </div>
             </a-form-item>
 
             <a-form-item :label="t('couponTypes.form.scope.excludeCategories.label')">
-              <a-select 
-                v-model:value="formData.ExcludeCategories" 
-                mode="multiple" 
-                :placeholder="t('couponTypes.form.scope.excludeCategories.placeholder')"
+              <a-select
+                v-model:value="formData.ExcludeCategories"
+                mode="multiple"
+                :disabled="!formData.websiteId"
+                :placeholder="formData.websiteId 
+                  ? t('couponTypes.form.scope.excludeCategories.placeholder')
+                  : ' ' + t('couponTypes.form.scope.excludeCategories.placeholderPleaseChooseWebsite')"
                 :options="categoryOptions" 
                 :loading="loadingCategories" 
                 show-search 
@@ -206,6 +227,35 @@
                 style="width: 100%" 
                 option-label-prop="label"
               >
+              </a-select>
+              <div v-if="!formData.websiteId" class="ant-form-item-explain ant-form-item-explain-error">
+                <div class="ant-form-item-explain-error">{{ t('couponTypes.form.scope.excludeCategories.chooseWebsiteFirstChooseExcludeCategories') }}</div>
+              </div>
+            </a-form-item>
+
+            <a-form-item 
+              :label="t('couponTypes.form.allowedEmails.label')"
+              :rules="rules.allowedEmails"
+            >
+              <a-select
+                v-model:value="formData.allowedEmails"
+                mode="tags"
+                :placeholder="t('couponTypes.form.allowedEmails.placeholder')"
+                :token-separators="[',', ';']"
+                style="width: 100%"
+                show-search
+                :filter-option="false"
+                @search="handleSearchEmails"
+              >
+                <a-select-option 
+                  v-for="email in emailOptions"
+                  :key="email.value"
+                  :value="email.value"
+                >
+                  <div class="flex items-center gap-2">
+                    <span class="font-medium">{{ email.label }}</span>
+                  </div>
+                </a-select-option>
               </a-select>
             </a-form-item>
           </div>
@@ -260,8 +310,22 @@ const formData = reactive({
   ProductIds: [],
   ProductCategories: [],
   ExcludeProductIds: [],
-  ExcludeCategories: []
+  ExcludeCategories: [],
+  allowedEmails: [] as string[],
 })
+
+const rules = {
+  allowedEmails: [
+    {
+      validator: (_: any, value: string[]) => {
+        if (value.some(email => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) {
+          return Promise.reject('Chứa email không hợp lệ')
+        }
+        return Promise.resolve()
+      }
+    }
+  ]
+}
 
 const fetchWebsites = async () => {
   try {
@@ -335,14 +399,29 @@ const handleSubmit = async () => {
       return
     }
 
+    // Validate manual
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const invalidEmails = formData.allowedEmails.filter(
+      email => !emailRegex.test(email)
+    )
+    
+    if (invalidEmails.length > 0) {
+      throw new Error(
+        `${t('couponTypes.messages.error.invalidEmail')}: ${invalidEmails.join(', ')}`
+      )
+    }
+
     loading.value = true
     errorMessage.value = '' // Reset error message
 
     const payload = {
       ...formData,
       ExpiryDate: dayjs(formData.ExpiryDate).format('YYYY-MM-DD'),
-      StartDate: dayjs(formData.StartDate).format('YYYY-MM-DD')
+      StartDate: dayjs(formData.StartDate).format('YYYY-MM-DD'),
+      allowed_emails: formData.allowedEmails,
     }
+
+    console.log('Request Payload:', payload);
 
     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/membership/update/create-coupon`, {
       method: 'POST',
@@ -357,6 +436,9 @@ const handleSubmit = async () => {
       const error = await response.json()
       throw new Error(error.message || 'Không thể tạo mã giảm giá')
     }
+
+    const data = await response.json()
+    console.log('Response Data:', data);
 
     message.success(t('couponTypes.messages.success.created'))
     router.push('/pro-coupon-voucher/usage-history')
@@ -454,6 +536,68 @@ watch(() => formData.websiteId, () => {
     fetchCategories()
   }
 })
+
+const emailOptions = ref<{label: string, value: string}[]>([])
+const loadingEmails = ref(false)
+
+const fetchEmails = async (search = '') => {
+  try {
+    loadingEmails.value = true;
+
+    // Tạo payload theo đúng format API
+    const payload = {
+      sortField: "MembershipsWebsitesId",
+      sortType: "ASC",
+      pageSize: 10,
+      pageIndex: 1,
+      searchParams: search ? [
+        {
+          key: "email", // Field cần search
+          value: search,
+          operator: "CONTAINS" // Hoặc operator phù hợp
+        }
+      ] : []
+    };
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/membership/get/get-membership-list`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${authStore.token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Lỗi khi tải danh sách email');
+    }
+
+    const data = await response.json();
+    
+    // Xử lý dữ liệu trả về
+    emailOptions.value = data.data.map((member: any) => ({
+      label: member.email,
+      value: member.email
+    }));
+
+  } catch (error) {
+    console.error('Lỗi khi tải email:', error);
+    message.error(error.message || 'Không thể tải danh sách email');
+  } finally {
+    loadingEmails.value = false;
+  }
+};
+
+// Thêm debounce cho search
+const handleSearchEmails = debounce((value: string) => {
+  if (value) {
+    fetchEmails(value);
+  }
+}, 500);
 
 </script>
 

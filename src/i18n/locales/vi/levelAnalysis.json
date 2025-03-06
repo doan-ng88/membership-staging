@@ -32,7 +32,8 @@
       "details": "Chi tiết chuyển đổi",
       "upgradeFrom": "Nâng cấp từ",
       "downgradeFrom": "Hạ cấp từ",
-      "extendLevel": "Gia hạn cấp"
+      "extendLevel": "Gia hạn cấp",
+      "member": "thành viên"
     }
   } 
 } 

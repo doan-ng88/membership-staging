@@ -32,7 +32,8 @@
       "details": "Transition Level Details",
       "upgradeFrom": "Upgrade from",
       "downgradeFrom": "Downgrade from",
-      "extendLevel": "Extend level"
+      "extendLevel": "Extend level",
+      "member": "members"
     }
   }
 } 

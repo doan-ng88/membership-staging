@@ -25,10 +25,13 @@
       },
       "reset": "Reset",
       "button": "Apply Adjustment",
-      "success": "Points adjusted successfully"
+      "success": "Points adjusted successfully",
+      "validation": {
+        "points": "Please enter points",
+        "reason": "Please enter reason"
+      }
     },
     "history": {
-      "noData": "No history data found",
       "title": "Point Earning Usage History",
       "table": {
         "headers": {

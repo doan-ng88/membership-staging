@@ -78,7 +78,12 @@
       "couponCode": "Mã giảm giá",
       "status": "Trạng thái",
       "discount": "Giảm giá",
-      "discountType": "Loại giảm giá",
+      "discountTypeTitle": "Loại giảm giá",
+      "discountType": {
+        "fixedProduct": "Giảm giá sản phẩm",
+        "fixedCart": "Giảm giá đơn hàng",
+        "percent": "Giảm giá % đơn hàng"
+      },
       "couponAmount": "Giá trị giảm",
       "startDate": "Ngày bắt đầu",
       "endDate": "Ngày kết thúc",

@@ -61,20 +61,32 @@
         "title": "Phạm vi áp dụng",
         "products": {
           "label": "Sản phẩm được áp dụng",
-          "placeholder": "Tìm và chọn sản phẩm"
+          "placeholder": "Tìm và chọn sản phẩm",
+          "placeholderPleaseChooseWebsite": "Vui lòng chọn Website trước",
+          "chooseWebsiteFirstChooseProducts": "Chọn Website trước khi chọn sản phẩm"
         },
         "categories": {
           "label": "Danh mục được áp dụng",
-          "placeholder": "Tìm và chọn danh mục"
+          "placeholder": "Tìm và chọn danh mục",
+          "placeholderPleaseChooseWebsite": "Vui lòng chọn Website trước",
+          "chooseWebsiteFirstChooseCategories": "Chọn Website trước khi chọn danh mục"
         },
         "excludeProducts": {
           "label": "Sản phẩm loại trừ",
-          "placeholder": "Tìm và chọn sản phẩm loại trừ"
+          "placeholder": "Tìm và chọn sản phẩm loại trừ",
+          "placeholderPleaseChooseWebsite": "Vui lòng chọn Website trước",
+          "chooseWebsiteFirstChooseExcludeProducts": "Chọn Website trước khi chọn sản phẩm loại trừ"
         },
         "excludeCategories": {
           "label": "Danh mục loại trừ",
-          "placeholder": "Tìm và chọn danh mục loại trừ"
+          "placeholder": "Tìm và chọn danh mục loại trừ",
+          "placeholderPleaseChooseWebsite": "Vui lòng chọn Website trước",
+          "chooseWebsiteFirstChooseExcludeCategories": "Chọn Website trước khi chọn danh mục loại trừ"
         }
+      },
+      "allowedEmails": {
+        "label": "Email được phép sử dụng",
+        "placeholder": "Tìm và chọn email được phép sử dụng"
       }
     },
     "buttons": {

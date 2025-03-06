@@ -78,7 +78,7 @@
       "couponCode": "Coupon Code",
       "status": "Status",
       "discount": "Discount",
-      "discountType": "Discount Type",
+      "discountTypeTitle": "Discount Type",
       "couponAmount": "Coupon Amount",
       "startDate": "Start Date",
       "endDate": "End Date",
@@ -109,7 +109,12 @@
       "excludeCategories": "Exclude Categories",
       "allowedEmails": "Allowed Emails",
       "excludesSaleItems": "Exclude Sale Items",
-      "amount": "Amount"
+      "amount": "Amount",
+      "discountType": {
+        "fixedProduct": "Fixed Product",
+        "fixedCart": "Fixed Cart",
+        "percent": "Percent Discount"
+      }
     }
   },
   "common": {

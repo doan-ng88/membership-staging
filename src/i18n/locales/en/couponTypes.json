@@ -61,20 +61,32 @@
         "title": "Application Scope",
         "products": {
           "label": "Applicable products",
-          "placeholder": "Search and select products"
+          "placeholder": "Search and select products",
+          "placeholderPleaseChooseWebsite": "Please choose website first",
+          "chooseWebsiteFirstChooseProducts": "Choose website first before choosing products"
         },
         "categories": {
           "label": "Applicable categories",
-          "placeholder": "Search and select categories"
+          "placeholder": "Search and select categories",
+          "placeholderPleaseChooseWebsite": "Please choose website first",
+          "chooseWebsiteFirstChooseCategories": "Choose website first before choosing categories"
         },
         "excludeProducts": {
           "label": "Excluded products",
-          "placeholder": "Search and select excluded products"
+          "placeholder": "Search and select excluded products",
+          "placeholderPleaseChooseWebsite": "Please choose website first",
+          "chooseWebsiteFirstChooseExcludeProducts": "Choose website first before choosing excluded products"
         },
         "excludeCategories": {
           "label": "Excluded categories",
-          "placeholder": "Search and select excluded categories"
+          "placeholder": "Search and select excluded categories",
+          "placeholderPleaseChooseWebsite": "Please choose website first",
+          "chooseWebsiteFirstChooseExcludeCategories": "Choose website first before choosing excluded categories"
         }
+      },
+      "allowedEmails": {
+        "label": "Allowed emails",
+        "placeholder": "Search and select allowed emails"
       }
     },
     "buttons": {

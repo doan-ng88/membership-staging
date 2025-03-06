@@ -211,7 +211,7 @@ const chartOptions = computed(() => ({
     shared: true,
     intersect: false,
     y: {
-      formatter: (val: number) => `${val} thành viên`
+      formatter: (val: number) => `${val} ${t('memberAnalysis.transitionChart.member')}`
     }
   },
   noData: {

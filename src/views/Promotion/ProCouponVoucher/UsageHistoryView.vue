@@ -160,7 +160,7 @@
                     </a-tag>
                   </div>
                   <div>
-                    <span class="text-gray-500">{{ t('couponHistory.modal.discountType') }}:</span>
+                    <span class="text-gray-500">{{ t('couponHistory.modal.discountTypeTitle') }}:</span>
                     <span class="ml-2">{{ selectedRecord.discount_type }}</span>
                   </div>
                   <div>
@@ -249,11 +249,11 @@
               <a-input v-model:value="editForm.code" />
             </a-form-item>
             
-            <a-form-item :label="t('couponHistory.modal.discountType')">
+            <a-form-item :label="t('couponHistory.modal.discountTypeTitle')">
               <a-select v-model:value="editForm.discountType">
-                <a-select-option value="fixed_product">Giảm giá sản phẩm</a-select-option>
-                <a-select-option value="fixed_cart">Giảm giá đơn hàng</a-select-option>
-                <a-select-option value="percent">Phần trăm</a-select-option>
+                <a-select-option value="fixed_product">{{ t('couponHistory.modal.discountType.fixedProduct') }}</a-select-option>
+                <a-select-option value="fixed_cart">{{ t('couponHistory.modal.discountType.fixedCart') }}</a-select-option>
+                <a-select-option value="percent">{{ t('couponHistory.modal.discountType.percent') }}</a-select-option>
               </a-select>
             </a-form-item>
 
@@ -268,6 +268,7 @@
                 value-format="YYYY-MM-DD"
                 class="w-full"
                 :show-today="false"
+                placeholder="Chọn ngày bắt đầu"
               />
             </a-form-item>
 
@@ -278,6 +279,8 @@
                 value-format="YYYY-MM-DD"
                 class="w-full"
                 :show-today="false"
+                placeholder="Chọn ngày hết hạn"
+                :disabled-date="disabledEndDate"
               />
             </a-form-item>
 
@@ -494,16 +497,28 @@ const rules = reactive({
   startDate: [{ 
     required: true, 
     message: 'Vui lòng chọn ngày bắt đầu',
-    validator: (_rule, value) => value ? Promise.resolve() : Promise.reject()
+    validator: (_rule: any, value: any) => value ? Promise.resolve() : Promise.reject()
   }],
   expiryDate: [{ 
     required: true,
-    validator: (_rule, value) => {
+    validator: (_rule: any, value: any) => {
       if (!value) return Promise.reject('Vui lòng chọn ngày hết hạn')
       if (value.isBefore(dayjs())) return Promise.reject('Ngày hết hạn không hợp lệ')
       return Promise.resolve()
     }
-  }]
+  }],
+  amount: [
+    { 
+      required: true, 
+      message: 'Vui lòng nhập số tiền/phần trăm giảm giá',
+      validator: (_: any, value: number) => value > 0 ? Promise.resolve() : Promise.reject()
+    }
+  ],
+  usageLimit: [
+    {
+      validator: (_: any, value: number) => value >= 0 ? Promise.resolve() : Promise.reject('Giá trị không hợp lệ')
+    }
+  ]
 })
 
 // Thêm loading state cho modal
@@ -568,7 +583,14 @@ const fetchCoupons = async (params = {
     }
 
     const data = await response.json()
-    coupons.value = data.data
+    coupons.value = data.data.map((coupon: any) => ({
+      ...coupon,
+      product_ids: coupon.product_ids || '',
+      exclude_product_ids: coupon.exclude_product_ids || '',
+      product_categories: coupon.product_categories || '',
+      exclude_product_categories: coupon.exclude_product_categories || '',
+      customer_email: coupon.customer_email || ''
+    }))
     pagination.total = data.totalCount
     pagination.current = data.currentPage
     pagination.pageSize = data.pageSize
@@ -746,6 +768,13 @@ const handleDelete = async (record: any) => {
 
 // Xử lý mở modal chỉnh sửa
 const handleEdit = (record: any) => {
+  console.log('Original record data:', {
+    start_date: record.start_date,
+    expiry_date: record.expiry_date,
+    product_ids: record.product_ids,
+    customer_email: record.customer_email
+  })
+  
   Object.assign(editForm, {
     couponId: record.id,
     websiteId: filters.websiteId,
@@ -753,27 +782,50 @@ const handleEdit = (record: any) => {
     description: record.description,
     discountType: record.discount_type,
     amount: record.amount,
-    startDate: record.start_date ? dayjs(record.start_date) : null,
-    expiryDate: record.expiry_date ? dayjs(record.expiry_date) : null,
+    startDate: parseAPIDate(record.start_date),
+    expiryDate: parseAPIDate(record.expiry_date),
     minimumAmount: record.minimum_amount,
     maximumAmount: record.maximum_amount,
     usageLimit: record.usage_limit,
     usageLimitPerUser: record.usage_limit_per_user,
     individualUse: record.individual_use === 'yes',
-    productIds: record.product_ids || [],
-    productCategories: record.product_categories || [],
-    excludeProductIds: record.exclude_product_ids || [],
-    excludeCategories: record.exclude_product_categories || [],
-    allowedEmails: record.allowed_emails || [],
-    excludesSaleItems: record.excludes_sale_items || false
+    excludesSaleItems: record.exclude_sale_items === 'yes',
+    productIds: record.product_ids ? record.product_ids.split(',').map(Number) : [],
+    productCategories: record.product_categories 
+      ? record.product_categories.split(',').filter(Boolean).map(Number) 
+      : [],
+    excludeProductIds: record.exclude_product_ids ? record.exclude_product_ids.split(',').map(Number) : [],
+    excludeCategories: record.exclude_product_categories 
+      ? record.exclude_product_categories.split(',').filter(Boolean).map(Number) 
+      : [],
+    allowedEmails: record.customer_email 
+      ? [record.customer_email].filter(email => email && email.includes('@')) 
+      : []
   })
   showEditModal.value = true
+}
+
+// Thêm hàm parse date
+const parseAPIDate = (dateString: string) => {
+  if (!dateString || dateString.includes('1970')) {
+    return dayjs().add(1, 'day') // Default to tomorrow if empty
+  }
+  return dayjs(dateString)
 }
 
 // Gửi yêu cầu cập nhật
 const handleUpdate = async () => {
   try {
     updateLoading.value = true
+    
+    if (!editForm.startDate?.isValid()) {
+      throw new Error('Ngày bắt đầu không hợp lệ')
+    }
+    
+    if (!editForm.expiryDate?.isValid()) {
+      throw new Error('Ngày hết hạn không hợp lệ')
+    }
+
     const payload = {
       couponId: editForm.couponId,
       websiteId: editForm.websiteId,
@@ -781,23 +833,23 @@ const handleUpdate = async () => {
       description: editForm.description,
       discountType: editForm.discountType,
       discountAmount: editForm.amount,
-      startDate: editForm.startDate?.format('YYYY-MM-DD') || null,
-      expiryDate: editForm.expiryDate?.format('YYYY-MM-DD') || null,
+      startDate: editForm.startDate?.format('YYYY-MM-DD') || '',
+      expiryDate: editForm.expiryDate?.format('YYYY-MM-DD') || '',
       minimumAmount: editForm.minimumAmount,
       maximumAmount: editForm.maximumAmount,
       usageLimit: editForm.usageLimit,
       usageLimitPerUser: editForm.usageLimitPerUser,
       individualUse: editForm.individualUse,
       productIds: editForm.productIds,
-      productCategories: editForm.productCategories,
+      productCategories: cleanArray(editForm.productCategories),
       excludeProductIds: editForm.excludeProductIds,
-      excludeCategories: editForm.excludeCategories,
-      allowedEmails: editForm.allowedEmails,
+      excludeCategories: cleanArray(editForm.excludeCategories),
+      allowedEmails: cleanArray(editForm.allowedEmails),
       excludesSaleItems: editForm.excludesSaleItems
     }
 
     const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/coupons`,
+      `${import.meta.env.VITE_API_BASE_URL}/membership/update/update-coupon`,
       {
         method: 'PUT',
         headers: {
@@ -822,6 +874,21 @@ const handleUpdate = async () => {
   } finally {
     updateLoading.value = false
   }
+}
+
+const disabledEndDate = (current: dayjs.Dayjs) => {
+  return current && current < (editForm.startDate || dayjs().startOf('day'))
+}
+
+// Thêm watch để reset ngày hết hạn nếu ngày bắt đầu thay đổi
+watch(() => editForm.startDate, (newStartDate) => {
+  if (newStartDate && editForm.expiryDate?.isBefore(newStartDate)) {
+    editForm.expiryDate = null
+  }
+})
+
+const cleanArray = (arr: any[]) => {
+  return arr.filter(item => item !== null && item !== undefined && item !== '')
 }
 
 onMounted(() => {
