@@ -79,8 +79,14 @@ onMounted(() => {
 });
 
 const handleAdd = () => {
-    router.push({name: 'NewCampaign'});
-  };
+  router.push({
+    name: 'CreateCallCampaign',
+    state: { 
+      campaignType: 'CALL',
+      returnRoute: 'CallCampaign' 
+    }
+  })
+}
 
 const handleEdit = (campaign: any) => {
   console.log('Campaign before setting:', campaign)

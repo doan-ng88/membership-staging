@@ -24,6 +24,126 @@
         "created": "đã tạo",
         "inProgress": "đang thực hiện"
       }
+    },
+    "campaignActions": {
+      "buttons": {
+        "addCampaign": "Tạo chiến dịch gọi",
+        "refresh": "Làm mới",
+        "exportExcel": "Xuất Excel",
+        "addMember": "Thêm thành viên"
+      },
+      "messages": {
+        "exportSuccess": "Xuất file thành công",
+        "exportError": "Không thể xuất file"
+      }
+    },
+    "campaignMailFilters": {
+      "search": {
+        "placeholder": "Tìm kiếm theo tên chiến dịch"
+      },
+      "status": {
+        "placeholder": "Trạng thái",
+        "options": {
+          "all": "Tất cả",
+          "active": "Đang hoạt động",
+          "inactive": "Không hoạt động",
+          "pending": "Đang chờ",
+          "completed": "Hoàn thành",
+          "created": "Đã tạo",
+          "inProgress": "Đang thực hiện",
+          "paused": "Đã tạm dừng",
+          "expired": "Đã hết hạn",
+          "failed": "Thất bại",
+          "approved": "Đã phê duyệt",
+          "rejected": "Đã từ chối",
+          "closed": "Đã đóng",
+          "planning": "Đang lên kế hoạch",
+          "onHold": "Đang tạm dừng",
+          "cancelled": "Đã hủy bỏ",
+          "deleted": "Đã xóa"
+        }
+      },
+      "website": {
+        "placeholder": "Trang web",
+        "options": {
+          "all": "Tất cả"
+        }
+      },
+      "pic": {
+        "placeholder": "Người phụ trách",
+        "options": {
+          "all": "Tất cả",
+          "user1": "Người dùng 1",
+          "user2": "Người dùng 2"
+        }
+      },
+      "buttons": {
+        "filter": "Lọc",
+        "reset": "Đặt lại"
+      }
+    },    
+    "createCallCampaign": {
+      "title": "Tạo Chiến Dịch Gọi",
+      "form": {
+        "name": {
+          "label": "Tên Chiến Dịch",
+          "placeholder": "Nhập tên chiến dịch",
+          "required": "Vui lòng nhập tên chiến dịch"
+        },
+        "description": {
+          "label": "Mô tả",
+          "placeholder": "Nhập mô tả chiến dịch",
+          "required": "Vui lòng nhập mô tả chiến dịch"
+        },
+        "website": {
+          "label": "Trang Web",
+          "placeholder": "Chọn trang web",
+          "required": "Vui lòng chọn trang web"
+        },
+        "coupon": {
+          "label": "Mã Giảm Giá",
+          "placeholder": "Chọn mã giảm giá",
+          "required": "Vui lòng chọn mã giảm giá",
+          "labelWithWebsite": "Mã Giảm Giá (Vui lòng chọn trang web trước)"
+        },
+        "pic": {
+          "label": "Người Phụ Trách",
+          "placeholder": "Chọn người phụ trách",
+          "required": "Vui lòng chọn người phụ trách"
+        },
+        "time": { 
+          "label": "Thời Gian Gọi",
+          "startPlaceholder": "Thời Gian Bắt Đầu",
+          "endPlaceholder": "Thời Gian Kết Thúc",
+          "required": "Vui lòng chọn thời gian gọi"
+        }
+      },
+      "memberList": { 
+        "title": "Danh Sách Thành Viên Đã Chọn",
+        "addButton": "Thêm Thành Viên",
+        "total": "Tổng {total} mục",
+        "table": {
+          "customerName": "Tên Khách Hàng",
+          "phoneNumber": "Số Điện Thoại",
+          "website": "Trang Web",
+          "birthday": "Ngày Sinh",
+          "registeredTime": "Thời Gian Đăng Ký",
+          "actions": "Thao Tác"
+        }
+      },
+      "buttons": {
+        "back": "Quay Lại",
+        "submit": "Gửi Đi"
+      },
+      "messages": {
+        "selectMember": "Vui lòng chọn ít nhất một thành viên",
+        "success": "Chiến Dịch Gọi Đã Được Tạo Thành Công",
+        "error": {
+          "default": "Không thể lưu chiến dịch",
+          "fetchCoupons": "Lỗi khi lấy mã giảm giá",
+          "fetchAdmins": "Lỗi khi lấy người phụ trách"
+        }
+      }
     }
   }
 } 

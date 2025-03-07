@@ -50,7 +50,7 @@
   
       <EditMailCampaignModal
         v-model:open="showEditModal"
-        :campaignId="selectedCampaign?.id || 0"
+        :campaignId="selectedCampaign?.id || 0" 
         :campaign-data="selectedCampaign || {}"
         @success="fetchCampaignList"
       />
@@ -114,7 +114,7 @@ import { useAuthStore } from '@/stores/auth';
       pagination.value.total = response.pagination.totalCount;
     } catch (error) {
       console.error('Error fetching campaigns:', error);
-      message.error('Không thể tải danh sách chiến dịch');
+      message.error(t('mailCampaign.messages.loadError'));
     } finally {
       loading.value = false;
     }
@@ -131,11 +131,7 @@ import { useAuthStore } from '@/stores/auth';
     fetchCampaignList();
   };
 
-  const handleTableChange = ({ current, pageSize }) => {
-    handlePageChange(current, pageSize);
-  };
-
-  const handlePageChange = (page, pageSize) => {
+  const handlePageChange = (page: number, pageSize: number) => {
     console.log('Page change:', page, pageSize);
     pagination.value.current = page;
     if (pageSize) {
@@ -186,9 +182,18 @@ import { useAuthStore } from '@/stores/auth';
     });
   };
 
+  // const handleAdd = () => {
+  //   router.push({name: 'NewCampaign'});
+  // };
   const handleAdd = () => {
-    router.push({name: 'NewCampaign'});
-  };
+  router.push({
+    name: 'CreateMailCampaign',
+    state: { 
+      campaignType: 'MAIL',
+      returnRoute: 'MailCampaign' 
+    }
+  })
+}
 
   const handleExportSuccess = () => {
     message.success(t('mailCampaign.messages.exportSuccess'));

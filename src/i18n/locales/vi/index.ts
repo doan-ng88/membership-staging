@@ -14,8 +14,6 @@ import purchaseHistory from './purchase-history.json'
 import pointReward from './point-reward.json'
 import permissionManagement from './permissionManagement.json'
 import mailCampaign from './mailCampaign.json'
-import campaignFilters from './campaignFilters.json'
-import campaignActions from './campaignActions.json'
 import newEmailCampaign from './newEmailCampaign.json'
 import membershipList from './membershipList.json'  
 import addMemberModal from './addMemberModal.json'
@@ -56,8 +54,6 @@ export default {
   ...pointReward,
   ...permissionManagement,
   ...mailCampaign,
-  ...campaignFilters,
-  ...campaignActions,
   ...newEmailCampaign,
   ...membershipList,
   ...addMemberModal,

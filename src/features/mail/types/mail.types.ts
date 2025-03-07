@@ -3,7 +3,12 @@ export interface Campaign {
   name: string;
   description: string;
   startDate: string;
-  endDate: string;
+  dueDate: string;
+  pic: string;
+  members: CampaignMember[];
+  websiteId: number | undefined;
+  coupons: string[];
+  adminUsers: string[];
   status: string;
   priorityLevel: string | number;
   issue: string;
@@ -16,6 +21,13 @@ export interface Campaign {
   createdAt: string;
   updatedAt: string;
   createdBy: string;
+}
+
+export interface CampaignMember {
+  id: string;
+  fullName: string;
+  mainPhoneNumber: string;
+  websiteId: number;
 }
 
 export interface CampaignFilters {

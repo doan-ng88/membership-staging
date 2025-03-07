@@ -17,8 +17,6 @@ import enPurchaseHistory from './locales/en/purchase-history.json'
 import enPointReward from './locales/en/point-reward.json'
 import enPermissionManagement from './locales/en/permissionManagement.json'
 import enMailCampaign from './locales/en/mailCampaign.json'
-import enCampaignFilters from './locales/en/campaignFilters.json'
-import enCampaignActions from './locales/en/campaignActions.json'
 import enNewEmailCampaign from './locales/en/newEmailCampaign.json'
 import enMembershipList from './locales/en/membershipList.json'
 import enAddMemberModal from './locales/en/addMemberModal.json'
@@ -57,8 +55,6 @@ import viPurchaseHistory from './locales/vi/purchase-history.json'
 import viPointReward from './locales/vi/point-reward.json'
 import viPermissionManagement from './locales/vi/permissionManagement.json'
 import viMailCampaign from './locales/vi/mailCampaign.json'
-import viCampaignFilters from './locales/vi/campaignFilters.json'
-import viCampaignActions from './locales/vi/campaignActions.json'
 import viNewEmailCampaign from './locales/vi/newEmailCampaign.json'
 import viMembershipList from './locales/vi/membershipList.json'
 import viAddMemberModal from './locales/vi/addMemberModal.json'
@@ -100,8 +96,6 @@ const messages = {
     ...enPointReward,
     ...enPermissionManagement,
     ...enMailCampaign,
-    ...enCampaignFilters,
-    ...enCampaignActions,
     ...enNewEmailCampaign,
     ...enMembershipList,
     ...enAddMemberModal,
@@ -141,8 +135,6 @@ const messages = {
     ...viPointReward,
     ...viPermissionManagement,
     ...viMailCampaign,
-    ...viCampaignFilters,
-    ...viCampaignActions,
     ...viNewEmailCampaign,
     ...viMembershipList,
     ...viAddMemberModal,

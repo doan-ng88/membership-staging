@@ -32,7 +32,7 @@ import TargetGroupSettingView from '@/views/MembershipManagement/MemberSegment/T
 // - Mail Campaign
 // import MailCampaignView from '@/views/Mail/MailCampaignView.vue'
 //- Mail Template
-import { mailRoutes } from '@/features/mail/routes';
+import { mailCampaignRoutes } from '@/features/mail/routes';
 import TemplateMailView from '@/features/mail/views/TemplateMailView.vue'
 
 //- Performance Analysis
@@ -54,9 +54,7 @@ import ProductSalesView from '@/views/AnalysisReporting/SalesAnalysis/ProductSal
 import PromotionSalesView from '@/views/AnalysisReporting/SalesAnalysis/PromotionSalesView.vue'
 
 // 5 - Call Campaign
-import CallCampaignView from '@/features/call-campaign/views/CallCampaignView.vue';
-import NewCampaignView from '@/features/new-campaign/views/NewCampaignView.vue'
-import CallCampaignDetailView from '@/features/call-campaign/views/CallCampaignDetailView.vue'
+import { callCampaignRoutes } from '@/features/call-campaign/routes'
 
 const routes = [
   // Refactor by cursor
@@ -294,43 +292,9 @@ const routes = [
     }
   },
 
-  // Call Campaign
-  {
-    path: '/call-campaign',
-    name: 'CallCampaign',
-    component: CallCampaignView,
-    meta: {
-      requiresAuth: true,
-      title: 'Call Campaign Management',
-      permissions: ['view_campaign']
-    }
-  },
-  // End Call Campaign
-
-  // Call Campaign Detail
-  {
-    path: '/call-campaign/:id',
-    name: 'CallCampaignDetail',
-    component: CallCampaignDetailView,
-    meta: {
-      requiresAuth: true,
-      title: 'Call Campaign Detail',
-      permissions: ['view_campaign']
-    }
-  },
-  // End Call Campaign
-
-  // New Campaign
-  {
-    path: '/new-campaign',
-    name: 'NewCampaign',
-    component: NewCampaignView,
-    meta: {
-      requiresAuth: true,
-      title: 'Create Campaign',
-    }
-  },
-  // End New Campaign
+  // Call campaign
+  ...callCampaignRoutes,
+  // End Call campaign
 
   // Mail Integration
   {
@@ -343,7 +307,7 @@ const routes = [
     }
   },
    // Template Mail
-   ...mailRoutes,
+   ...mailCampaignRoutes,
    // End Template Mail
   
   // App Push

@@ -1,6 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router';
 
-export const mailRoutes: RouteRecordRaw[] = [
+export const mailCampaignRoutes: RouteRecordRaw[] = [
   {
     path: '/mail',
     name: 'Mail',
@@ -13,6 +13,15 @@ export const mailRoutes: RouteRecordRaw[] = [
         meta: {
           requiresAuth: true,
           title: 'Template Mail Management'
+        }
+      },
+      {
+        path: '/create-mail-campaign',
+        name: 'CreateMailCampaign',
+        component: () => import('../views/CreateMailCampaignView.vue'),
+        meta: {
+          requiresAuth: true,
+          title: 'Create Campaign',
         }
       },
       {

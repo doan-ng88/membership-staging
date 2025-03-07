@@ -3,7 +3,7 @@
     <div class="flex gap-4">
       <a-input-search
         v-model:value="searchText"
-        :placeholder="t('campaignMailFilters.search.placeholder')"
+        :placeholder="t('callCampaign.campaignMailFilters.search.placeholder')"
         style="width: 300px"
         allow-clear
         @search="handleSearch"
@@ -12,7 +12,7 @@
       
       <a-select
         v-model:value="localFilters.status"
-        :placeholder="t('campaignMailFilters.status.placeholder')"
+        :placeholder="t('callCampaign.campaignMailFilters.status.placeholder')"
         class="w-32"
         @change="emitFilters"
       >
@@ -22,18 +22,18 @@
           :key="status.value" 
           :value="status.value"
         >
-          {{ t(`campaignMailFilters.status.options.${status.value}`) }}
+          {{ t(`callCampaign.campaignMailFilters.status.options.${status.value}`) }}
         </a-select-option>
       </a-select>
 
       <a-select
         v-model:value="localFilters.website"
-        :placeholder="t('campaignMailFilters.website.placeholder')"
+        :placeholder="t('callCampaign.campaignMailFilters.website.placeholder')"
         class="w-48"
         @change="emitFilters"
       >
         <a-select-option value="">
-          {{ t('campaignMailFilters.website.all') }}
+          {{ t('callCampaign.campaignMailFilters.website.all') }}
         </a-select-option>
         <a-select-option 
           v-for="website in websites" 
@@ -50,10 +50,10 @@
       />
 
       <a-button type="primary" @click="emitFilters">
-        {{ t('campaignMailFilters.buttons.filter') }}
+        {{ t('callCampaign.campaignMailFilters.buttons.filter') }}
       </a-button>
       <a-button @click="resetFilters">
-        {{ t('campaignMailFilters.buttons.reset') }}
+        {{ t('callCampaign.campaignMailFilters.buttons.reset') }}
       </a-button>
     </div>
   </div>
@@ -71,7 +71,7 @@ import { websites } from '@/api/types/website';
 
 const { t } = useI18nGlobal();
 
-console.log('Translation value:', t('campaignMailFilters.status.placeholder'));
+console.log('Translation value:', t('callCampaign.campaignMailFilters.status.placeholder'));
 
 const props = defineProps<{
   filters: CampaignFilters;
@@ -125,10 +125,7 @@ const emitFilters = () => {
 
 const handleDateRangeChange = (dates: [Dayjs, Dayjs] | null) => {
   if (dates) {
-    localFilters.value.dateRange = {
-      start: dates[0].format('YYYY-MM-DD'),
-      end: dates[1].format('YYYY-MM-DD')
-    };
+    localFilters.value.dateRange = [dates[0].format('YYYY-MM-DD'), dates[1].format('YYYY-MM-DD')];
   } else {
     localFilters.value.dateRange = undefined;
   }

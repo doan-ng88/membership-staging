@@ -144,7 +144,7 @@ import { websites, getWebsiteName } from '@/api/types/website';
 
 const props = defineProps<{
   open: boolean;
-  campaignId: number;
+  campaignId: string | number;
 }>();
 
 const emit = defineEmits<{

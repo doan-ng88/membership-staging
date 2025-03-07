@@ -10,14 +10,14 @@
       showSizeChanger: true,
       showQuickJumper: true,
       pageSizeOptions: ['10', '20', '50', '100'],
-      showTotal: (total, range) => t('callCampaign.table.pagination.total', {
+      showTotal: (total: number, range: [number, number]) => t('callCampaign.table.pagination.total', {
         start: range[0],
         end: range[1],
         total: total
       }),
     }"
     @change="handleTableChange"
-    :row-key="(record) => record.id"
+    :row-key="(record: Campaign) => record.id"
   >
     <template #bodyCell="{ column, record }">
       <template v-if="column.key === 'name'">

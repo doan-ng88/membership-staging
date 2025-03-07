@@ -160,12 +160,12 @@ import { useI18nGlobal } from '@/i18n'
 import { message } from 'ant-design-vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import PageHeader from '@/shared/components/PageHeader.vue'
-import type { Campaign } from '../../mail/types/mail.types'
+import type { Campaign, CampaignMember } from '../types/mail.types'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
 import dayjs from 'dayjs'
-import AddMemberModal from '../components/AddMember/AddMemberModal.vue'
+import AddMemberModal from '../components/CampaignForm/AddMemberModal.vue'
 
 const { t } = useI18nGlobal()
 

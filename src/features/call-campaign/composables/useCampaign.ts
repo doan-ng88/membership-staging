@@ -3,6 +3,9 @@ import { ref, computed } from 'vue';
 import { campaignService } from '../services/campaign.service';
 import type { Campaign } from '../types/campaign.types';
 import { message } from 'ant-design-vue';
+import { useI18nGlobal } from '@/i18n';
+
+const { t } = useI18nGlobal();
 
 export interface CampaignFilters {
   searchText?: string;
@@ -71,7 +74,7 @@ export function useCampaign() {
       }
     } catch (error) {
       console.error('Error in fetchCampaignList:', error);
-      message.error('Không thể tải danh sách chiến dịch');
+      message.error(t('campaignTabMail.messages.error.fetchFailed'));
     } finally {
       loading.value = false;
     }
