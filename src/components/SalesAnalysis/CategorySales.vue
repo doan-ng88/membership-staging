@@ -40,7 +40,7 @@
 
     <!-- Charts Grid -->
     <div class="grid grid-cols-1 gap-6 mb-6">
-      <!-- Revenue Chart -->
+      <!-- Revenue Distribution Chart -->
       <div class="bg-gray-50 p-4 rounded-lg">
         <h4 class="text-sm font-medium text-gray-700 mb-4">{{ t('productSales.category.charts.revenue.title') }}</h4>
         <VueApexCharts
@@ -261,7 +261,10 @@ const revenueChartOptions = computed(() => ({
   },
   dataLabels: {
     enabled: true,
-    formatter: (value) => `${(value/1000000).toFixed(1)}M`,
+    formatter: (value: number) => value.toLocaleString('en-US', { 
+      maximumFractionDigits: 2, // Giữ lại 2 số thập phân
+      minimumFractionDigits: 0 // Luôn hiển thị 2 số thập phân
+    }),
     offsetY: -20,
     style: {
       fontSize: '12px',
@@ -282,7 +285,8 @@ const revenueChartOptions = computed(() => ({
         type: 'darken',
         value: 0.35
       }
-    }
+    },
+    formatter: (val: number) => val.toLocaleString('en-US', { maximumFractionDigits: 0 })
   },
   xaxis: {
     categories: sortedRevenueStats.value.map(item => item.category_name),
@@ -292,7 +296,7 @@ const revenueChartOptions = computed(() => ({
         fontSize: '12px',
         fontWeight: 500
       },
-      formatter: (value) => value.length > 15 ? `${value.substring(0, 12)}...` : value
+      formatter: (value: string) => value.length > 15 ? `${value.substring(0, 12)}...` : value
     },
     title: {
       text: t('productSales.category.charts.revenue.xaxis'),
@@ -319,7 +323,10 @@ const revenueChartOptions = computed(() => ({
       }
     },
     labels: {
-      formatter: (value) => `${(value/1000000).toFixed(0)}M`,
+      formatter: (value: number) => value.toLocaleString('en-US', {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 0
+      }),
       style: {
         fontSize: '12px'
       }
@@ -335,16 +342,17 @@ const revenueChartOptions = computed(() => ({
   tooltip: {
     shared: false,
     intersect: true,
-    custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+    custom: ({ series, seriesIndex, dataPointIndex, w }: { series: any, seriesIndex: number, dataPointIndex: number, w: any }) => {
       const category = sortedRevenueStats.value[dataPointIndex];
-      
+      const productName = category?.product_name || 'Unknown Product';
+
       if (!category) return '<div class="p-2">Loading...</div>';
       
       return `
         <div class="bg-white shadow-lg rounded-lg p-4 border border-gray-100" style="min-width: 250px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1)">
           <div class="flex items-center mb-3 pb-2 border-b border-gray-100">
             <div class="w-3 h-3 rounded-full mr-2" style="background: ${revenueChartOptions.value.colors[dataPointIndex % 10]}"></div>
-            <span class="font-semibold text-sm">${category.category_name}</span>
+            <span class="font-semibold text-sm">${productName}</span>
           </div>
           
           <div class="space-y-3 text-xs">
@@ -471,7 +479,7 @@ const categoryOrdersChartOptions = computed(() => ({
   },
   dataLabels: {
     enabled: true,
-    formatter: (val) => val.toLocaleString(),
+    formatter: (val: number) => val.toLocaleString(),
     offsetY: -20,
     style: {
       fontSize: '12px',
@@ -509,7 +517,7 @@ const categoryOrdersChartOptions = computed(() => ({
         fontSize: '12px',
         fontWeight: 500
       },
-      formatter: (value) => value.length > 15 ? `${value.substring(0, 12)}...` : value
+      formatter: (value: string) => value.length > 15 ? `${value.substring(0, 12)}...` : value
     },
     axisBorder: {
       show: true,
@@ -529,7 +537,7 @@ const categoryOrdersChartOptions = computed(() => ({
       }
     },
     labels: {
-      formatter: (val) => val.toLocaleString(),
+      formatter: (val: number) => val.toLocaleString(),
       style: {
         fontSize: '12px'
       }
@@ -545,7 +553,7 @@ const categoryOrdersChartOptions = computed(() => ({
   tooltip: {
     shared: false,
     intersect: true,
-    custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+      custom: ({ series, seriesIndex, dataPointIndex, w }: { series: any, seriesIndex: number, dataPointIndex: number, w: any }) => {
       const category = sortedOrderCategoryStats.value[dataPointIndex];
       
       if (!category) return '<div class="p-2">Loading...</div>';

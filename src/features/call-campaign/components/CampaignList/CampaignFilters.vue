@@ -49,6 +49,13 @@
         @change="handleDateRangeChange"
       />
 
+      <a-range-picker
+        v-model:value="localFilters.birthdayRange"
+        :placeholder="['Từ ngày', 'Đến ngày']"
+        format="DD/MM/YYYY"
+        @change="handleBirthdayRangeChange"
+      />
+
       <a-button type="primary" @click="emitFilters">
         {{ t('callCampaign.campaignMailFilters.buttons.filter') }}
       </a-button>
@@ -128,6 +135,18 @@ const handleDateRangeChange = (dates: [Dayjs, Dayjs] | null) => {
     localFilters.value.dateRange = [dates[0].format('YYYY-MM-DD'), dates[1].format('YYYY-MM-DD')];
   } else {
     localFilters.value.dateRange = undefined;
+  }
+  emitFilters();
+};
+
+const handleBirthdayRangeChange = (dates: [Dayjs, Dayjs] | null) => {
+  if (dates) {
+    localFilters.value.birthdayRange = [
+      dates[0].format('YYYY-MM-DD'),
+      dates[1].format('YYYY-MM-DD')
+    ];
+  } else {
+    delete localFilters.value.birthdayRange;
   }
   emitFilters();
 };

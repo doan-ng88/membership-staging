@@ -3,7 +3,7 @@
     <div class="p-6">
       <PageHeader>
         <template #title>
-          <h2 class="text-3xl font-bold text-gray-800">Call Campaign Detail</h2>
+          <h2 class="text-3xl font-bold text-gray-800"> Call Campaign Detail</h2>
         </template>
         <template #extra>
           <a-button type="primary" @click="router.back()">

@@ -16,7 +16,6 @@ import permissionManagement from './permissionManagement.json'
 import mailCampaign from './mailCampaign.json'
 import newEmailCampaign from './newEmailCampaign.json'
 import membershipList from './membershipList.json'
-import addMemberModal from './addMemberModal.json'
 import templateMail from './templateMail.json'
 import templateEditor from './templateEditor.json'
 import campaignTabMail from './campaignTabMail.json'
@@ -56,7 +55,6 @@ export default {
   ...mailCampaign,
   ...newEmailCampaign,
   ...membershipList,
-  ...addMemberModal,
   ...templateMail,
   ...templateEditor,
   ...campaignTabMail,

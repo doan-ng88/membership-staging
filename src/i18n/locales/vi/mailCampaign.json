@@ -97,6 +97,27 @@
     "placeholder": {
       "startDate": "Ngày bắt đầu",
       "endDate": "Ngày kết thúc"
+    },
+    "addMemberModal": {
+      "title": "Thêm thành viên vào chiến dịch Email",
+      "table": {
+        "columns": {
+          "customerName": "Tên khách hàng",
+          "phoneNumber": "Số điện thoại",
+          "website": "Website",
+          "registeredTime": "Thời gian đăng ký",
+          "birthday": "Ngày sinh",
+          "orderId": "Mã đơn hàng",
+          "totalAmount": "Tổng tiền", 
+          "orderDate": "Ngày đặt"
+        },
+        "pagination": {
+          "total": "Tổng số: {total}"
+        },
+        "messages": {
+          "fetchError": "Không thể tải danh sách thành viên"
+        }
+      }
     }
   }
 } 

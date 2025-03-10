@@ -97,6 +97,21 @@
     "placeholder": {
       "startDate": "Start Date",
       "endDate": "End Date"
+    },
+    "addMemberModal": {
+      "title": "Add Member to Mail Campaign",
+      "table": {
+        "columns": {
+          "customerName": "Customer Name",
+          "phoneNumber": "Phone Number",
+          "website": "Website",
+          "registeredTime": "Registered Time",
+          "birthday": "Birthday",
+          "orderId": "Order ID",
+          "totalAmount": "Total Amount",
+          "orderDate": "Order Date"
+        }
+      }
     }
   }
 } 

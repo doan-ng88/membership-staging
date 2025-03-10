@@ -153,6 +153,31 @@
           "fetchAdmins": "Error fetching admin users"
         }
       }
+    },
+    "addMemberModal": {
+      "title": "Add Members to Call Campaign",
+      "search": {
+        "placeholder": "Search members..."
+      },
+      "table": {
+        "columns": {
+          "customerName": "Customer Name",
+          "phoneNumber": "Phone Number",
+          "website": "Platform Website",
+          "registeredTime": "Registered Time",
+          "birthday": "Birthday",
+          "orderId": "Order ID",
+          "totalAmount": "Total Amount",
+          "orderDate": "Order Date"
+        },
+        "pagination": {
+          "total": "Total {total} items"
+        }
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "add": "Add ({count})"
+      }
     }
   }
 

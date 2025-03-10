@@ -1,7 +1,7 @@
 <template>
   <a-modal
     :open="visible"
-    :title="t('addMemberModal.title')"
+    :title="t('mailCampaign.addMemberModal.title')"
     @ok="handleOk"
     @cancel="handleCancel"
     width="800px"
@@ -22,7 +22,7 @@
         <div class="mb-4">
           <a-input
             v-model:value="searchText"
-            :placeholder="t('addMemberModal.search.placeholder')"
+            :placeholder="t('mailCampaign.addMemberModal.search.placeholder')"
             style="width: 300px"
             @input="onSearch"
             allowClear
@@ -48,7 +48,7 @@
     </div>
     <template #footer>
       <a-button key="back" @click="handleCancel">
-        {{ t('addMemberModal.buttons.cancel') }}
+        {{ t('mailCampaign.addMemberModal.buttons.cancel') }}
       </a-button>
       <a-button 
         key="submit" 
@@ -57,7 +57,7 @@
         :disabled="!selectedRows.length"
         @click="handleOk"
       >
-        {{ t('addMemberModal.buttons.add', { count: selectedRows.length }) }}
+        {{ t('mailCampaign.addMemberModal.buttons.add', { count: selectedRows.length }) }}
       </a-button>
     </template>
   </a-modal>
@@ -75,7 +75,7 @@ import { membershipAPI } from '@/api/services/membershipApi';
 import { formatDateRange } from '@/utils/date';
 import { getWebsiteName } from '@/api/types/website';
 import { SearchOutlined } from '@ant-design/icons-vue';
-
+import { message } from 'ant-design-vue';
 const { t } = useI18nGlobal();
 
 const emit = defineEmits<{
@@ -107,19 +107,19 @@ const currentFilters = ref<Array<{key: string, value: any}>>([]);
 const columns = computed(() => {
   const baseColumns = [
     {
-      title: t('addMemberModal.table.columns.customerName'),
+      title: t('mailCampaign.addMemberModal.table.columns.customerName'),
       dataIndex: 'fullName',
       key: 'fullName',
       width: '22%',
     },
     {
-      title: t('addMemberModal.table.columns.phoneNumber'), 
+      title: t('mailCampaign.addMemberModal.table.columns.phoneNumber'), 
       dataIndex: 'mainPhoneNumber',
       key: 'mainPhoneNumber',
       width: '22%',
     },
     {
-      title: t('addMemberModal.table.columns.website'),
+      title: t('mailCampaign.addMemberModal.table.columns.website'),
       dataIndex: 'websiteName',
       key: 'websiteName',
       width: '22%',
@@ -129,14 +129,14 @@ const columns = computed(() => {
   // Thêm cột cuối tùy theo tab
   if (activeTab.value === 'date-join-member') {
     baseColumns.push({
-      title: t('addMemberModal.table.columns.registeredTime'),
+      title: t('mailCampaign.addMemberModal.table.columns.registeredTime'),
       dataIndex: 'registeredTime',
       key: 'registeredTime',
       width: '22%',
     });
   } else {
     baseColumns.push({
-      title: t('addMemberModal.table.columns.birthday'),
+      title: t('mailCampaign.addMemberModal.table.columns.birthday'),
       dataIndex: 'birthday',
       key: 'birthday',
       width: '22%',
@@ -152,7 +152,7 @@ const tableConfig = computed(() => ({
   total: totalCount.value,
   pageSizeOptions: ['5', '10', '20'],
   showSizeChanger: true,
-  showTotal: (total: number) => t('addMemberModal.table.pagination.total', { total }),
+  showTotal: (total: number) => t('mailCampaign.addMemberModal.table.pagination.total', { total }),
   onChange: (page: number, size: number) => {
     pageSize.value = size;
     handlePageChange(page);
@@ -281,7 +281,7 @@ const fetchMembers = async (
     }
   } catch (error) {
     console.error('Error fetching members:', error);
-    message.error(t('addMemberModal.messages.fetchError'));
+    message.error(t('mailCampaign.addMemberModal.messages.fetchError'));
   } finally {
     loading.value = false;
   }

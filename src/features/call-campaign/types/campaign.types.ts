@@ -28,6 +28,7 @@ export interface CampaignFilters {
   status?: string;
   website?: string | number;
   dateRange?: [string, string];
+  birthdayRange?: [string, string];
 }
 
 export interface PaginationParams {

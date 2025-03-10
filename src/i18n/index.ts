@@ -19,7 +19,6 @@ import enPermissionManagement from './locales/en/permissionManagement.json'
 import enMailCampaign from './locales/en/mailCampaign.json'
 import enNewEmailCampaign from './locales/en/newEmailCampaign.json'
 import enMembershipList from './locales/en/membershipList.json'
-import enAddMemberModal from './locales/en/addMemberModal.json'
 import enTemplateMail from './locales/en/templateMail.json'
 import enTemplateEditor from './locales/en/templateEditor.json'
 import enCampaignTabMail from './locales/en/campaignTabMail.json'
@@ -57,7 +56,6 @@ import viPermissionManagement from './locales/vi/permissionManagement.json'
 import viMailCampaign from './locales/vi/mailCampaign.json'
 import viNewEmailCampaign from './locales/vi/newEmailCampaign.json'
 import viMembershipList from './locales/vi/membershipList.json'
-import viAddMemberModal from './locales/vi/addMemberModal.json'
 import viTemplateMail from './locales/vi/templateMail.json'
 import viTemplateEditor from './locales/vi/templateEditor.json'
 import viCampaignTabMail from './locales/vi/campaignTabMail.json'
@@ -98,7 +96,6 @@ const messages = {
     ...enMailCampaign,
     ...enNewEmailCampaign,
     ...enMembershipList,
-    ...enAddMemberModal,
     ...enTemplateMail,
     ...enTemplateEditor,
     ...enCampaignTabMail,
@@ -137,7 +134,6 @@ const messages = {
     ...viMailCampaign,
     ...viNewEmailCampaign,
     ...viMembershipList,
-    ...viAddMemberModal,
     ...viTemplateMail,
     ...viTemplateEditor,
     ...viCampaignTabMail,

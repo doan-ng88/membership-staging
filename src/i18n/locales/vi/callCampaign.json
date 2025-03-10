@@ -156,6 +156,31 @@
           "fetchAdmins": "Lỗi khi lấy người phụ trách"
         }
       }
+    },
+    "addMemberModal": {
+      "title": "Thêm thành viên vào chiến dịch gọi",
+      "search": {
+        "placeholder": "Tìm kiếm thành viên..."
+      },
+      "table": {
+        "columns": {
+          "customerName": "Tên khách hàng",
+          "phoneNumber": "Số điện thoại",
+          "website": "Website",
+          "registeredTime": "Thời gian đăng ký",
+          "birthday": "Ngày sinh",
+          "orderId": "Mã đơn hàng",
+          "totalAmount": "Tổng tiền",
+          "orderDate": "Ngày đặt"
+        },
+        "pagination": {
+          "total": "Tổng {total} mục"
+        }
+      },
+      "buttons": {
+        "cancel": "Hủy",
+        "add": "Thêm ({count})"
+      }
     }
   }
 } 
