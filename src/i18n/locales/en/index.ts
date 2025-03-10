@@ -54,7 +54,6 @@ export default {
   ...pointReward,
   ...permissionManagement,
   ...mailCampaign,
-  ...campaignFilters,
   ...newEmailCampaign,
   ...membershipList,
   ...addMemberModal,

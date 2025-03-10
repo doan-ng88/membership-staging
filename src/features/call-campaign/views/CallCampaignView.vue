@@ -29,6 +29,7 @@
         :pagination="pagination"
         @page-change="handlePageChange"
         @edit="handleEdit"
+        @delete="handleDelete"
         :enable-name-click="true"
       />
 
@@ -54,9 +55,12 @@ import { useCampaign } from '../composables/useCampaign';
 import EditCampaignModal from '../components/CampaignForm/EditCampaignModal.vue'
 import type { Campaign } from '../types/campaign.types'
 import { useRouter } from 'vue-router';
+import { Modal, message } from 'ant-design-vue';
+import { CampaignService } from '../services/campaign.service';
 
 const { t } = useI18nGlobal();
 const router = useRouter();
+const campaignService = new CampaignService();
 
 const showEditModal = ref(false)
 const selectedCampaign = ref<Campaign | null>(null)
@@ -107,6 +111,26 @@ const handleEdit = (campaign: any) => {
   console.log('Campaign after setting:', selectedCampaign.value)
   showEditModal.value = true
 }
+
+const handleDelete = async (campaign: Campaign) => {
+    Modal.confirm({
+      title: t('callCampaign.table.delete.confirmTitle'),
+      content: t('callCampaign.table.delete.confirmContent', { name: campaign.name }),
+      okText: t('callCampaign.table.delete.buttons.confirm'),
+      cancelText: t('callCampaign.table.delete.buttons.cancel'),
+      okType: 'danger',
+      async onOk() {
+        try {
+          await campaignService.deleteCallCampaign(Number(campaign.id));
+          message.success(t('callCampaign.table.messages.deleteSuccess'));
+          await fetchCampaignList(); // Refresh list after delete
+        } catch (error) {
+          console.error('Error deleting campaign:', error);
+          message.error(t('callCampaign.table.messages.deleteError'));
+        }
+      }
+    });
+  };
 </script>
 
 <style scoped>

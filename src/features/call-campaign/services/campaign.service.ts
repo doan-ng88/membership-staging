@@ -4,6 +4,7 @@ import axios from 'axios';
 import { message } from 'ant-design-vue';
 import { useAuthStore } from '@/stores/auth'; // Import auth store
 import { useI18nGlobal } from '@/i18n';
+import { getWebsiteName } from '@/api/types/website';
 
 const { t } = useI18nGlobal();
 export class CampaignService {
@@ -110,7 +111,7 @@ export class CampaignService {
         startDate: campaign.startDate || '',
         endDate: campaign.dueDate || '',
         status: campaign.status || '',
-        priorityLevel: campaign.priorityLevel || 0,
+        priorityLevel: campaign.priorityLevel || 'Not Set',
         issue: campaign.issue || '',
         total: Number(campaign.total) || 0,
         remaining: Number(campaign.remaining) || 0,
@@ -120,7 +121,11 @@ export class CampaignService {
         isPrivated: Boolean(campaign.isPrivated),
         createdAt: campaign.createdAt || '',
         updatedAt: campaign.updatedAt || '',
-        createdBy: campaign.createdBy || ''
+        createdBy: campaign.createdBy || '',
+        websiteId: campaign.websiteId,
+        websiteName: getWebsiteName(campaign.websiteId),
+        CampaignName: campaign.campaignName || '',
+        Status: campaign.status || ''
       };
     } catch (error) {
       console.error('Error transforming campaign:', error);
@@ -131,7 +136,7 @@ export class CampaignService {
         startDate: '',
         endDate: '',
         status: '',
-        priorityLevel: 0,
+        priorityLevel: 'Not Set',
         issue: '',
         total: 0,
         remaining: 0,
@@ -141,8 +146,31 @@ export class CampaignService {
         isPrivated: false,
         createdAt: '',
         updatedAt: '',
-        createdBy: ''
+        createdBy: '',
+        websiteId: 0,
+        websiteName: '',
+        CampaignName: '',
+        Status: 'Created'
       };
+    }
+  }
+
+  async deleteCallCampaign(campaignId: number) {
+    const authStore = useAuthStore();
+    try {
+      const response = await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/membership/delete/campaign/${campaignId}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${authStore.token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error in deleteCallCampaign:', error);
+      throw error;
     }
   }
 }

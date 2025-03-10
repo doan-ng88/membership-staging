@@ -23,6 +23,18 @@
         "completed": "completed",
         "created": "created",
         "inProgress": "in progress"
+      },
+      "delete": {
+        "confirmTitle": "Delete Call Campaign",
+        "confirmContent": "Are you sure you want to delete the call campaign '{name}'?",
+        "buttons": {
+          "confirm": "Delete",
+          "cancel": "Cancel"  
+        }
+      },
+      "messages": {
+        "deleteSuccess": "Call campaign deleted successfully",
+        "deleteError": "Failed to delete call campaign"
       }
     },
     "campaignActions": {

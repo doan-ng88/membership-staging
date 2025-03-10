@@ -7,14 +7,20 @@ export interface Campaign {
   endDate: string;
   status: string;
   CampaignName: string;
-  Description: string;
-  Issue: string;
-  PriorityLevel: 'High' | 'Medium' | 'Low' | 'Not Set';
+  description: string;
+  issue: string;
+  priorityLevel: 'High' | 'Medium' | 'Low' | 'Not Set';
   Status: 'Created' | 'Planning' | 'In Progress' | 'On Hold' | 'Completed' | 'Closed' | 'Cancelled';
-  IsPrivated: boolean;
+  isPrivated: boolean;
   isServiceCall: boolean;
   isAppPush: boolean;
   isServiceEmail: boolean;
+  total: number;
+  remaining: number;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  websiteName: string;
 }
 
 export interface CampaignFilters {

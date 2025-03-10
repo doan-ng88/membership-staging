@@ -23,6 +23,18 @@
         "completed": "11hoàn thành",
         "created": "đã tạo",
         "inProgress": "đang thực hiện"
+      },
+      "delete": {
+        "confirmTitle": "Xóa Chiến Dịch Gọi",
+        "confirmContent": "Bạn có chắc chắn muốn xóa chiến dịch gọi '{name}'?",
+        "buttons": {
+          "confirm": "Xóa",
+          "cancel": "Hủy"
+        }
+      },
+      "messages": {
+        "deleteSuccess": "Chiến dịch gọi đã được xóa thành công",
+        "deleteError": "Không thể xóa chiến dịch gọi"
       }
     },
     "campaignActions": {
