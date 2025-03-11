@@ -46,9 +46,26 @@
             </template>
             <template v-if="column.key === 'actions'">
               <a-space>
-                <a-button type="link" size="small" @click="showChangeStatusModal(record)">
-                  Change Status
-                </a-button>
+                <a-tooltip placement="top" title="Change Status">
+                  <a-button 
+                    type="link" 
+                    size="small" 
+                    @click="showChangeStatusModal(record)"
+                    class="bg-gray-200 rounded-lg hover:bg-blue-50 transition-colors mx-1"
+                  >
+                    <EditOutlined class="text-blue-600 text-base" />
+                  </a-button>
+                </a-tooltip>
+                <a-tooltip placement="top" title="View History">
+                  <a-button 
+                    type="link" 
+                    size="small" 
+                    @click="handleCallHistory(record)"
+                    class="bg-gray-200 rounded-lg hover:bg-green-50 transition-colors mx-1"
+                  >
+                    <HistoryOutlined class="text-green-600 text-base" />
+                  </a-button>
+                </a-tooltip>
               </a-space>
             </template>
           </template>
@@ -67,34 +84,14 @@
         />
       </a-card>
 
+      <UpdateCallCustomerModal
+        v-model:visible="isChangeStatusModalVisible"
+        :selected-member="formState.selectedMember"
+        :campaign-id="campaignId"
+        @success="fetchCampaignData"
+      />
 
-      <!-- Change Status Modal -->
-      <a-modal
-        v-model:open="isChangeStatusModalVisible"
-        title="Change Status"
-        @ok="handleStatusChange"
-        @cancel="handleCancel"
-        ok-text="Confirm"
-        cancel-text="Cancel"
-      >
-        <a-form :model="formState" :rules="formRules" ref="formRef">
-          <a-form-item label="Status" name="selectedStatus" :rules="[{ required: true, message: 'Please select a status' }]">
-            <a-select v-model:value="formState.selectedStatus" style="width: 100%" placeholder="Select status">
-              <a-select-option v-for="status in statusOptions.filter(status => status !== formState.selectedMember?.membershipCallStatus)" :key="status" :value="status">
-                {{ getStatus(status) }}
-              </a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item label="Description" name="statusDescription">
-            <a-textarea
-              v-model:value="formState.statusDescription"
-              placeholder="Enter note"
-              :rows="4"
-              style="margin-top: 16px; width: 100%;"
-            />
-          </a-form-item>
-        </a-form>
-      </a-modal>
+      <CallCampaignHistoryModal ref="callHistoryModalRef" />
     </div>
   </DefaultLayout>
 </template>
@@ -109,6 +106,9 @@ import type { TableColumnsType } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
+import { HistoryOutlined, EditOutlined } from '@ant-design/icons-vue'
+import CallCampaignHistoryModal from '@/features/call-campaign/components/CampaignForm/CallCampaignHistoryModal.vue';
+import UpdateCallCustomerModal from '@/features/call-campaign/components/CampaignForm/UpdateCallCustomerModal.vue';
 
 enum CallStatus {
   NOT_CALL = 'not_call',
@@ -127,7 +127,12 @@ const isChangeStatusModalVisible = ref(false);
 const formState = reactive({
   selectedMember: null,
   selectedStatus: null,
-  statusDescription: ''
+  statusDescription: '',
+  callReason: '',
+  callSummary: '',
+  followUpRequired: false,
+  nextFollowUpDate: null as Date | null,
+  callNote: ''
 });
 
 const formRef = ref();
@@ -141,7 +146,7 @@ const formRules = {
   ]
 };
 
-const campaignId = route.params.id; // Get the campaign ID from the route
+const campaignId = Number(route.params.id);
 const memberColumns: TableColumnsType = [
   {
     title: 'Full Name',
@@ -275,6 +280,8 @@ const statusOptions = Object.values(CallStatus).slice(1);
 
 const loading = ref(true);
 
+const callHistoryModalRef = ref<InstanceType<typeof CallCampaignHistoryModal>>();
+
 // Fetch campaign data
 const fetchCampaignData = async () => {
   loading.value = true;
@@ -307,7 +314,6 @@ const handleStatusChange = async () => {
   try {
     await formRef.value.validateFields();
   } catch (error) {
-    console.error('Error validating form:', error);
     return;
   }
 
@@ -316,7 +322,12 @@ const handleStatusChange = async () => {
       serviceCallCampaignID: Number(campaignId),
       customerID: formState.selectedMember.userId,
       callStatus: formState.selectedStatus,
-      note: formState.statusDescription
+      note: formState.statusDescription,
+      callReason: formState.callReason,
+      callSummary: formState.callSummary,
+      followUpRequired: formState.followUpRequired,
+      nextFollowUpDate: formState.nextFollowUpDate ? dayjs(formState.nextFollowUpDate).format('YYYY-MM-DDTHH:mm:ssZ') : null,
+      callNote: formState.callNote
     };
 
     await axios.post(`${import.meta.env.VITE_API_BASE_URL}/membership/update/update-call-customer`, payload, {
@@ -326,14 +337,21 @@ const handleStatusChange = async () => {
     });
     fetchCampaignData();
   } catch (error) {
-    console.error('Error fetching campaign data:', error);
-    message.error('Unable to load campaign data');
+    console.error('Error updating status:', error);
+    message.error('Update failed');
   }
   isChangeStatusModalVisible.value = false;
 };
 
 const handleCancel = () => {
   isChangeStatusModalVisible.value = false;
+};
+
+const handleCallHistory = (member: any) => {
+  callHistoryModalRef.value?.open(
+    campaignId,
+    member.userId
+  );
 };
 </script>
 
@@ -344,5 +362,27 @@ const handleCancel = () => {
 
 .ant-descriptions {
   margin-bottom: 0;
+}
+
+.action-btn {
+  background: #f0f2f5;
+  border-radius: 8px;
+  padding: 4px 8px;
+  margin: 0 4px;
+  transition: all 0.3s;
+}
+
+.action-btn:hover {
+  background: #e6f7ff;
+}
+
+.icon-change-status {
+  color: #1890ff;
+  font-size: 16px;
+}
+
+.icon-view-history {
+  color: #52c41a;
+  font-size: 16px;
 }
 </style>

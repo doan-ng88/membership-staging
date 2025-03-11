@@ -155,3 +155,9 @@ export const membershipAPI = {
     }
   }
 }
+
+export const callHistoryAPI = {
+  getHistory: (campaignId: number, membershipId: number) => {
+    return axiosInstance.get(`/membership/get/call-history/${campaignId}/${membershipId}`);
+  },
+};

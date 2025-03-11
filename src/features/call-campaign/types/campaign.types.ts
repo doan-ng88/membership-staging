@@ -44,11 +44,28 @@ export interface SearchParam {
   value: string;
 }
 
+export interface CallCampaignHistory {
+  serviceCallHistoryID: number;
+  userID: number;
+  campaignID: number;
+  serviceCallDate: string;
+  callReason: string;
+  callStatus: 'pending' | 'completed' | 'cancelled';
+  callSummary: string;
+  followUpRequired: boolean;
+  nextFollowUpDate: string | null;
+  callNote: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface ApiResponse<T> {
-  data: T[];
+  data: T[] | CallHistory[];
   pagination: {
     pageIndex: number;
     pageSize: number;
     totalCount: number;
   };
 }
+
+export interface CallCampaignHistory

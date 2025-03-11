@@ -178,6 +178,86 @@
         "cancel": "Cancel",
         "add": "Add ({count})"
       }
+    },
+    "callCampaignDetail": {
+      "callCampaignHistory": {
+        "title": "Call Campaign History",
+        "status": {
+          "pending": "Pending",
+          "completed": "Completed",
+          "cancelled": "Cancelled",
+          "need_recall": "Need Recall",
+          "no_answer": "No Answer",
+          "not_call": "Not Call"
+        },
+        "columns": {
+          "serviceCallDate": "Call Time",
+          "callStatus": "Call Status",
+          "callNote": "Call Note",
+          "followUpRequired": "Follow Up Required",
+          "nextFollowUpDate": "Next Follow Up Date",
+          "callReason": "Call Reason",
+          "callSummary": "Call Summary"
+        },
+        "messages": {
+          "fetchError": "Error fetching call history"
+        }
+      },
+      "updateCallCustomer": {
+        "title": "Update Call Customer",
+        "form": {
+          "status": {
+            "label": "Status",
+            "placeholder": "Select status",
+            "required": "Please select status"
+          },
+          "callReason": {
+            "label": "Call Reason",
+            "placeholder": "Enter call reason",
+            "required": "Please enter call reason"
+          },
+          "callSummary": {
+            "label": "Call Summary",
+            "placeholder": "Enter call summary",
+            "required": "Please enter call summary"
+          },
+          "followUpRequired": {
+            "label": "Follow Up Required",
+            "placeholder": "Select follow up required",
+            "required": "Please select follow up required"
+          },
+          "nextFollowUpDate": {
+            "label": "Next Follow Up Date",
+            "placeholder": "Select next follow up date",
+            "required": "Please select next follow up date"
+          },
+          "followUpMethod": "Follow Up Method",
+          "internalNote": "Internal Note",
+          "customerNote": "Customer Note",
+          "callDuration": "Call Duration",
+          "satisfactionRating": "Satisfaction Rating",
+          "description": {
+            "label": "Description",
+            "placeholder": "Enter description",
+            "required": "Please enter description"
+          },
+          "callReasonPlaceholder": "Enter call reason",
+          "callSummaryPlaceholder": "Enter call summary",
+          "callNote": "Call Note",
+          "callNotePlaceholder": "Enter Call note",
+          "nextFollowUpDatePlaceholder": "Select next follow up date",
+          "okButton": "Confirm",
+          "cancelButton": "Cancel"
+        },
+        "status": {
+          "not_call": "Not Call",
+          "need_recall": "Need Recall",
+          "no_answer": "No Answer",
+          "completed": "Completed",
+          "cancelled": "Cancelled",
+          "pending": "Pending",
+          "processing": "Processing"        }
+      }
     }
   }
 

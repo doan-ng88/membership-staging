@@ -181,6 +181,66 @@
         "cancel": "Hủy",
         "add": "Thêm ({count})"
       }
+    },
+    "callCampaignDetail": {
+      "callCampaignHistory": {
+        "title": "Lịch sử cuộc gọi",
+        "status": {
+          "not_call": "Chưa gọi",
+          "need_recall": "Cần gọi lại",
+          "no_answer": "Không trả lời",
+          "completed": "Hoàn thành",
+          "pending": "Chờ xử lý",
+          "cancelled": "Đã hủy",
+          "processing": "Đang xử lý"
+        },
+        "columns": {
+          "serviceCallDate": "Thời gian gọi",
+          "callStatus": "Trạng thái",
+          "callNote": "Ghi chú",
+          "followUpRequired": "Cần theo dõi",
+          "nextFollowUpDate": "Ngày theo dõi",
+          "callReason": "Lý do cuộc gọi",
+          "callSummary": "Tóm tắt cuộc gọi"
+        },
+        "messages": {
+          "fetchError": "Lỗi khi tải lịch sử cuộc gọi"
+        }
+      },
+      "updateCallCustomer": {
+        "title": "Cập nhật cuộc gọi",
+        "form": {
+          "status": "Trạng thái",
+          "statusPlaceholder": "Chọn trạng thái",
+          "callReason": "Lý do cuộc gọi",
+          "callSummary": "Tóm tắt cuộc gọi",
+          "followUpRequired": "Cần theo dõi",
+          "nextFollowUpDate": "Ngày theo dõi",
+          "callNote": "Ghi chú",
+          "okButton": "Xác nhận",
+          "cancelButton": "Hủy",
+          "callDuration": "Thời gian cuộc gọi",
+          "satisfactionRating": "Đánh giá cuộc gọi",
+          "description": "Mô tả",
+          "descriptionPlaceholder": "Nhập mô tả chiến dịch",
+          "callReasonPlaceholder": "Nhập lý do cuộc gọi",
+          "callSummaryPlaceholder": "Nhập tóm tắt cuộc gọi",
+          "callNotePlaceholder": "Nhập ghi chú cuộc gọi",
+          "nextFollowUpDatePlaceholder": "Chọn ngày theo dõi",
+          "followUpMethod": "Phương thức theo dõi",
+          "internalNote": "Ghi chú nội bộ",
+          "customerNote": "Ghi chú khách hàng"
+        },
+        "status": {
+          "not_call": "Chưa gọi",
+          "need_recall": "Cần gọi lại",
+          "no_answer": "Không trả lời",
+          "completed": "Hoàn thành",
+          "cancelled": "Đã hủy",
+          "processing": "Đang xử lý",
+          "pending": "Chờ xử lý"
+        }
+      }   
     }
   }
 } 
