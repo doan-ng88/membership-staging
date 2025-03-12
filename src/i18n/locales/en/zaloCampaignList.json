@@ -48,6 +48,10 @@
       "success": {
         "delete": "Campaign deleted successfully"
       }
+    },
+    "delete": {
+      "title": "Confirm Delete",
+      "message": "Are you sure you want to delete the campaign \"{campaignName}\"?"
     }
   }
 } 

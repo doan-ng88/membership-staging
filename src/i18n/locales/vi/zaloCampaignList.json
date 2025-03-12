@@ -48,6 +48,10 @@
       "success": {
         "delete": "Xóa chiến dịch thành công"
       }
+    },
+    "delete": {
+      "title": "Xác nhận xóa",
+      "message": "Bạn có chắc chắn muốn xóa chiến dịch \"{campaignName}\"?"
     }
   }
 } 

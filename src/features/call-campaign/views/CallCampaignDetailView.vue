@@ -84,12 +84,146 @@
         />
       </a-card>
 
-      <UpdateCallCustomerModal
-        v-model:visible="isChangeStatusModalVisible"
-        :selected-member="formState.selectedMember"
-        :campaign-id="campaignId"
-        @success="fetchCampaignData"
-      />
+      <!-- Update Call Customer Modal -->
+      <a-modal
+        v-model:open="isChangeStatusModalVisible"
+        :title="t('callCampaign.callCampaignDetail.updateCallCustomer.title')"
+        @ok="handleStatusChange"
+        @cancel="handleCancel"
+        ok-text="Xác nhận"
+        cancel-text="Hủy"
+        width="800px"
+      >
+        <a-form :model="formState" :rules="formRules" ref="formRef" layout="vertical">
+          <!-- Status Selection -->
+          <a-form-item 
+            :label="t('callCampaign.callCampaignDetail.updateCallCustomer.form.status.label')"
+            name="selectedStatus"
+            :rules="[{ required: true, message: t('callCampaign.callCampaignDetail.updateCallCustomer.form.status.required') }]"
+          >
+            <a-select
+              v-model:value="formState.selectedStatus"
+              :placeholder="t('callCampaign.callCampaignDetail.updateCallCustomer.form.status.statusPlaceholder')"
+              option-label-prop="label"
+              style="width: 100%"
+            >
+              <a-select-option
+                v-for="status in statusOptions"
+                :key="status"
+                :value="status"
+                :label="getStatus(status)"
+              >
+                <a-tag :color="getStatusColor(status)">
+                  {{ getStatus(status) }}
+                </a-tag>
+              </a-select-option>
+            </a-select>
+          </a-form-item>
+
+          <!-- Description -->
+          <a-form-item
+            :label="t('callCampaign.callCampaignDetail.updateCallCustomer.form.description.label')"
+            name="statusDescription"
+            :rules="[{ required: true, message: t('callCampaign.callCampaignDetail.updateCallCustomer.form.description.required') }]"
+          >
+            <a-textarea
+              v-model:value="formState.statusDescription"
+              :placeholder="t('callCampaign.callCampaignDetail.updateCallCustomer.form.description.descriptionPlaceholder')"
+              :rows="3"
+              show-count
+              :maxlength="500"
+            />
+          </a-form-item>
+
+          <!-- Call Details Grid -->
+          <div class="grid grid-cols-2 gap-4">
+            <a-form-item
+              :label="t('callCampaign.callCampaignDetail.updateCallCustomer.form.callReason.label')"
+              name="callReason"
+              :rules="[{ required: true, message: t('callCampaign.callCampaignDetail.updateCallCustomer.form.callReason.required') }]"
+            >
+              <a-textarea
+                v-model:value="formState.callReason"
+                :placeholder="t('callCampaign.callCampaignDetail.updateCallCustomer.form.callReasonPlaceholder')"
+                :rows="3"
+                show-count
+                :maxlength="200"
+              />
+            </a-form-item>
+
+            <a-form-item
+              :label="t('callCampaign.callCampaignDetail.updateCallCustomer.form.callSummary.label')"
+              name="callSummary"
+              :rules="[{ required: true, message: t('callCampaign.callCampaignDetail.updateCallCustomer.form.callSummary.required') }]"
+            >
+              <a-textarea
+                v-model:value="formState.callSummary"
+                :placeholder="t('callCampaign.callCampaignDetail.updateCallCustomer.form.callSummaryPlaceholder')"
+                :rows="3"
+                show-count
+                :maxlength="200"
+              />
+            </a-form-item>
+          </div>
+
+          <!-- Follow Up Section -->
+          <div class="border-t pt-4">
+            <a-form-item
+              name="followUpRequired"
+              class="mb-0"
+            >
+              <a-checkbox v-model:checked="formState.followUpRequired">
+                {{ t('callCampaign.callCampaignDetail.updateCallCustomer.form.followUpRequired.label') }}
+              </a-checkbox>
+            </a-form-item>
+
+            <div v-if="formState.followUpRequired" class="grid grid-cols-2 gap-4 mt-4">
+              <a-form-item
+                :label="t('callCampaign.callCampaignDetail.updateCallCustomer.form.nextFollowUpDate.label')"
+                name="nextFollowUpDate"
+                :rules="[{ required: true, message: t('callCampaign.callCampaignDetail.updateCallCustomer.form.nextFollowUpDate.required') }]"
+              >
+                <a-date-picker
+                  v-model:value="formState.nextFollowUpDate"
+                  format="DD/MM/YYYY"
+                  value-format="YYYY-MM-DD"
+                  style="width: 100%"
+                  :disabled-date="disabledDate"
+                />
+              </a-form-item>
+
+              <a-form-item
+                :label="t('callCampaign.callCampaignDetail.updateCallCustomer.form.followUpMethod.label')"
+                name="followUpMethod"
+                :rules="[{ required: true, message: t('callCampaign.callCampaignDetail.updateCallCustomer.form.followUpMethod.required') }]"
+              >
+                <a-select
+                  v-model:value="formState.followUpMethod"
+                  :placeholder="t('callCampaign.callCampaignDetail.updateCallCustomer.form.followUpMethod.placeholder')"
+                >
+                  <a-select-option value="call">Gọi điện</a-select-option>
+                  <a-select-option value="email">Email</a-select-option>
+                  <a-select-option value="sms">SMS</a-select-option>
+                </a-select>
+              </a-form-item>
+            </div>
+          </div>
+
+          <!-- Call Note -->
+          <a-form-item
+            :label="t('callCampaign.callCampaignDetail.updateCallCustomer.form.callNote')"
+            name="callNote"
+          >
+            <a-textarea
+              v-model:value="formState.callNote"
+              :placeholder="t('callCampaign.callCampaignDetail.updateCallCustomer.form.callNotePlaceholder')"
+              :rows="2"
+              show-count
+              :maxlength="500"
+            />
+          </a-form-item>
+        </a-form>
+      </a-modal>
 
       <CallCampaignHistoryModal ref="callHistoryModalRef" />
     </div>
@@ -108,7 +242,9 @@ import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
 import { HistoryOutlined, EditOutlined } from '@ant-design/icons-vue'
 import CallCampaignHistoryModal from '@/features/call-campaign/components/CampaignForm/CallCampaignHistoryModal.vue';
-import UpdateCallCustomerModal from '@/features/call-campaign/components/CampaignForm/UpdateCallCustomerModal.vue';
+import { useI18nGlobal } from '@/i18n';
+
+const { t } = useI18nGlobal();
 
 enum CallStatus {
   NOT_CALL = 'not_call',
@@ -116,6 +252,8 @@ enum CallStatus {
   NO_ANSWER = 'no_answer',
   COMPLETED = 'completed',
   PENDING = 'pending',
+  CANCELLED = 'cancelled',
+  PROCESSING = 'processing'
 }
 
 const route = useRoute();
@@ -132,7 +270,8 @@ const formState = reactive({
   callSummary: '',
   followUpRequired: false,
   nextFollowUpDate: null as Date | null,
-  callNote: ''
+  callNote: '',
+  followUpMethod: null
 });
 
 const formRef = ref();
@@ -246,6 +385,10 @@ const couponsTableConfig = computed(() => ({
   }
 }));
 
+const disabledDate = (current: dayjs.Dayjs) => {
+  return current && current < dayjs().endOf('day');
+};
+
 const formatDate = (date: string) => {
   return dayjs(date).format('DD/MM/YYYY');
 };
@@ -257,20 +400,27 @@ const getStatusColor = (status: CallStatus) => {
     [CallStatus.NO_ANSWER]: 'error',
     [CallStatus.NOT_CALL]: 'default',
     [CallStatus.NEED_RECALL]: 'warning',
+    [CallStatus.CANCELLED]: 'orange',
   };
   return statusColors[status] || 'default';
 };
 
-const getStatus = (status: CallStatus) => {
-  const statuses: Record<string, string> = {
-    [CallStatus.COMPLETED]: 'Completed',
-    [CallStatus.PENDING]: 'Pending',
-    [CallStatus.NO_ANSWER]: 'No answer',
-    [CallStatus.NOT_CALL]: 'Not call',
-    [CallStatus.NEED_RECALL]: 'Need recall',
-  };
-  return statuses[status] || 'Not call';
+const getStatus = (status: string) => {
+  return t(`callCampaign.callCampaignDetail.updateCallCustomer.status.${status}`);
 };
+
+// const getStatus = (status: CallStatus) => {
+//   const statuses: Record<string, string> = {
+//     [CallStatus.COMPLETED]: 'Completed',
+//     [CallStatus.PENDING]: 'Pending',
+//     [CallStatus.NO_ANSWER]: 'No answer',
+//     [CallStatus.NOT_CALL]: 'Not call',
+//     [CallStatus.NEED_RECALL]: 'Need recall',
+//     [CallStatus.CANCELLED]: 'Cancelled',
+//     [CallStatus.PROCESSING]: 'Processing'
+//   };
+//   return statuses[status] || 'Not call';
+// };
 
 const getCallStatusColor = (status: CallStatus) => {
   return getStatusColor(status);
@@ -320,14 +470,15 @@ const handleStatusChange = async () => {
   try {
     const payload = {
       serviceCallCampaignID: Number(campaignId),
-      customerID: formState.selectedMember.userId,
+      customerID: formState.selectedMember?.userId,
       callStatus: formState.selectedStatus,
       note: formState.statusDescription,
       callReason: formState.callReason,
       callSummary: formState.callSummary,
       followUpRequired: formState.followUpRequired,
       nextFollowUpDate: formState.nextFollowUpDate ? dayjs(formState.nextFollowUpDate).format('YYYY-MM-DDTHH:mm:ssZ') : null,
-      callNote: formState.callNote
+      callNote: formState.callNote,
+      followUpMethod: formState.followUpMethod
     };
 
     await axios.post(`${import.meta.env.VITE_API_BASE_URL}/membership/update/update-call-customer`, payload, {

@@ -338,6 +338,15 @@ const routes = [
       requiresAuth: true
     }
   },
+  {
+    path: '/zalo/campaigns/:id/edit',
+    component: () => import('@/features/zalo-campaign/EditZaloCampaignModal.vue'),
+    props: (route: any) => ({
+      visible: true,
+      campaignId: Number(route.params.id)
+    }),
+    meta: { requiresAuth: true }
+  },
   // System Management
   {
     path: '/system-management/permission-management',

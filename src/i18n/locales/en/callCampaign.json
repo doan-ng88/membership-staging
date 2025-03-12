@@ -208,7 +208,7 @@
         "form": {
           "status": {
             "label": "Status",
-            "placeholder": "Select status",
+            "statusPlaceholder": "Select status",
             "required": "Please select status"
           },
           "callReason": {
@@ -231,14 +231,18 @@
             "placeholder": "Select next follow up date",
             "required": "Please select next follow up date"
           },
-          "followUpMethod": "Follow Up Method",
+          "followUpMethod": {
+            "label": "Follow Up Method",
+            "placeholder": "Select follow up method",
+            "required": "Please select follow up method"
+          },
           "internalNote": "Internal Note",
           "customerNote": "Customer Note",
           "callDuration": "Call Duration",
           "satisfactionRating": "Satisfaction Rating",
           "description": {
             "label": "Description",
-            "placeholder": "Enter description",
+            "descriptionPlaceholder": "Enter description",
             "required": "Please enter description"
           },
           "callReasonPlaceholder": "Enter call reason",
@@ -246,7 +250,7 @@
           "callNote": "Call Note",
           "callNotePlaceholder": "Enter Call note",
           "nextFollowUpDatePlaceholder": "Select next follow up date",
-          "okButton": "Confirm",
+          "confirmButton": "Confirm",
           "cancelButton": "Cancel"
         },
         "status": {
@@ -256,7 +260,12 @@
           "completed": "Completed",
           "cancelled": "Cancelled",
           "pending": "Pending",
-          "processing": "Processing"        }
+          "processing": "Processing"        
+        },
+        "messages": {
+          "updateSuccess": "Call customer updated successfully",
+          "updateError": "Failed to update call customer"
+        }
       }
     }
   }

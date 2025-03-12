@@ -111,6 +111,13 @@
           "totalAmount": "Total Amount",
           "orderDate": "Order Date"
         }
+      },  
+      "buttons": {
+        "add": "Add Member",
+        "cancel": "Cancel"
+      },
+      "search": {
+        "placeholder": "Search member"
       }
     }
   }

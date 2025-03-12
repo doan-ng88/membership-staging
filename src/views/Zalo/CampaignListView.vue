@@ -82,6 +82,16 @@
           </template>
         </template>
       </a-table>
+
+      <a-modal
+        v-model:visible="showDeleteConfirm"
+        :title="t('zaloCampaignList.delete.title')"
+        @ok="confirmDelete"
+        @cancel="showDeleteConfirm = false"
+        :ok-button-props="{ loading: deleting }"
+      >
+        <p>{{ t('zaloCampaignList.delete.message', { campaignName: selectedCampaign?.campaignName }) }}</p>
+      </a-modal>
     </div>
   </DefaultLayout>
 </template>
@@ -97,6 +107,7 @@ import PageHeader from '@/shared/components/PageHeader.vue'
 import dayjs from 'dayjs'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { zaloAppPushApi } from '@/api/services/zaloAppPushApi'  
 
 const { t } = useI18nGlobal()
 const router = useRouter()
@@ -198,7 +209,11 @@ const getStatusText = (status: string) => {
   return texts[status] || status
 }
 
-const fetchCampaigns = async () => {
+const deleting = ref(false)
+const showDeleteConfirm = ref(false)
+const selectedCampaign = ref<ZaloCampaign | null>(null)
+
+const fetchAppPushCampaigns = async () => {
   try {
     loading.value = true
     const params = {
@@ -260,7 +275,7 @@ const fetchCampaigns = async () => {
 
 const handleSearch = () => {
   pagination.current = 1
-  fetchCampaigns()
+  fetchAppPushCampaigns()
 }
 
 const handleReset = () => {
@@ -272,7 +287,7 @@ const handleReset = () => {
 const handleTableChange = (pag: TablePaginationConfig) => {
   pagination.current = pag.current || 1
   pagination.pageSize = pag.pageSize || 10
-  fetchCampaigns()
+  fetchAppPushCampaigns()
 }
 
 const handleAdd = () => {
@@ -284,17 +299,27 @@ const handleEdit = (campaign: ZaloCampaign) => {
 }
 
 const handleDelete = async (campaign: ZaloCampaign) => {
+  selectedCampaign.value = campaign
+  showDeleteConfirm.value = true
+}
+
+const confirmDelete = async () => {
+  if (!selectedCampaign.value) return
   try {
-    // TODO: Implement delete API
+    deleting.value = true
+    await zaloAppPushApi.deleteAppPushCampaign(selectedCampaign.value.campaignId)
     message.success(t('zaloCampaign.messages.success.delete'))
-    await fetchCampaigns()
+    await fetchAppPushCampaigns()
   } catch (error) {
     console.error('Error deleting campaign:', error)
     message.error(t('zaloCampaign.messages.error.delete'))
+  } finally {
+    deleting.value = false
+    showDeleteConfirm.value = false
   }
 }
 
 onMounted(() => {
-  fetchCampaigns()
+  fetchAppPushCampaigns()
 })
 </script> 

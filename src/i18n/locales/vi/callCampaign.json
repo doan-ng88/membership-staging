@@ -210,24 +210,46 @@
       "updateCallCustomer": {
         "title": "Cập nhật cuộc gọi",
         "form": {
-          "status": "Trạng thái",
-          "statusPlaceholder": "Chọn trạng thái",
-          "callReason": "Lý do cuộc gọi",
-          "callSummary": "Tóm tắt cuộc gọi",
-          "followUpRequired": "Cần theo dõi",
-          "nextFollowUpDate": "Ngày theo dõi",
+          "status": {
+            "label": "Trạng thái",
+            "statusPlaceholder": "Chọn trạng thái",
+            "required": "Vui lòng chọn trạng thái"
+          },
+          "callReason": {
+            "label": "Lý do cuộc gọi",
+            "required": "Vui lòng nhập lý do cuộc gọi"
+          },
+          "callSummary": {
+            "label": "Tóm tắt cuộc gọi",
+            "required": "Vui lòng nhập tóm tắt cuộc gọi"
+          },
+          "followUpRequired": {
+            "label": "Cần theo dõi",
+            "required": "Vui lòng chọn cần theo dõi"
+          },
+          "nextFollowUpDate": {
+            "label": "Ngày theo dõi",
+            "required": "Vui lòng chọn ngày theo dõi"
+          },
           "callNote": "Ghi chú",
           "okButton": "Xác nhận",
           "cancelButton": "Hủy",
           "callDuration": "Thời gian cuộc gọi",
           "satisfactionRating": "Đánh giá cuộc gọi",
-          "description": "Mô tả",
-          "descriptionPlaceholder": "Nhập mô tả chiến dịch",
+          "description": {
+            "label": "Mô tả",
+            "descriptionPlaceholder": "Nhập mô tả chiến dịch",
+            "required": "Vui lòng nhập mô tả chiến dịch"
+          },
           "callReasonPlaceholder": "Nhập lý do cuộc gọi",
           "callSummaryPlaceholder": "Nhập tóm tắt cuộc gọi",
           "callNotePlaceholder": "Nhập ghi chú cuộc gọi",
           "nextFollowUpDatePlaceholder": "Chọn ngày theo dõi",
-          "followUpMethod": "Phương thức theo dõi",
+          "followUpMethod": {
+            "label": "Phương thức theo dõi",
+            "placeholder": "Chọn phương thức theo dõi",
+            "required": "Vui lòng chọn phương thức theo dõi"
+          },
           "internalNote": "Ghi chú nội bộ",
           "customerNote": "Ghi chú khách hàng"
         },
@@ -239,6 +261,10 @@
           "cancelled": "Đã hủy",
           "processing": "Đang xử lý",
           "pending": "Chờ xử lý"
+        },
+        "messages": {
+          "updateSuccess": "Cuộc gọi đã được cập nhật thành công",
+          "updateError": "Không thể cập nhật cuộc gọi"
         }
       }   
     }

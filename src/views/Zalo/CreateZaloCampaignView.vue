@@ -51,6 +51,10 @@
               option-label-prop="label"
               :disabled="!formState.websiteId"
             >
+              <template #notFoundContent>
+                <span v-if="loadingCoupons">Loading...</span>
+                <span v-else>No coupons found</span>
+              </template>
             </a-select>
           </a-form-item>
         </div>
@@ -119,7 +123,7 @@
     </div>
 
     <AddMemberModal
-      v-model:open="showMemberModal"
+      v-model:visible="showMemberModal"
       :website-id="formState.websiteId"
       @select="handleMemberSelect"
     />
@@ -140,8 +144,8 @@ import { useRouter } from 'vue-router'
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
 import dayjs from 'dayjs'
-import AddMemberModal from '@/features/new-campaign/components/AddMember/AddMemberModal.vue'
-import type { CampaignMember } from '@/types/campaign.types'
+import AddMemberModal from '@/features/mail/components/CampaignForm/AddMemberModal.vue'
+import type { CampaignMember } from '@/features/mail/types/mail.types'
 
 type User = {
   id: string
@@ -258,16 +262,37 @@ const fetchCoupons = async (search?: string) => {
       search // search term
     )
 
-    couponOptions.value = response.data.map((coupon: any) => ({
-      label: coupon.code,
-      value: coupon.code
-    }))
-  } catch (error) {
-    message.error('Error fetching coupons')
+    if (response.data && Array.isArray(response.data.data)) {
+      couponOptions.value = response.data.data.map((coupon: any) => ({
+        label: coupon.code,
+        value: coupon.code
+      }))
+    } else {
+      couponOptions.value = []
+      message.warning('No coupons found for this website')
+    }
+  } catch (error: any) {
+    console.error('Coupon fetch error:', error)
+    message.error(error.response?.data?.message || 'Error fetching coupons')
   } finally {
     loadingCoupons.value = false
   }
 }
+
+watch(
+  () => formState.websiteId,
+  (newVal) => {
+    if (newVal) {
+      fetchCoupons()
+    }
+  }
+)
+
+const handleSearchCoupons = debounce((value: string) => {
+  if (formState.websiteId) {
+    fetchCoupons(value)
+  }
+}, 500)
 
 const handleWebsiteChange = () => {
   formState.coupons = []
@@ -276,10 +301,6 @@ const handleWebsiteChange = () => {
     fetchCoupons()
   }
 }
-
-const handleSearchCoupons = debounce((value: string) => {
-  fetchCoupons(value)
-}, 300)
 
 const fetchAdminUsers = async () => {
   try {
@@ -359,7 +380,7 @@ const handleSubmit = async () => {
         employeeId: user,
         permissionLevel: 'edit'
       })),
-      isServiceZalo: true,
+      isAppPush: true,
       ...(previousRouteName === 'MailCampaign' && { isServiceEmail: true }),
       ...(previousRouteName === 'CallCampaign' && { isServiceCall: true })
     }

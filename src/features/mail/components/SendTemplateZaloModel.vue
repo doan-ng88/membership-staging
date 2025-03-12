@@ -120,7 +120,7 @@ api.interceptors.request.use(
 // Zalo service
 const zaloService = {
   sendBulkMessage: (data: any) => {
-    return api.post('/zalo/send-bulk-message', data)
+    return api.post('/membership/zalo/send-bulk-message', data)
   }
 }
 
@@ -280,7 +280,7 @@ const handleSubmit = async () => {
     }
 
     console.log('Sending data:', sendData)
-    const response = await api.post('/zalo/send-bulk-message', sendData)
+    const response = await api.post('/membership/zalo/send-bulk-message', sendData)
     
     if (response.data.result === 'Success') {
       message.success('Gửi tin nhắn thành công')
