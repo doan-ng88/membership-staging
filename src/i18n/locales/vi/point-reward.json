@@ -25,7 +25,8 @@
       },
       "reset": "Làm mới",
       "button": "Áp dụng điều chỉnh",
-      "success": "Đã điều chỉnh điểm thành công"
+      "success": "Đã điều chỉnh điểm thành công",
+      "error": "Không thể điều chỉnh điểm"
     },
     "history": {
       "noData": "Không có lịch sử điểm thưởng",
@@ -38,7 +39,6 @@
         "send points to sky007": "Đã gửi điểm",
         "receive points from sky007": "Đã nhận điểm"
       },
-      "noData": "Không có dữ liệu",
       "filters": {
         "type": {
           "label": "Loại giao dịch",
