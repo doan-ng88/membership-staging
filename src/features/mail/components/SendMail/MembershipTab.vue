@@ -49,9 +49,17 @@
       :columns="columns"
       :data-source="members"
       :loading="loading"
-      :pagination="pagination"
+      :pagination="{
+        current: pagination.current,
+        pageSize: pagination.pageSize,
+        total: pagination.total,
+        showSizeChanger: true,
+        showQuickJumper: true,
+        pageSizeOptions: ['10', '20', '50', '100'],
+        showTotal: (total: number) => t('membershipTabMail.table.pagination.total', { total: total })
+      }"
       :row-selection="rowSelection"
-      :row-key="(record) => record.membershipWebsiteId"
+      :row-key="(record: Member) => String(record.membershipWebsiteId)"
       @change="handleTableChange"
     >
       <template #bodyCell="{ column, record }">
@@ -98,21 +106,23 @@ import { useI18nGlobal } from '@/i18n'
 import type { TablePaginationConfig } from 'ant-design-vue'
 import { membershipAPI } from '@/api/services/membershipApi'
 import SendTemplateMailModal from '../SendTemplateMailModal.vue'
-import type { Member } from '@/types/profile'
 import { getWebsiteName } from '@/api/types/website'
 
 const { t } = useI18nGlobal()
 
+// Use any for member types to avoid complex type issues
+type Member = any;
+
 const emit = defineEmits<{
   (e: 'select', members: Member[]): void
-  (e: 'send', members: any[]): void  // Thêm emit send
+  (e: 'send', members: Member[]): void
   (e: 'cancel'): void
 }>()
 
 const members = ref<Member[]>([])
 const loading = ref(false)
 const selectedRowKeys = ref<string[]>([])
-const selectedMembers = ref<any[]>([])
+const selectedMembers = ref<Member[]>([])
 const pagination = ref<TablePaginationConfig>({
   current: 1,
   pageSize: 10,
@@ -160,7 +170,7 @@ const columns = computed(() => [
 
 const rowSelection = reactive({
   selectedRowKeys,
-  onChange: (keys: string[], rows: any[]) => {
+  onChange: (keys: string[], rows: Member[]) => {
     selectedRowKeys.value = keys
     selectedMembers.value = rows
   }
@@ -172,11 +182,10 @@ const fetchMembers = async () => {
     const searchParams = []
     
     if (filterForm.search) {
-      // Kiểm tra xem input có phải là số điện thoại không
       const isPhoneNumber = /^\d+$/.test(filterForm.search.trim())
       
       searchParams.push({
-        key: isPhoneNumber ? 'mainPhoneNumber' : 'fullName', // Sửa key theo đúng field trong API
+        key: isPhoneNumber ? 'mainPhoneNumber' : 'fullName', 
         value: filterForm.search.trim()
       })
     }
@@ -195,7 +204,8 @@ const fetchMembers = async () => {
       })
     }
 
-    console.log('Search params:', searchParams) // Debug params
+    console.log('Search params:', searchParams)
+    console.log('Pagination:', pagination.value)
 
     const response = await membershipAPI.getList(
       'MembershipsWebsitesId',
@@ -205,13 +215,21 @@ const fetchMembers = async () => {
       searchParams
     )
 
-    if (response) {
-      members.value = response.data || []
-      pagination.value.total = response.totalCount || 0
+    if (response && response.data) {
+      // Safely assign data while ensuring membershipWebsiteId is present
+      members.value = response.data.data || []
+      pagination.value.total = response.data.totalCount || 0
+      
+      if (selectedRowKeys.value.length > 0) {
+        const validKeys = selectedRowKeys.value.filter(key => 
+          members.value.some(member => String(member.membershipWebsiteId) === String(key))
+        )
+        selectedRowKeys.value = validKeys
+      }
     }
   } catch (error) {
     console.error('Error fetching members:', error)
-    message.error('Failed to load members')
+    message.error(t('membershipTabMail.messages.error.fetchFailed'))
   } finally {
     loading.value = false
   }
@@ -223,7 +241,9 @@ const handleSearch = () => {
 }
 
 const handleTableChange = (pag: TablePaginationConfig) => {
-  pagination.value = pag
+  pagination.value.current = pag.current || 1
+  pagination.value.pageSize = pag.pageSize || 10
+  
   fetchMembers()
 }
 
@@ -266,24 +286,18 @@ const handleCancel = () => {
   clearSelection()
 }
 
-
 const updateSelection = (memberIds: string[]) => {
-  // 1. Cập nhật selectedRowKeys để uncheck trong table
   selectedRowKeys.value = memberIds
-  // 2. Cập nhật selectedMembers dựa trên memberIds
   selectedMembers.value = members.value.filter(
-    member => memberIds.includes(member.membershipWebsiteId)
+    member => memberIds.includes(String(member.membershipWebsiteId))
   )
-  // 3. Emit event để cập nhật parent
   emit('select', selectedMembers.value)
 }
 
-// Đảm bảo watch được kích hoạt khi selectedRowKeys thay đổi
 watch(selectedRowKeys, (newKeys) => {
   rowSelection.selectedRowKeys = newKeys
 }, { deep: true })
 
-// Đảm bảo emit khi selectedMembers thay đổi
 watch(selectedMembers, (newMembers) => {
   emit('select', newMembers)
 }, { deep: true })

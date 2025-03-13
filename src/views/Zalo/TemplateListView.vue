@@ -149,6 +149,7 @@
       </div>
     </div>
 
+    
     <!-- Send Template Drawer -->
     <a-drawer
       v-model:open="showSendDrawer"
@@ -185,24 +186,9 @@
           <CampaignTab ref="campaignTabRef" @select="handleCampaignSelected" @send="handleShowSendZaloModal" />
         </div>
         <div v-else>
-          <MembershipTab ref="membershipTabRef" @selected="handleMembershipSelected" />
+          <MembershipTab ref="membershipTabRef" @select="handleMembershipSelected" @send="handleShowSendZaloModalByMembership" />
         </div>
       </div>
-<!-- 
-      <template #footer>
-        <div class="flex justify-end gap-2">
-          <a-button @click="handleCloseSendDrawer">Hủy</a-button>
-          <a-button 
-            type="primary" 
-            :loading="sending" 
-            @click="handleShowSendZaloModal"
-            :disabled="!selectedCampaigns.length"
-          >
-            <template #icon><SendOutlined /></template>
-            Tiếp tục
-          </a-button>
-        </div>
-      </template> -->
     </a-drawer>
 
     <!-- Thêm SendTemplateZaloModal -->
@@ -210,7 +196,8 @@
       v-model:visible="showSendZaloModal"
       :template="currentTemplate"
       :selected-campaigns="selectedCampaigns"
-      mode="campaign"
+      :selected-members="selectedMembers"
+      :mode="activeKey"
       @success="handleSendSuccess"
       @cancel="handleSendCancel"
     />
@@ -225,10 +212,11 @@ import dayjs from 'dayjs'
 import type { TablePaginationConfig } from 'ant-design-vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import CampaignTab from '@/features/mail/components/SendMail/CampaignTab.vue'
-import MembershipTab from '@/features/mail/components/SendMail/MembershipTab.vue'
+import MembershipTab from '@/features/mail/components/SendZalo/MembershipTab.vue'
 import SendTemplateZaloModal from '@/features/mail/components/SendTemplateZaloModel.vue'
 import { useI18nGlobal } from '@/i18n'
 import { useAuthStore } from '@/stores/auth'
+import SelfPageDataTable from '@/components/SelfPageDataTable.vue'
 
 const { t } = useI18nGlobal()
 
@@ -263,6 +251,10 @@ interface PaginationResponse {
 const templates = ref<ZaloTemplate[]>([])
 const loading = ref(false)
 const currentTemplate = ref<ZaloTemplate | null>(null)
+const currentAction = ref<'view' | 'edit' | null>(null)
+const selectedCampaigns = ref<any[]>([])
+const templateData = ref<any>(null)
+const selectedMembers = ref<any[]>([])
 
 const filters = reactive({
   status: '0',
@@ -291,13 +283,13 @@ const previewModal = reactive({
   template: null as ZaloTemplate | null
 })
 
-const activeKey = ref('campaign')
+const activeKey = ref<'campaign' | 'membership'>('campaign')
 const showSendDrawer = ref(false)
 const sending = ref(false)
 const selectedItems = ref<any[]>([])
-const selectedCampaigns = ref<any[]>([])
 const showSendZaloModal = ref(false)
-const templateData = ref<any>(null)
+
+const membershipTabRef = ref<InstanceType<typeof MembershipTab> | null>(null)
 
 const getStatusColor = (status: string) => {
   const colors: Record<string, string> = {
@@ -438,7 +430,10 @@ const handleExcelUpload = (file: File) => {
     message.error('Only Excel files are supported!')
     return false
   }
-  return true
+
+  // Xử lý file Excel ở đây (đọc danh sách thành viên)
+  message.info('Excel upload is not fully implemented yet')
+  return false
 }
 
 const handleCampaignSelected = (campaigns: any[]) => {
@@ -449,31 +444,8 @@ const handleCampaignSelected = (campaigns: any[]) => {
 
 const handleMembershipSelected = (members: any[]) => {
   console.log('Selected members:', members)
+  selectedMembers.value = members
   selectedItems.value = members
-}
-
-const handleSend = async () => {
-  if (!selectedItems.value.length) {
-    return message.warning('Please select recipients')
-  }
-
-  try {
-    sending.value = true
-    const sendData = {
-      mode: activeKey.value,
-      items: selectedItems.value,
-    }
-    
-    console.log('Sending data:', sendData)
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    message.success('Template sent successfully')
-    showSendDrawer.value = false
-  } catch (error) {
-    console.error('Error sending template:', error)
-    message.error('Failed to send template')
-  } finally {
-    sending.value = false
-  }
 }
 
 const handleShowSendZaloModal = () => {
@@ -483,8 +455,25 @@ const handleShowSendZaloModal = () => {
   showSendZaloModal.value = true
 }
 
+const handleShowSendZaloModalByMembership = () => {
+  if (!selectedMembers.value.length) {
+    return message.warning('Please select at least one member')
+  }
+  showSendZaloModal.value = true
+}
+
 const openZaloTemplate = () => {
   window.open('https://account.zalo.cloud/tool/zns/manage/templateLibrary', '_blank')
+}
+
+const handleRemoveMember = (member: any) => {
+  // Cập nhật selectedMembers
+  selectedMembers.value = selectedMembers.value.filter(
+    (m: any) => m.membershipWebsiteId !== member.membershipWebsiteId
+  )
+  
+  // Gọi method updateSelection trong MembershipTab để cập nhật table
+  membershipTabRef.value?.updateSelection(selectedMembers.value.map(m => m.membershipWebsiteId))
 }
 
 onMounted(() => {
