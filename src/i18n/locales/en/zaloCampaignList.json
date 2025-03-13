@@ -53,5 +53,62 @@
       "title": "Confirm Delete",
       "message": "Are you sure you want to delete the campaign \"{campaignName}\"?"
     }
+  },
+  "editZaloCampaign": {
+    "title": "Edit Zalo OA Campaign",
+    "common": {
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "form": {
+      "name": "Campaign Name",
+      "description": "Description",
+      "website": "Website",
+      "dateRange": "Date Range",
+      "status": "Status",
+      "coupons": "Coupon Codes",
+      "memberList": "Member List",
+      "addMember": "Add Member"
+    },
+    "table": {
+      "columns": {
+        "memberName": "Member Name",
+        "phone": "Phone Number",
+        "website": "Website",
+        "actions": "Actions"
+      }
+    },
+    "status": {
+      "created": "Pending",
+      "processing": "Processing",
+      "completed": "Completed",
+      "failed": "Failed"
+    },
+    "validation": {
+      "nameRequired": "Please enter campaign name",
+      "websiteRequired": "Please select a website",
+      "membersRequired": "Please select at least one member",
+      "couponsRequired": "Please select at least one coupon code"
+    },
+    "messages": {
+      "error": {
+        "load": "Could not load campaign data",
+        "update": "Failed to update campaign",
+        "loadCoupons": "Could not load coupon codes",
+        "cannotEditCompleted": "Cannot edit completed campaign"
+      },
+      "success": {
+        "update": "Campaign updated successfully"
+      },
+      "warning": {
+        "selectWebsite": "Please select a website before adding members"
+      }
+    },
+    "buttons": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "addMember": "Add Member",
+      "removeMember": "Remove"
+    }
   }
 } 

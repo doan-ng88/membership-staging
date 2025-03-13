@@ -21,6 +21,19 @@ export const zaloAppPushApi = {
     return axiosInstance.get('/api/membership/zalo/campaigns', { params })
   },
 
+  // Get campaign details by ID
+  getCampaignDetails: async (campaignId: number) => {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_BASE_URL}/membership/get/get-campaign/${campaignId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${useAuthStore().token}`
+        }
+      }
+    )
+    return response.data.campaign
+  },
+
   // delete apppush campaign
   deleteAppPushCampaign: async (campaignId: number) => {
     const response = await axiosInstance.delete(`/membership/delete/campaign/${campaignId}`,
@@ -34,8 +47,8 @@ export const zaloAppPushApi = {
   },
 
   updateAppPushCampaign: async (campaignId: number, payload: any) => {
-    const response = await axios.put(
-      `${import.meta.env.VITE_API_BASE_URL}/membership/update/update-campaign/${campaignId}`,
+    const response = await axiosInstance.post(
+      `/membership/update/update-campaign/${campaignId}`,
       payload,
       {
         headers: {

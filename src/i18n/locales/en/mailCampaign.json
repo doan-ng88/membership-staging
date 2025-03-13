@@ -110,6 +110,11 @@
           "orderId": "Order ID",
           "totalAmount": "Total Amount",
           "orderDate": "Order Date"
+
+        },
+        "pagination": {
+          "pageSize": 10,
+          "total": "{start}-{end} of {total} items"
         }
       },  
       "buttons": {

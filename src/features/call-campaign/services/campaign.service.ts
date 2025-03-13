@@ -3,10 +3,9 @@ import type { Campaign, PaginationParams, ApiResponse } from '../types/campaign.
 import axios from 'axios';
 import { message } from 'ant-design-vue';
 import { useAuthStore } from '@/stores/auth'; // Import auth store
-import { useI18nGlobal } from '@/i18n';
+import { i18n } from '@/i18n'; // Import i18n instance thay vì useI18nGlobal
 import { getWebsiteName } from '@/api/types/website';
 
-const { t } = useI18nGlobal();
 export class CampaignService {
   private api;
 
@@ -96,7 +95,7 @@ export class CampaignService {
       if (axios.isAxiosError(error) && error.response?.status === 401) {
         message.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
       } else {
-        message.error(t('campaignTabMail.messages.error.fetchFailed'));
+        message.error(i18n.global.t('campaignTabMail.messages.error.fetchFailed'));
       }
       throw error;
     }

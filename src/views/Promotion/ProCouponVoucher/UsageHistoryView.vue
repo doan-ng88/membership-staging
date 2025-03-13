@@ -225,14 +225,7 @@
                   </div>
                   <div>
                     <span class="text-gray-500">{{ t('couponHistory.modal.customerUsed') }}:</span>
-                    <div class="ml-2">
-                      <template v-if="selectedRecord.customer_used_coupon?.length">
-                        <div v-for="(usage, index) in selectedRecord.customer_used_coupon" :key="index">
-                          {{ usage.email }} ({{ usage.totalUsed }} lần)
-                        </div>
-                      </template>
-                      <span v-else>-</span>
-                    </div>
+                    <span class="ml-2">{{ selectedRecord.customer_used_coupon }}</span>
                   </div>
                 </div>
               </div>
@@ -374,11 +367,14 @@ type ColumnRenderType = (text: any, record: Coupon) => any;
 
 // Thêm hàm format date
 const formatDate = (dateString: string) => {
-  if (!dateString || dateString.includes('1970')) return '-'
+  if (!dateString) return '-'
+  if (dateString.includes('1970')) return '-'
+  
   try {
-    return dayjs(dateString).isValid() 
-      ? dayjs(dateString).format('DD/MM/YYYY')
-      : '-'
+    // Xử lý string date có timezone
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return '-'
+    return dayjs(date).format('DD/MM/YYYY')
   } catch {
     return '-'
   }
@@ -684,8 +680,8 @@ const viewDetails = async (record: any) => {
         status: result.data.status,
         discount_type: result.data.discount_type,
         coupon_amount: result.data.coupon_amount,
-        start_date: formatDate(result.data.start_date),
-        expiry_date: formatDate(result.data.expiry_date),
+        start_date: result.data.start_date,
+        expiry_date: result.data.expiry_date,
         usage_limit: result.data.usage_limit,
         usage_limit_per_user: result.data.usage_limit_per_user,
         total_used: result.data.total_used,
@@ -697,7 +693,7 @@ const viewDetails = async (record: any) => {
         exclude_product_ids: result.data.exclude_product_ids,
         exclude_product_categories: result.data.exclude_product_categories,
         customer_email: result.data.customer_email,
-        customer_used_coupon: result.data.customer_used_coupon
+        customer_used_coupon: result.data.customer_used_coupon.email
       }
       console.log('Selected Record:', selectedRecord.value)
     }

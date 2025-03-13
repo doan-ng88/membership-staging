@@ -53,5 +53,62 @@
       "title": "Xác nhận xóa",
       "message": "Bạn có chắc chắn muốn xóa chiến dịch \"{campaignName}\"?"
     }
+  },
+  "editZaloCampaign": {
+    "title": "Sửa chiến dịch Zalo OA",
+    "common": {
+      "save": "Lưu",
+      "cancel": "Hủy"
+    },
+    "form": {
+      "name": "Tên chiến dịch",
+      "description": "Mô tả",
+      "website": "Website",
+      "dateRange": "Khoảng thời gian",
+      "status": "Trạng thái",
+      "coupons": "Mã giảm giá",
+      "memberList": "Danh sách thành viên",
+      "addMember": "Thêm thành viên"
+    },
+    "table": {
+      "columns": {
+        "memberName": "Tên thành viên",
+        "phone": "Số điện thoại",
+        "website": "Website",
+        "actions": "Thao tác"
+      }
+    },
+    "status": {
+      "created": "Chờ xử lý",
+      "processing": "Đang xử lý",
+      "completed": "Hoàn thành",
+      "failed": "Thất bại"
+    },
+    "validation": {
+      "nameRequired": "Vui lòng nhập tên chiến dịch",
+      "websiteRequired": "Vui lòng chọn website",
+      "membersRequired": "Vui lòng chọn ít nhất một thành viên",
+      "couponsRequired": "Vui lòng chọn ít nhất một mã giảm giá"
+    },
+    "messages": {
+      "error": {
+        "load": "Không thể tải dữ liệu chiến dịch",
+        "update": "Cập nhật chiến dịch thất bại",
+        "loadCoupons": "Không thể tải danh sách mã giảm giá",
+        "cannotEditCompleted": "Không thể chỉnh sửa chiến dịch đã hoàn thành"
+      },
+      "success": {
+        "update": "Cập nhật chiến dịch thành công"
+      },
+      "warning": {
+        "selectWebsite": "Vui lòng chọn website trước khi thêm thành viên"
+      }
+    },
+    "buttons": {
+      "save": "Lưu",
+      "cancel": "Hủy",
+      "addMember": "Thêm thành viên",
+      "removeMember": "Xóa"
+    }
   }
 } 

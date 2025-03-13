@@ -276,25 +276,31 @@
     try {
       loading.value = true
       
+      // Giữ nguyên số điểm đã nhập (âm hoặc dương)
       const finalPoints = adjustment.points
+      
       const currentMemberId = Number(route.params.membershipWebsiteId)
       
+      // Call API với số điểm gốc
       const response = await axiosInstance.post('/membership/update/update-point-membership', {
         membershipWebsiteID: currentMemberId,
         points: finalPoints,
         reason: adjustment.reason
       })
 
-      if (response.status === 200) {
+      if (response.data.code === 200) {
+        // Hiển thị thông báo thành công màu xanh
         Modal.success({
           title: 'Success',
           content: 'Points updated successfully'
         })
         
+        // Reset form
         resetForm()
         
+        // Reload point history ngay lập tức để cập nhật realtime
         if (!isNaN(currentMemberId)) {
-          await pointRewardStore.fetchEarningUsageHistory(currentMemberId)
+          await loadPointHistory(currentMemberId)
         }
       } else {
         throw new Error(response.data.message || t('pointReward.manualAdjustment.error'))

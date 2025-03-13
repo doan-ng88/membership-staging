@@ -93,6 +93,12 @@
         <p>{{ t('zaloCampaignList.delete.message', { campaignName: selectedCampaign?.campaignName }) }}</p>
       </a-modal>
     </div>
+
+    <EditZaloCampaignModal
+      v-model:visible="showEditModal"
+      :campaign-id="editCampaignId || 0"
+      @success="handleEditSuccess"
+    />
   </DefaultLayout>
 </template>
 
@@ -108,6 +114,7 @@ import dayjs from 'dayjs'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { zaloAppPushApi } from '@/api/services/zaloAppPushApi'  
+import EditZaloCampaignModal from '@/features/zalo-campaign/EditZaloCampaignModal.vue'
 
 const { t } = useI18nGlobal()
 const router = useRouter()
@@ -170,6 +177,8 @@ const columns = computed(() => [
 
 const campaigns = ref<ZaloCampaign[]>([])
 const loading = ref(false)
+const showEditModal = ref<boolean>(false)
+const editCampaignId = ref<number | null>(null)
 
 const filters = reactive({
   status: '',
@@ -295,7 +304,13 @@ const handleAdd = () => {
 }
 
 const handleEdit = (campaign: ZaloCampaign) => {
-  router.push(`/zalo/campaigns/${campaign.campaignId}/edit`)
+  editCampaignId.value = campaign.campaignId
+  showEditModal.value = true
+}
+
+const handleEditSuccess = () => {
+  fetchAppPushCampaigns()
+  showEditModal.value = false
 }
 
 const handleDelete = async (campaign: ZaloCampaign) => {

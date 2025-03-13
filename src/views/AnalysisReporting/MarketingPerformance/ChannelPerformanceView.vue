@@ -47,12 +47,12 @@
             :change="calculatePercentageChange(statistics.delivered, previousStatistics.delivered)"
             icon="mail"
           />
-          <PerformanceCard
+          <!-- <PerformanceCard
             :title="t('marketingPerformance.channelPerformance.cards.sms.title')"
             :value="statistics.smsTotal"
             :change="calculatePercentageChange(statistics.smsTotal, previousStatistics.smsTotal)"
             icon="message"
-          />
+          /> -->
           <PerformanceCard
             :title="t('marketingPerformance.channelPerformance.cards.overall.title')"
             :value="statistics.recipients"
@@ -80,7 +80,7 @@
         <!-- SMS and Channel Contribution Section -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <!-- SMS Performance Section -->
-          <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+          <!-- <div class="bg-white rounded-xl shadow-sm overflow-hidden">
             <div class="p-6 border-b border-gray-100">
               <h3 class="text-lg font-semibold text-gray-800 flex items-center">
                 <message-outlined class="mr-2 text-green-500" />
@@ -93,10 +93,10 @@
                 :statistics="statistics"
               />
             </div>
-          </div>
+          </div> -->
 
           <!-- Channel Contribution Section -->
-          <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+          <!-- <div class="bg-white rounded-xl shadow-sm overflow-hidden">
             <div class="p-6 border-b border-gray-100">
               <h3 class="text-lg font-semibold text-gray-800 flex items-center">
                 <pie-chart-outlined class="mr-2 text-purple-500" />
@@ -109,7 +109,7 @@
                 :statistics="statistics"
               />
             </div>
-          </div>
+          </div> -->
         </div>
       </a-spin>
     </div>
