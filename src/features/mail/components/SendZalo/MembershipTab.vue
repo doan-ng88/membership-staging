@@ -8,28 +8,55 @@
               v-model:value="filterForm.search"
               placeholder="Search by name, email, phone..."
               @search="handleSearch"
+              allowClear
             />
           </a-form-item>
         </a-col>
         <a-col :span="8">
           <a-form-item label="Level">
-            <a-select v-model:value="filterForm.level" placeholder="Select level">
-              <a-select-option value="Gold">Gold</a-select-option>
-              <a-select-option value="Silver">Silver</a-select-option>
-              <a-select-option value="Bronze">Bronze</a-select-option>
+            <a-select 
+              v-model:value="filterForm.level" 
+              placeholder="Select level"
+              allowClear
+              optionFilterProp="label"
+            >
+              <a-select-option 
+                v-for="level in levelOptions" 
+                :key="level.value" 
+                :value="level.value"
+                :label="level.label"
+              >
+                {{ level.label }}
+              </a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
         <a-col :span="8">
           <a-form-item label="Website">
-            <a-select v-model:value="filterForm.website" placeholder="Select website">
-              <a-select-option value="hince">Hince</a-select-option>
-              <a-select-option value="bbia">BBIA</a-select-option>
-              <a-select-option value="mixsoon">Mixsoon</a-select-option>
+            <a-select 
+              v-model:value="filterForm.websiteId" 
+              placeholder="Select website"
+              allowClear
+              optionFilterProp="label"
+            >
+              <a-select-option 
+                v-for="website in websiteOptions" 
+                :key="website.id"
+                :value="website.id"
+                :label="website.name"
+              >
+                {{ website.name }}
+              </a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
       </a-row>
+      <div class="flex justify-end mb-4">
+        <a-space>
+          <a-button @click="handleResetFilters">Reset Filters</a-button>
+          <a-button type="primary" @click="handleSearch">Search</a-button>
+        </a-space>
+      </div>
     </a-form>
 
     <div class="mb-4 flex justify-between items-center">
@@ -58,6 +85,19 @@
         <template v-if="column.dataIndex === 'levelName'">
           <a-tag :color="getLevelColor(record.levelName)">{{ record.levelName }}</a-tag>
         </template>
+        <template v-else-if="column.dataIndex === 'registeredTime'">
+          {{ formatDate(record.registeredTime) }}
+        </template>
+        <template v-else-if="column.dataIndex === 'phoneNumber'">
+          {{ record.phoneNumber || record.mainPhoneNumber }}
+        </template>
+      </template>
+      
+      <template #emptyText>
+        <div class="text-center py-8">
+          <p class="text-gray-500">No members found</p>
+          <p class="text-sm text-gray-400">Try adjusting your search filters</p>
+        </div>
       </template>
     </a-table>
 
@@ -68,6 +108,7 @@
         <a-button 
           type="primary" 
           :loading="sending" 
+          :disabled="selectedMembers.length === 0"
           @click="showSendMailModal"
         >
           Send by Membership
@@ -89,44 +130,69 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, watch } from 'vue'
+import { ref, reactive, onMounted, watch, computed } from 'vue'
 import { message } from 'ant-design-vue'
 import type { TablePaginationConfig } from 'ant-design-vue'
 import { membershipAPI } from '@/api/services/membershipApi'
 import SendTemplateMailModal from '../SendTemplateMailModal.vue'
-import type { Member } from '@/types/profile'
+import dayjs from 'dayjs'
+import { useI18nGlobal } from '@/i18n'
+import type { 
+  MembershipTabMember,
+  ApiMember,
+  MemberListResponse,
+  MembershipTabPagination,
+  MembershipTabFilter
+} from '@/features/zalo-campaign/types/zalo-membershipTab.types'
 
 const emit = defineEmits<{
-  (e: 'select', members: Member[]): void
-  (e: 'send', members: any[]): void  // Thêm emit send
+  (e: 'select', members: MembershipTabMember[]): void
+  (e: 'send', members: MembershipTabMember[]): void
   (e: 'cancel'): void
 }>()
 
-const members = ref<Member[]>([])
+const { t } = useI18nGlobal()
+
+const members = ref<MembershipTabMember[]>([])
 const loading = ref(false)
 const selectedRowKeys = ref<string[]>([])
-const selectedMembers = ref<any[]>([])
-const pagination = ref<TablePaginationConfig>({
+const selectedMembers = ref<MembershipTabMember[]>([])
+const pagination = ref<MembershipTabPagination>({
   current: 1,
   pageSize: 10,
-  total: 0
+  total: 0,
+  showSizeChanger: true,
+  pageSizeOptions: ['10', '20', '50'],
 })
 
-const filterForm = reactive({
+const filterForm = reactive<MembershipTabFilter>({
   search: '',
   level: undefined,
-  website: undefined
+  websiteId: undefined
 })
 
 const sendMailModalVisible = ref(false)
 const selectedTemplate = ref(null)
 const sending = ref(false)
 
+const levelOptions = ref([
+  { value: 'Gold', label: 'Gold' },
+  { value: 'Silver', label: 'Silver' },
+  { value: 'Bronze', label: 'Bronze' }
+])
+
+const websiteOptions = ref([
+  { id: 1, name: 'Hince' },
+  { id: 2, name: 'BBIA' },
+  { id: 3, name: 'Mixsoon' }
+])
+
 const columns = [
   {
     title: 'Customer Name',
     dataIndex: 'fullName',
-    width: 200
+    width: 200,
+    sorter: true
   },
   {
     title: 'Email',
@@ -141,7 +207,6 @@ const columns = [
   {
     title: 'Level',
     dataIndex: 'levelName',
-    slots: { customRender: 'level' },
     width: 120
   },
   {
@@ -152,62 +217,143 @@ const columns = [
   {
     title: 'Join Date',
     dataIndex: 'registeredTime',
-    width: 120
+    width: 120,
+    sorter: true
   }
 ]
 
 const rowSelection = reactive({
   selectedRowKeys,
-  onChange: (keys: string[], rows: any[]) => {
+  onChange: (keys: string[], rows: MembershipTabMember[]) => {
     selectedRowKeys.value = keys
     selectedMembers.value = rows
   }
 })
 
+// Format date helper
+const formatDate = (dateString?: string) => {
+  if (!dateString) return '-'
+  return dayjs(dateString).format('DD/MM/YYYY')
+}
+
 const fetchMembers = async () => {
   try {
     loading.value = true
-    const searchParams = []
+    
+    // Thêm logging để debug
+    console.log('Request params:', {
+      pageSize: pagination.value.pageSize,
+      pageIndex: pagination.value.current
+    })
+
+    const searchParams: Array<{key: string, value: any}> = []
     
     if (filterForm.search) {
-      searchParams.push({
-        key: 'search',
-        value: filterForm.search
+      searchParams.push({ 
+        key: 'search', 
+        value: filterForm.search,
+        operator: 'CONTAINS' 
       })
     }
-
     if (filterForm.level) {
       searchParams.push({
-        key: 'level',
-        value: filterForm.level
+        key: 'levelName',
+        value: filterForm.level,
+        operator: 'EQUALS'
+      })
+    }
+    if (filterForm.websiteId) {
+      searchParams.push({
+        key: 'websiteId',
+        value: filterForm.websiteId,
+        operator: 'EQUALS'
       })
     }
 
-    if (filterForm.website) {
-      searchParams.push({
-        key: 'website',
-        value: filterForm.website
-      })
+    const params = {
+      sortField: 'MembershipsWebsitesId',
+      sortType: 'ASC',
+      pageSize: pagination.value.pageSize,
+      pageIndex: pagination.value.current,
+      searchParams
     }
 
     const response = await membershipAPI.getList(
-      'MembershipsWebsitesId',
-      'ASC',
-      pagination.value.pageSize,
-      pagination.value.current,
-      searchParams
-    )
+      params.sortField,
+      params.sortType,
+      params.pageSize,
+      params.pageIndex,
+      params.searchParams
+    ) as MemberListResponse
 
-    if (response) {
-      members.value = response.data || []
-      pagination.value.total = response.totalCount || 0
+    console.log('API response:', {
+      receivedPageSize: response.pageSize, // Kiểm tra giá trị thực tế nhận được
+      dataLength: response.data.length
+    })
+
+    if (response.code === 200) {
+      // Map data từ API sang type của component
+      members.value = response.data.map((item: ApiMember) => ({
+        membershipWebsiteId: String(item.membershipWebsiteId),
+        membershipId: item.membershipId,
+        email: item.email,
+        fullName: item.fullName,
+        phoneNumber: item.mainPhoneNumber,
+        points: item.points,
+        level: item.level,
+        levelName: item.levelName,
+        websiteName: getWebsiteName(item.websiteId),
+        registeredTime: item.registeredTime,
+        latestOrder: item.latestOrder ? {
+          orderId: item.latestOrder.orderId,
+          orderIdWebsite: item.latestOrder.orderIdWebsite,
+          totalAmount: item.latestOrder.totalAmount,
+          createTime: item.latestOrder.createTime,
+          orderStatus: item.latestOrder.orderStatus,
+          paymentMethod: item.latestOrder.paymentMethod,
+          earnPoints: item.latestOrder.earnPoints
+        } : undefined
+      }))
+
+      // Cập nhật pagination từ API response
+      pagination.value = {
+        ...pagination.value,
+        current: response.pageIndex,
+        pageSize: response.pageSize,
+        total: response.totalCount
+      }
+
+      // Cập nhật selection
+      updateSelectionAfterFetch()
     }
   } catch (error) {
-    console.error('Error fetching members:', error)
-    message.error('Failed to load members')
+    handleFetchError(error)
   } finally {
     loading.value = false
   }
+}
+
+// Helper functions
+const getWebsiteName = (websiteId: number): string => {
+  const website = websiteOptions.value.find(w => w.id === websiteId)
+  return website?.name || `Website ${websiteId}`
+}
+
+const updateSelectionAfterFetch = () => {
+  if (selectedRowKeys.value.length > 0) {
+    const validKeys = selectedRowKeys.value.filter(key => 
+      members.value.some(member => String(member.membershipWebsiteId) === key)
+    )
+    selectedRowKeys.value = validKeys
+    selectedMembers.value = members.value.filter(
+      member => validKeys.includes(String(member.membershipWebsiteId))
+    )
+  }
+}
+
+const handleFetchError = (error: unknown) => {
+  console.error('Error fetching members:', error)
+  message.error('Failed to load members')
 }
 
 const handleSearch = () => {
@@ -215,8 +361,29 @@ const handleSearch = () => {
   fetchMembers()
 }
 
-const handleTableChange = (pag: TablePaginationConfig) => {
-  pagination.value = pag
+const handleResetFilters = () => {
+  filterForm.search = ''
+  filterForm.level = undefined
+  filterForm.websiteId = undefined
+  pagination.value.current = 1
+  fetchMembers()
+}
+
+const handleTableChange = (pag: TablePaginationConfig, filters: any, sorter: any) => {
+  console.log('Table change:', pag, filters, sorter)
+  
+  // Update pagination
+  pagination.value = {
+    ...pagination.value,
+    current: pag.current || 1,
+    pageSize: pag.pageSize || 10
+  }
+  
+  // Handle sorting if needed
+  // if (sorter.field && sorter.order) {
+  //   // Update sorting logic here
+  // }
+  
   fetchMembers()
 }
 
@@ -257,41 +424,43 @@ const handleSendMailCancel = () => {
 
 const handleCancel = () => {
   clearSelection()
+  emit('cancel')
 }
 
-
 const updateSelection = (memberIds: string[]) => {
-  // 1. Cập nhật selectedRowKeys để uncheck trong table
   selectedRowKeys.value = memberIds
-  // 2. Cập nhật selectedMembers dựa trên memberIds
   selectedMembers.value = members.value.filter(
     member => memberIds.includes(String(member.membershipWebsiteId))
   )
-  // 3. Emit event để cập nhật parent
   emit('select', selectedMembers.value)
 }
 
-// Đảm bảo watch được kích hoạt khi selectedRowKeys thay đổi
+// Watchers
 watch(selectedRowKeys, (newKeys) => {
   rowSelection.selectedRowKeys = newKeys
 }, { deep: true })
 
-// Đảm bảo emit khi selectedMembers thay đổi
 watch(selectedMembers, (newMembers) => {
   emit('select', newMembers)
 }, { deep: true })
 
+// Lifecycle hooks
 onMounted(() => {
   fetchMembers()
 })
 
+// Expose methods to parent component
 defineExpose({
-  updateSelection
+  updateSelection,
+  fetchMembers,
+  clearSelection
 })
 </script>
 
 <style scoped>
-.membership-tab {
-  /* Thêm style nếu cần */
+
+/* Thêm style cho empty state */
+.ant-empty-description {
+  color: #8c8c8c;
 }
 </style>

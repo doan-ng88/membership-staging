@@ -4,28 +4,59 @@
       <a-row :gutter="16">
         <a-col :span="8">
           <a-form-item label="Campaign Name">
-            <a-input v-model:value="filterForm.name" placeholder="Search campaign name" />
+            <a-input-search
+              v-model:value="filterForm.name"
+              placeholder="Search campaign name"
+              @search="handleSearch"
+              allowClear
+            />
           </a-form-item>
         </a-col>
         <a-col :span="8">
           <a-form-item label="Status">
-            <a-select v-model:value="filterForm.status" placeholder="Select status">
-              <a-select-option value="Active">Active</a-select-option>
-              <a-select-option value="Inactive">Inactive</a-select-option>
-              <a-select-option value="Completed">Completed</a-select-option>
+            <a-select 
+              v-model:value="filterForm.status" 
+              placeholder="Select status"
+              allowClear
+              optionFilterProp="label"
+            >
+              <a-select-option 
+                v-for="status in statusOptions" 
+                :key="status.value"
+                :value="status.value"
+                :label="status.label"
+              >
+                {{ status.label }}
+              </a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
         <a-col :span="8">
           <a-form-item label="Website">
-            <a-select v-model:value="filterForm.website" placeholder="Select website">
-              <a-select-option value="hince">Hince</a-select-option>
-              <a-select-option value="bbia">BBIA</a-select-option>
-              <a-select-option value="mixsoon">Mixsoon</a-select-option>
+            <a-select 
+              v-model:value="filterForm.websiteId" 
+              placeholder="Select website"
+              allowClear
+              optionFilterProp="label"
+            >
+              <a-select-option 
+                v-for="website in websiteOptions" 
+                :key="website.id"
+                :value="website.id"
+                :label="website.name"
+              >
+                {{ website.name }}
+              </a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
       </a-row>
+      <div class="flex justify-end mb-4">
+        <a-space>
+          <a-button @click="handleResetFilters">Reset Filters</a-button>
+          <a-button type="primary" @click="handleSearch">Search</a-button>
+        </a-space>
+      </div>
     </a-form>
 
     <div class="mb-4 flex justify-between items-center">
@@ -46,16 +77,30 @@
       :data-source="campaigns"
       :loading="loading"
       :pagination="pagination"
-      :row-selection="{
-        type: 'checkbox',
-        selectedRowKeys: selectedRowKeys,
-        onChange: handleSelectionChange
-      }"
-      :row-key="(record: Campaign) => record.id"
+      :row-selection="rowSelection"
+      :row-key="(record) => record.id"
       @change="handleTableChange"
     >
-      <template #websiteName="{ record }">
-        <a-tag>{{ record.websiteName }}</a-tag>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.dataIndex === 'status'">
+          <a-tag :color="getStatusColor(record.status)">{{ record.status }}</a-tag>
+        </template>
+        <template v-else-if="column.dataIndex === 'startDate'">
+          {{ formatDate(record.startDate) }}
+        </template>
+        <template v-else-if="column.dataIndex === 'endDate'">
+          {{ formatDate(record.endDate) }}
+        </template>
+        <template v-else-if="column.dataIndex === 'websiteName'">
+          {{ record.websiteName }}
+        </template>
+      </template>
+      
+      <template #emptyText>
+        <div class="text-center py-8">
+          <p class="text-gray-500">No campaigns found</p>
+          <p class="text-sm text-gray-400">Try adjusting your search filters</p>
+        </div>
       </template>
     </a-table>
 
@@ -64,9 +109,10 @@
         <a-button @click="handleCancel">Cancel</a-button>
         <a-button 
           type="primary" 
-          @click="handleSendMail"
+          @click="handleSendPush"
+          :disabled="selectedCampaigns.length === 0"
         >
-          Send by Campaign
+          Send App Push
         </a-button>
       </a-space>
     </div>
@@ -74,83 +120,211 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { message } from 'ant-design-vue'
-import { useI18nGlobal } from '@/i18n'
 import type { TablePaginationConfig } from 'ant-design-vue'
-import { mailCampaignService } from '@/features/mail/services/mail-campaign.service'
+import { appCampaignService } from '../api/appPushCampaignApi'
+import dayjs from 'dayjs'
+import { useI18nGlobal } from '@/i18n'
+import type { 
+  AppCampaign,
+  AppCampaignPagination,
+  AppCampaignFilter
+} from '../types/appPushCampaign.types'
 
-const { t } = useI18nGlobal();
-
-interface Campaign {
-  id: string
-  name: string
-  websiteId: string
-  websiteName: string
-  startDate: string
-  endDate: string
-  status: string
-}
+const { t } = useI18nGlobal()
 
 const emit = defineEmits<{
-  (e: 'select', campaigns: Campaign[]): void
-  (e: 'send', campaigns: Campaign[]): void
+  (e: 'select', campaigns: AppCampaign[]): void
+  (e: 'send', campaigns: AppCampaign[]): void
   (e: 'cancel'): void
 }>()
 
-// States
-const campaigns = ref<Campaign[]>([])
+// Reactive states
+const campaigns = ref<AppCampaign[]>([])
 const loading = ref(false)
 const selectedRowKeys = ref<string[]>([])
-const selectedCampaigns = ref<Campaign[]>([])
+const selectedCampaigns = ref<AppCampaign[]>([])
 
-const pagination = ref<TablePaginationConfig>({
+const pagination = ref<AppCampaignPagination>({
   current: 1,
   pageSize: 10,
-  total: 0
+  total: 0,
+  showSizeChanger: true,
+  pageSizeOptions: ['10', '20', '50']
 })
 
-const filterForm = reactive({
+const filterForm = reactive<AppCampaignFilter>({
   name: '',
   status: undefined,
-  website: undefined
+  websiteId: undefined
 })
+
+const statusOptions = ref([
+  { value: 'DRAFT', label: 'Draft' },
+  { value: 'ACTIVE', label: 'Active' },
+  { value: 'COMPLETED', label: 'Completed' },
+  { value: 'FAILED', label: 'Failed' }
+])
+
+const websiteOptions = ref([
+  { id: 1, name: 'Hince' },
+  { id: 2, name: 'BBIA' },
+  { id: 3, name: 'Mixsoon' }
+])
 
 // Table columns
 const columns = [
   {
     title: 'Campaign Name',
     dataIndex: 'name',
-    width: 200
+    width: 200,
+    sorter: true
   },
   {
     title: 'Website',
-    dataIndex: 'websiteId',
-    slots: { customRender: 'websiteName' },
+    dataIndex: 'websiteName',
     width: 120
   },
   {
     title: 'Start Date',
     dataIndex: 'startDate',
-    width: 120
+    width: 120,
+    sorter: true
   },
   {
     title: 'End Date',
     dataIndex: 'endDate',
-    width: 120
+    width: 120,
+    sorter: true
   },
   {
     title: 'Status',
     dataIndex: 'status',
     width: 120
+  },
+  {
+    title: 'Recipients',
+    dataIndex: 'totalRecipients',
+    width: 100
   }
 ]
 
-// Handlers
-const handleSelectionChange = (keys: string[], rows: Campaign[]) => {
-  selectedRowKeys.value = keys
-  selectedCampaigns.value = rows
-  emit('select', rows)
+// Row selection config
+const rowSelection = reactive({
+  selectedRowKeys,
+  onChange: (keys: string[], rows: AppCampaign[]) => {
+    selectedRowKeys.value = keys
+    selectedCampaigns.value = rows
+    emit('select', rows)
+  }
+})
+
+// Fetch campaigns from API
+const fetchCampaigns = async () => {
+  try {
+    loading.value = true
+    
+    const searchParams: Array<{key: string, value: any}> = []
+    
+    if (filterForm.name) {
+      searchParams.push({ 
+        key: 'name', 
+        value: filterForm.name,
+        operator: 'CONTAINS'
+      })
+    }
+    
+    if (filterForm.status) {
+      searchParams.push({
+        key: 'status',
+        value: filterForm.status,
+        operator: 'EQUALS'
+      })
+    }
+    
+    if (filterForm.websiteId) {
+      searchParams.push({
+        key: 'websiteId',
+        value: filterForm.websiteId,
+        operator: 'EQUALS'
+      })
+    }
+
+    const response = await appCampaignService.getAppCampaignList({
+      pageIndex: pagination.value.current || 1,
+      pageSize: pagination.value.pageSize || 10,
+      searchParams
+    })
+
+    if (response.code === 200) {
+      campaigns.value = response.data
+      pagination.value = {
+        ...pagination.value,
+        current: response.pagination.pageIndex,
+        pageSize: response.pagination.pageSize,
+        total: response.pagination.totalCount
+      }
+      updateSelectionAfterFetch()
+    }
+  } catch (error) {
+    console.error('[CampaignTab] Error fetching campaigns:', error)
+    message.error(t('appPushCampaign.messages.error.fetchFailed'))
+    campaigns.value = []
+    pagination.value.total = 0
+  } finally {
+    loading.value = false
+  }
+}
+
+// Helpers
+const formatDate = (dateString?: string) => {
+  if (!dateString) return '-'
+  return dayjs(dateString).format('DD/MM/YYYY')
+}
+
+const getStatusColor = (status: string) => {
+  const colors: Record<string, string> = {
+    DRAFT: 'blue',
+    ACTIVE: 'green',
+    COMPLETED: 'geekblue',
+    FAILED: 'red'
+  }
+  return colors[status] || 'default'
+}
+
+const updateSelectionAfterFetch = () => {
+  if (selectedRowKeys.value.length > 0) {
+    const validKeys = selectedRowKeys.value.filter(key => 
+      campaigns.value.some(campaign => campaign.id === key)
+    )
+    selectedRowKeys.value = validKeys
+    selectedCampaigns.value = campaigns.value.filter(
+      campaign => validKeys.includes(campaign.id)
+    )
+  }
+}
+
+// Event handlers
+const handleSearch = () => {
+  pagination.value.current = 1
+  fetchCampaigns()
+}
+
+const handleResetFilters = () => {
+  filterForm.name = ''
+  filterForm.status = undefined
+  filterForm.websiteId = undefined
+  handleSearch()
+}
+
+const handleTableChange = (pag: TablePaginationConfig) => {
+  pagination.value = {
+    ...pagination.value,
+    current: pag.current || 1,
+    pageSize: pag.pageSize || 10
+  }
+  fetchCampaigns()
 }
 
 const clearSelection = () => {
@@ -159,18 +333,12 @@ const clearSelection = () => {
   emit('select', [])
 }
 
-const updateSelection = (campaigns: Campaign[]) => {
-  if (!Array.isArray(campaigns)) {
-    throw new Error('Campaigns must be an array')
+const handleSendPush = () => {
+  if (!selectedCampaigns.value.length) {
+    message.error('Please select at least one campaign')
+    return
   }
-  selectedCampaigns.value = campaigns
-  selectedRowKeys.value = campaigns.map(c => c.id) // Cập nhật selectedRowKeys để uncheck
-  emit('select', campaigns) // Emit để cập nhật parent
-}
-
-const handleTableChange = (pag: TablePaginationConfig) => {
-  pagination.value = pag
-  fetchCampaigns()
+  emit('send', selectedCampaigns.value)
 }
 
 const handleCancel = () => {
@@ -178,48 +346,24 @@ const handleCancel = () => {
   emit('cancel')
 }
 
-const handleSendMail = () => {
-  if (!selectedCampaigns.value.length) {
-    return message.error('Please select at least one campaign')
-  }
-  emit('send', selectedCampaigns.value)
-}
-
-// API call
-const fetchCampaigns = async () => {
-  try {
-    loading.value = true
-    const searchParams = []
-    if (filterForm.name) {
-      searchParams.push({ key: 'name', value: filterForm.name })
-    }
-    if (filterForm.status) {
-      searchParams.push({ key: 'status', value: filterForm.status })
-    }
-    if (filterForm.website) {
-      searchParams.push({ key: 'websiteId', value: filterForm.website })
-    }
-    const result = await mailCampaignService.getMailCampaignList({
-      pageIndex: pagination.value.current || 1,
-      pageSize: pagination.value.pageSize || 10,
-      searchParams
-    })
-    if (result.data) {
-      campaigns.value = result.data
-      pagination.value.total = result.pagination.totalCount
-    }
-  } catch (error) {
-    console.error('Error fetching campaigns:', error)
-    message.error(t('campaignTabMail.messages.error.fetchFailed'))
-  } finally {
-    loading.value = false
-  }
-}
-
-// Initial fetch
-fetchCampaigns()
-
-defineExpose({
-  updateSelection
+// Lifecycle
+onMounted(() => {
+  fetchCampaigns()
 })
-</script> 
+
+// Expose methods
+defineExpose({
+  refresh: fetchCampaigns,
+  clearSelection
+})
+</script>
+
+<style scoped>
+.campaign-tab {
+  @apply bg-white p-6 rounded-lg shadow-md;
+}
+
+.ant-tag {
+  @apply uppercase text-xs font-medium;
+}
+</style> 

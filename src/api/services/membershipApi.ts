@@ -26,15 +26,13 @@ interface MemberListResponse {
   code: number
   status: string
   message: string
-  data: {
-    data: Member[]
-    totalCount: number
-    pageIndex: number
-    pageSize: number
-  }
+  data: Member[] // Danh sách members trực tiếp trong data
+  pageIndex: number
+  pageSize: number
+  totalCount: number
 }
 
-interface Member {
+export interface Member {
   membershipId: number
   websiteId: number
   fullName: string

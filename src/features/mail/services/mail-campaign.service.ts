@@ -67,17 +67,39 @@ class MailCampaignService {
       const response = await this.api.post('/membership/get/get-campaign-list', requestBody);
       console.log('API Response:', response.data);
 
+      if (!response.data) {
+        console.error('Empty API response');
+        return {
+          data: [],
+          pagination: {
+            pageIndex: 1,
+            pageSize: 10,
+            totalCount: 0
+          }
+        };
+      }
+
+      const responseData = response.data.data || [];
+      const safeData = Array.isArray(responseData) ? responseData : [];
+
       return {
-        data: response.data.data.map((item: ApiCampaignData) => this.transformCampaign(item)),
+        data: safeData.map((item: ApiCampaignData) => this.transformCampaign(item)),
         pagination: {
-          pageIndex: Number(response.data.pageIndex),
-          pageSize: Number(response.data.pageSize),
-          totalCount: Number(response.data.totalCount)
+          pageIndex: Number(response.data.pageIndex) || 1,
+          pageSize: Number(response.data.pageSize) || 10,
+          totalCount: Number(response.data.totalCount) || 0
         }
       };
     } catch (error) {
       console.error('Error fetching mail campaigns:', error);
-      throw error;
+      return {
+        data: [],
+        pagination: {
+          pageIndex: 1,
+          pageSize: 10,
+          totalCount: 0
+        }
+      };
     }
   }
 
