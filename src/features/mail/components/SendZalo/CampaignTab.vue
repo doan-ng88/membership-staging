@@ -5,7 +5,7 @@
         <a-col :span="8">
           <a-form-item label="Campaign Name">
             <a-input-search
-              v-model:value="filterForm.name"
+              v-model:value="filterForm.searchText"
               placeholder="Search campaign name"
               @search="handleSearch"
               allowClear
@@ -78,7 +78,7 @@
       :loading="loading"
       :pagination="pagination"
       :row-selection="rowSelection"
-      :row-key="(record) => record.id"
+      :row-key="(record: AppPushCampaign) => record.id"
       @change="handleTableChange"
     >
       <template #bodyCell="{ column, record }">
@@ -123,30 +123,30 @@
 import { ref, reactive, onMounted } from 'vue'
 import { message } from 'ant-design-vue'
 import type { TablePaginationConfig } from 'ant-design-vue'
-import { appCampaignService } from '../api/appPushCampaignApi'
+import { AppPushCampaignApi } from '../../../zalo-campaign/api/appPushCampaignApi'
 import dayjs from 'dayjs'
 import { useI18nGlobal } from '@/i18n'
 import type { 
-  AppCampaign,
-  AppCampaignPagination,
-  AppCampaignFilter
-} from '../types/appPushCampaign.types'
+  AppPushCampaign,
+  AppPushCampaignPaginationParams,
+  AppPushCampaignFilters
+} from '../../../zalo-campaign/types/appPushCampaign.types'
 
 const { t } = useI18nGlobal()
 
 const emit = defineEmits<{
-  (e: 'select', campaigns: AppCampaign[]): void
-  (e: 'send', campaigns: AppCampaign[]): void
+  (e: 'select', campaigns: AppPushCampaign[]): void
+  (e: 'send', campaigns: AppPushCampaign[]): void
   (e: 'cancel'): void
 }>()
 
 // Reactive states
-const campaigns = ref<AppCampaign[]>([])
+const campaigns = ref<AppPushCampaign[]>([])
 const loading = ref(false)
 const selectedRowKeys = ref<string[]>([])
-const selectedCampaigns = ref<AppCampaign[]>([])
+const selectedCampaigns = ref<AppPushCampaign[]>([])
 
-const pagination = ref<AppCampaignPagination>({
+const pagination = ref<AppPushCampaignPaginationParams>({
   current: 1,
   pageSize: 10,
   total: 0,
@@ -154,10 +154,10 @@ const pagination = ref<AppCampaignPagination>({
   pageSizeOptions: ['10', '20', '50']
 })
 
-const filterForm = reactive<AppCampaignFilter>({
-  name: '',
+const filterForm = reactive<AppPushCampaignFilters>({
+  searchText: '',
   status: undefined,
-  websiteId: undefined
+  dateRange: undefined
 })
 
 const statusOptions = ref([
@@ -213,7 +213,7 @@ const columns = [
 // Row selection config
 const rowSelection = reactive({
   selectedRowKeys,
-  onChange: (keys: string[], rows: AppCampaign[]) => {
+  onChange: (keys: string[], rows: AppPushCampaign[]) => {
     selectedRowKeys.value = keys
     selectedCampaigns.value = rows
     emit('select', rows)
@@ -227,10 +227,10 @@ const fetchCampaigns = async () => {
     
     const searchParams: Array<{key: string, value: any}> = []
     
-    if (filterForm.name) {
+    if (filterForm.searchText) {
       searchParams.push({ 
         key: 'name', 
-        value: filterForm.name,
+        value: filterForm.searchText,
         operator: 'CONTAINS'
       })
     }
@@ -251,7 +251,7 @@ const fetchCampaigns = async () => {
       })
     }
 
-    const response = await appCampaignService.getAppCampaignList({
+    const response = await AppPushCampaignApi.getAppCampaignList({
       pageIndex: pagination.value.current || 1,
       pageSize: pagination.value.pageSize || 10,
       searchParams
@@ -300,7 +300,7 @@ const updateSelectionAfterFetch = () => {
     )
     selectedRowKeys.value = validKeys
     selectedCampaigns.value = campaigns.value.filter(
-      campaign => validKeys.includes(campaign.id)
+      campaign => validKeys.includes(String(campaign.id))
     )
   }
 }
@@ -312,9 +312,9 @@ const handleSearch = () => {
 }
 
 const handleResetFilters = () => {
-  filterForm.name = ''
+  filterForm.searchText = ''
   filterForm.status = undefined
-  filterForm.websiteId = undefined
+  filterForm.dateRange = undefined
   handleSearch()
 }
 
