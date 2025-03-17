@@ -219,6 +219,12 @@ const handleFilter = (filters: Array<{key: string, value: any}>) => {
         }))
       );
     }
+    
+    // Bổ sung xử lý birthdayMonth từ SearchFilters
+    const birthdayMonthFilter = filters.find(f => f.key === 'birthdayMonth');
+    if (birthdayMonthFilter) {
+      params.push(birthdayMonthFilter);
+    }
   }
 
   // Website filter (chung cho cả 2 tab)
@@ -238,13 +244,17 @@ const handleReset = () => {
 
 // Existing search handler
 const onSearch = () => {
-  const searchParams = [...currentFilters.value];
+  // Giữ lại các filter khác ngoại trừ filter search
+  const searchParams = currentFilters.value.filter(f => f.key !== 'search');
+  
+  // Thêm filter search nếu có
   if (searchText.value.trim()) {
     searchParams.push({
       key: 'search',
       value: searchText.value.trim()
     });
   }
+  
   fetchMembers(1, pageSize.value, searchParams);
 };
 
@@ -274,7 +284,10 @@ const handleCancel = () => {
   selectedRows.value = [];
 };
 
-const formatCurrency = (value: number) => {
+const formatCurrency = (value: number | null | undefined) => {
+  if (value === null || value === undefined) {
+    return '0 ₫'; // hoặc "N/A", "-" tùy theo yêu cầu hiển thị
+  }
   return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
 };
 
@@ -286,14 +299,21 @@ const fetchMembers = async (
 ) => {
   try {
     loading.value = true;
-    console.log('Fetching with params:', { page, pageSizeParam, searchParams });
+    // Log rõ ràng các params
+    console.log('Fetching with params:', { 
+      sortField: 'MembershipsWebsitesId',
+      sortType: 'DESC', 
+      pageSize: pageSizeParam, 
+      pageIndex: page, 
+      searchParams: searchParams || []  // Đảm bảo luôn là mảng rỗng
+    });
 
     const response = await membershipAPI.getList(
       'MembershipsWebsitesId',
       'DESC',
       pageSizeParam,
       page,
-      searchParams
+      searchParams || [] // Đảm bảo luôn truyền mảng rỗng chứ không phải undefined
     );
 
     if (response?.data) {
@@ -320,6 +340,7 @@ const fetchMembers = async (
   } catch (error) {
     console.error('Error fetching members:', error);
     message.error(t('callCampaign.addMemberModal.messages.fetchError'));
+    members.value = []; // Reset thành mảng rỗng khi có lỗi
   } finally {
     loading.value = false;
   }

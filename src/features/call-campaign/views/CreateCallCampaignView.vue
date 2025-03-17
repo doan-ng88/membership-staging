@@ -304,7 +304,6 @@
       return
     }
     try {
-      const previousRouteName = router.resolve(router.options.history.state.back).name
       let payload = {
         campaignName: formState.name,
         description: formState.description,
@@ -317,8 +316,8 @@
           employeeId: userId,
           permissionLevel: 'edit'
         })),
-        ...(previousRouteName === 'MailCampaign' && { isServiceEmail: true }),
-        ...(previousRouteName === 'CallCampaign' && { isServiceCall: true })
+        isServiceEmail: router.currentRoute.value.path === '/create-mail-campaign',
+        isServiceCall: router.currentRoute.value.path === '/call-campaigns/create-call-campaign'
       }
   
       // TODO: refactor
