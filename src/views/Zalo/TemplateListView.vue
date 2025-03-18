@@ -217,7 +217,6 @@ import MembershipTab from '@/features/mail/components/SendZalo/MembershipTab.vue
 import SendTemplateZaloModal from '@/features/mail/components/SendTemplateZaloModel.vue'
 import { useI18nGlobal } from '@/i18n'
 import { useAuthStore } from '@/stores/auth'
-import SelfPageDataTable from '@/components/SelfPageDataTable.vue'
 
 const { t } = useI18nGlobal()
 

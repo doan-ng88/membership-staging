@@ -188,7 +188,9 @@
           "cancelled": "Cancelled",
           "need_recall": "Need Recall",
           "no_answer": "No Answer",
-          "not_call": "Not Call"
+          "not_call": "Not Call",
+          "not_sent": "Not Sent",
+          "processing": "Processing"
         },
         "columns": {
           "serviceCallDate": "Call Time",
@@ -209,7 +211,15 @@
           "status": {
             "label": "Status",
             "statusPlaceholder": "Select status",
-            "required": "Please select status"
+            "required": "Please select status",
+            "PENDING": "Pending",
+            "PROCESSING": "Processing",
+            "COMPLETED": "Completed",
+            "CANCELLED": "Cancelled",
+            "NEED_RECALL": "Need Recall",
+            "NO_ANSWER": "No Answer",
+            "NOT_CALL": "Not Call",
+            "NOT_SENT": "Not Sent"
           },
           "callReason": {
             "label": "Call Reason",

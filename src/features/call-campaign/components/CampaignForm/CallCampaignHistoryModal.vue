@@ -33,7 +33,8 @@ import { ref, computed } from 'vue';
 import { useI18nGlobal } from '@/i18n';
 import { callHistoryAPI } from '@/api/services/membershipApi';
 import type { CallCampaignHistory } from '@/features/call-campaign/types/campaign.types';
-// import { CallStatus } from '@/features/call-campaign/views/CallCampaignDetailView.vue';
+import { useAuthStore } from '@/stores/auth';
+import axios from 'axios';
 
 const { t } = useI18nGlobal();
 
@@ -103,14 +104,33 @@ const handleCancel = () => {
   data.value = [];
 };
 
-const fetchData = async (campaignId: number, membershipId: number) => {
+const fetchCallHistory = async (userId: number, campaignId: number) => {
   try {
     loading.value = true;
-    const response = await callHistoryAPI.getHistory(campaignId, membershipId);
-    data.value = response.data;
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_BASE_URL}/membership/get/call-history/${campaignId}/${userId}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${useAuthStore().token}`
+        }
+      }
+    );
+    
+    if (response.data && Array.isArray(response.data)) {
+      data.value = response.data;
+    } else if (response.data && Array.isArray(response.data.data)) {
+      data.value = response.data.data;
+    } else if (response.data && !Array.isArray(response.data)) {
+      data.value = [response.data];
+    } else {
+      data.value = [];
+    }
+    
+    console.log('Call history data:', data.value);
   } catch (error) {
-    errorMessage.value = t('callCampaign.callCampaignDetail.callCampaignHistory.messages.fetchError');
     console.error('Error fetching call history:', error);
+    errorMessage.value = t('callCampaign.callCampaignDetail.callCampaignHistory.messages.fetchError');
+    data.value = [];
   } finally {
     loading.value = false;
   }
@@ -119,7 +139,7 @@ const fetchData = async (campaignId: number, membershipId: number) => {
 defineExpose({
   open: (campaignId: number, membershipId: number) => {
     visible.value = true;
-    fetchData(campaignId, membershipId);
+    fetchCallHistory(membershipId, campaignId);
   },
 });
 </script> 

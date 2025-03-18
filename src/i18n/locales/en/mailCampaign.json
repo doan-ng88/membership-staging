@@ -124,6 +124,13 @@
       "search": {
         "placeholder": "Search member"
       }
+    },
+    "mailCampaignDetail": {
+      "updateMailCustomer": {
+        "status": {
+          "not_sent": "Not Sent"
+        }
+      } 
     }
   }
 } 

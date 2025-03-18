@@ -84,6 +84,41 @@
         />
       </a-card>
 
+      <!-- PIC Staff List Card -->
+      <a-card class="mb-6 shadow-lg">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold">PIC Staff List</h3>
+        </div>
+        
+        <div v-if="campaign.employees?.length" class="mt-2">
+          <a-table 
+            :dataSource="campaign.employees" 
+            :pagination="false"
+            :rowKey="record => record.employeeId"
+            bordered
+          >
+            <a-table-column title="Name" dataIndex="name" key="name" />
+            <a-table-column title="Email" dataIndex="email" key="email" />
+            <a-table-column title="Employee ID" dataIndex="employeeId" key="employeeId" />
+            <a-table-column 
+              title="Permission Level" 
+              dataIndex="permissionLevel" 
+              key="permissionLevel"
+              :customRender="({ text }) => getPermissionLevelLabel(text)"
+            />
+            <a-table-column 
+              title="Assigned At" 
+              dataIndex="assignedAt" 
+              key="assignedAt"
+              :customRender="({ text }) => formatDate(text)"
+            />
+          </a-table>
+        </div>
+        <div v-else class="text-gray-500 font-normal mt-2">
+          No PIC assigned
+        </div>
+      </a-card>
+
       <!-- Update Call Customer Modal -->
       <a-modal
         v-model:open="isChangeStatusModalVisible"
@@ -113,7 +148,7 @@
                 :value="status"
                 :label="getStatus(status)"
               >
-                <a-tag :color="getStatusColor(status)">
+                <a-tag :color="getCallStatusColor(status)">
                   {{ getStatus(status) }}
                 </a-tag>
               </a-select-option>
@@ -124,7 +159,6 @@
           <a-form-item
             :label="t('callCampaign.callCampaignDetail.updateCallCustomer.form.description.label')"
             name="statusDescription"
-            :rules="[{ required: true, message: t('callCampaign.callCampaignDetail.updateCallCustomer.form.description.required') }]"
           >
             <a-textarea
               v-model:value="formState.statusDescription"
@@ -140,7 +174,6 @@
             <a-form-item
               :label="t('callCampaign.callCampaignDetail.updateCallCustomer.form.callReason.label')"
               name="callReason"
-              :rules="[{ required: true, message: t('callCampaign.callCampaignDetail.updateCallCustomer.form.callReason.required') }]"
             >
               <a-textarea
                 v-model:value="formState.callReason"
@@ -154,7 +187,6 @@
             <a-form-item
               :label="t('callCampaign.callCampaignDetail.updateCallCustomer.form.callSummary.label')"
               name="callSummary"
-              :rules="[{ required: true, message: t('callCampaign.callCampaignDetail.updateCallCustomer.form.callSummary.required') }]"
             >
               <a-textarea
                 v-model:value="formState.callSummary"
@@ -244,16 +276,16 @@ import { HistoryOutlined, EditOutlined } from '@ant-design/icons-vue'
 import CallCampaignHistoryModal from '@/features/call-campaign/components/CampaignForm/CallCampaignHistoryModal.vue';
 import { useI18nGlobal } from '@/i18n';
 
-const { t } = useI18nGlobal();
+const { t, i18n } = useI18nGlobal();
 
 enum CallStatus {
-  NOT_CALL = 'not_call',
-  NEED_RECALL = 'need_recall',
-  NO_ANSWER = 'no_answer',
-  COMPLETED = 'completed',
-  PENDING = 'pending',
-  CANCELLED = 'cancelled',
-  PROCESSING = 'processing'
+  // PENDING = 'PENDING',
+  // PROCESSING = 'PROCESSING',
+  CANCELLED = 'CANCELLED',
+  COMPLETED = 'COMPLETED',
+  NEED_RECALL = 'NEED_RECALL',
+  NO_ANSWER = 'NO_ANSWER',
+  // Thêm các trạng thái khác nếu cần
 }
 
 const route = useRoute();
@@ -279,9 +311,6 @@ const formRef = ref();
 const formRules = {
   selectedStatus: [
     { required: true, message: 'Please select a status' }
-  ],
-  statusDescription: [
-    { required: true, message: 'Please enter a description' }
   ]
 };
 
@@ -393,37 +422,31 @@ const formatDate = (date: string) => {
   return dayjs(date).format('DD/MM/YYYY');
 };
 
-const getStatusColor = (status: CallStatus) => {
+const getStatus = (status: string) => {
+  if (!status) return '-';
+  
+  const statuses: Record<string, string> = {
+    // [CallStatus.PENDING]: 'Pending',
+    // [CallStatus.PROCESSING]: 'Processing',
+    // [CallStatus.CANCELLED]: 'Cancelled',
+    [CallStatus.COMPLETED]: 'Completed',
+    [CallStatus.NEED_RECALL]: 'Need Recall',
+    [CallStatus.NO_ANSWER]: 'No Answer'
+  };
+  
+  return statuses[status] || status;
+};
+
+const getCallStatusColor = (status: string) => {
   const statusColors: Record<string, string> = {
+    // [CallStatus.PENDING]: 'default',
+    // [CallStatus.PROCESSING]: 'processing',
+    // [CallStatus.CANCELLED]: 'error',
     [CallStatus.COMPLETED]: 'success',
-    [CallStatus.PENDING]: 'processing',
-    [CallStatus.NO_ANSWER]: 'error',
-    [CallStatus.NOT_CALL]: 'default',
-    [CallStatus.NEED_RECALL]: 'warning',
-    [CallStatus.CANCELLED]: 'orange',
+    [CallStatus.NEED_RECALL]: 'error',
+    [CallStatus.NO_ANSWER]: 'warning'
   };
   return statusColors[status] || 'default';
-};
-
-const getStatus = (status: string) => {
-  return t(`callCampaign.callCampaignDetail.updateCallCustomer.status.${status}`);
-};
-
-// const getStatus = (status: CallStatus) => {
-//   const statuses: Record<string, string> = {
-//     [CallStatus.COMPLETED]: 'Completed',
-//     [CallStatus.PENDING]: 'Pending',
-//     [CallStatus.NO_ANSWER]: 'No answer',
-//     [CallStatus.NOT_CALL]: 'Not call',
-//     [CallStatus.NEED_RECALL]: 'Need recall',
-//     [CallStatus.CANCELLED]: 'Cancelled',
-//     [CallStatus.PROCESSING]: 'Processing'
-//   };
-//   return statuses[status] || 'Not call';
-// };
-
-const getCallStatusColor = (status: CallStatus) => {
-  return getStatusColor(status);
 };
 
 const statusOptions = Object.values(CallStatus).slice(1);
@@ -486,10 +509,14 @@ const handleStatusChange = async () => {
         'Authorization': `Bearer ${useAuthStore().token}`
       }
     });
+    
+    message.success('Cập nhật trạng thái khách hàng thành công');
+    
     fetchCampaignData();
   } catch (error) {
     console.error('Error updating status:', error);
-    message.error('Update failed');
+    const errorMessage = (error as any)?.response?.data?.message || 'Cập nhật thất bại, vui lòng thử lại';
+    message.error(errorMessage);
   }
   isChangeStatusModalVisible.value = false;
 };
@@ -503,6 +530,16 @@ const handleCallHistory = (member: any) => {
     campaignId,
     member.userId
   );
+};
+
+// Thêm hàm để định dạng Permission Level
+const getPermissionLevelLabel = (level: string) => {
+  const permissionLabels: Record<string, string> = {
+    'edit': 'Edit',
+    'view': 'View Only',
+    'full_permission': 'Full Permission'
+  };
+  return permissionLabels[level] || level;
 };
 </script>
 
