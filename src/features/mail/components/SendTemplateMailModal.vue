@@ -195,7 +195,7 @@ const fetchMailSenders = async () => {
   }
 }
 
-const subject = ref(props.template?.subject || '')
+const subject = ref(props.template?.name || '')
 const sending = ref(false)
 const loadingCampaigns = ref(false)
 const campaignData = ref<any>(null)
@@ -418,30 +418,30 @@ const handleSubmit = async () => {
       subject: subject.value || props.template?.name || 'Mail Template',
       mergeFields: Object.entries(fieldMapping.value).reduce((acc, [key, value]) => {
         const cleanKey = key.replace(/[{}]/g, '')
-        acc[cleanKey] = value
+        acc[cleanKey as keyof typeof acc] = value
         return acc
-      }, {}),
+      }, {} as Record<string, any>),
       to: props.mode === 'campaign' ?
         (campaignData.value?.memberships || []).map((member: any) => ({
           email: member.email || '',
           mergeData: Object.entries(fieldMapping.value).reduce((acc, [key, path]) => {
             const cleanKey = key.replace(/[{}]/g, '')
-            if (path.startsWith('memberships[0].')) {
+            if (typeof path === 'string' && path.startsWith('memberships[0].')) {
               const memberField = path.replace('memberships[0].', '')
-              acc[cleanKey] = member[memberField] || ''
+              acc[cleanKey as keyof typeof acc] = member[memberField] || ''
             } else {
-              acc[cleanKey] = getMappedValue(path)
+              acc[cleanKey as keyof typeof acc] = getMappedValue(path as string)
             }
             return acc
-          }, {})
+          }, {} as Record<string, any>)
         })) :
-        props.selectedMembers.map(member => ({
+        (props.selectedMembers || []).map(member => ({
           email: member.email || '',
           mergeData: Object.entries(fieldMapping.value).reduce((acc, [key, path]) => {
             const cleanKey = key.replace(/[{}]/g, '')
-            acc[cleanKey] = member[path] || ''
+            acc[cleanKey as keyof typeof acc] = member[path as keyof typeof member] || ''
             return acc
-          }, {})
+          }, {} as Record<string, any>)
         }))
     }
 
@@ -470,9 +470,9 @@ const handleCancel = () => {
   emit('update:visible', false)
 }
 
-const handleCampaignChange = (value: any) => {
-  selectedCampaign.value = value
-}
+// const handleCampaignChange = (value: any) => {
+//   selectedCampaign.value = value
+// }
 
 const handleRemoveMember = (member: any) => {
   emit('removeMember', member)
