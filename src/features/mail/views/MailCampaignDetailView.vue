@@ -72,7 +72,6 @@
                 title="Assigned At" 
                 dataIndex="assignedAt" 
                 key="assignedAt"
-                :customRender="({ text }) => dayjs(text).format('DD/MM/YYYY')"
               />
             </a-table>
           </div>
@@ -164,7 +163,7 @@
         </a-form>
       </a-modal>
 
-      <!-- Change Status Modal -->
+      <!-- Change Status Modal
       <a-modal
         v-model:open="isChangeStatusModalVisible"
         title="Change Mail Status"
@@ -190,7 +189,7 @@
             />
           </a-form-item>
         </a-form>
-      </a-modal>
+      </a-modal> -->
     </div>
   </DefaultLayout>
 </template>
@@ -206,8 +205,8 @@ import { message } from 'ant-design-vue';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
+import type { Website } from '@/api/types/website';
 import type { FormInstance } from 'ant-design-vue';
-import { Website } from '@/api/types/website'
 import { debounce } from 'lodash';
 import { membershipAPI } from '@/api/services/membershipApi';
 
@@ -224,8 +223,22 @@ const router = useRouter();
 const campaign = ref<any>({});
 const isChangeStatusModalVisible = ref(false);
 
+// Thêm interface cho member
+interface Member {
+  userId: number;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  membershipMailStatus?: string;
+  emailStatus?: string;
+  emailSendingTime?: string;
+  emailTemplateID?: number;
+  level: any;
+}
+
+// Sửa lại định nghĩa formState
 const formState = reactive({
-  selectedMember: null,
+  selectedMember: null as Member | null,
   selectedStatus: null,
   statusDescription: ''
 });
@@ -378,7 +391,7 @@ const handleStatusChange = async () => {
   try {
     const payload = {
       mailCampaignId: Number(campaignId),
-      customerId: formState.selectedMember.userId,
+      customerId: formState.selectedMember?.userId,
       mailStatus: formState.selectedStatus,
       note: formState.statusDescription
     };
@@ -411,12 +424,12 @@ const couponColumns = [
   {
     title: 'Total use/Usage-limit',
     key: 'usage',
-    customRender: ({ record }) => `${record.total_used}/${record.usage_limit}`
+    customRender: ({ record }: { record: any }) => `${record.total_used}/${record.usage_limit}`
   },
   {
     title: 'Date Range',
     key: 'dateRange',
-    customRender: ({ record }) => {
+    customRender: ({ record }: { record: any }) => {
       const start = record.start_date ? dayjs(record.start_date).format('DD/MM/YYYY') : 'No start date'
       const end = record.expiry_date ? dayjs(record.expiry_date).format('DD/MM/YYYY') : 'No end date'
       return `${start} - ${end}`
@@ -462,14 +475,14 @@ const showAddCouponModal = () => {
   isCouponModalVisible.value = true
 }
 
-const handleEditCoupon = (coupon: any) => {
-  editingCoupon.value = coupon;
-  couponForm.code = coupon.code;
-  couponForm.description = coupon.description;
-  couponForm.value = coupon.value;
-  couponForm.status = coupon.status;
-  isCouponModalVisible.value = true;
-};
+// const handleEditCoupon = (coupon: any) => {
+//   editingCoupon.value = coupon;
+//   couponForm.code = coupon.code;
+//   couponForm.description = coupon.description;
+//   couponForm.value = coupon.value;
+//   couponForm.status = coupon.status;
+//   isCouponModalVisible.value = true;
+// };
 
 const handleDeleteCoupon = async (coupon: any) => {
   try {
