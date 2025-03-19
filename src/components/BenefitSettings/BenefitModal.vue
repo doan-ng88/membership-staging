@@ -359,9 +359,23 @@ const handleSubmit = async () => {
       membershipWebsites: formData.membershipWebsites || null
     }
 
-    await emit('save', payload)
+    // Lưu payload để đảm bảo UI hiển thị giá trị mới nhất
+    const updatedBenefit = await emit('save', payload)
+    
+    // Hiển thị thông báo thành công
     message.success(props.isEditing ? 'Cập nhật cấp bậc thành công' : 'Thêm mới cấp bậc thành công')
-    emit('update:visible', false)
+    
+    // Thêm logic ép buộc refresh store data để đảm bảo dữ liệu mới nhất
+    if (props.isEditing) {
+      // Force refresh store data with actual updated values
+      store.updateLocalBenefit({
+        ...payload,
+        // Sử dụng giá trị từ form, không phụ thuộc vào response API
+        rewardRate: Number(formData.rewardRate)
+      })
+    }
+    
+    emit('close')
   } catch (error) {
     console.error('Error submitting form:', error)
     message.error(

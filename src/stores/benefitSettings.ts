@@ -151,6 +151,13 @@ export const useBenefitStore = defineStore('benefit', {
       } finally {
         this.isLoading = false
       }
+    },
+
+    updateLocalBenefit(updatedBenefit: LevelSetting) {
+      const index = this.levelSettings.findIndex(b => b.levelId === updatedBenefit.levelId);
+      if (index !== -1) {
+        this.levelSettings[index] = { ...updatedBenefit };
+      }
     }
   }
 }) 

@@ -12,7 +12,20 @@
     },
     "actions": {
       "edit": "Sửa",
-      "delete": "Xóa"
+      "delete": "Xóa",
+      "add": "Thêm",
+      "update": "Cập nhật",
+      "cancel": "Hủy",
+      "addSuccess": "Thêm cấp bậc thành công",
+      "updateSuccess": "Cập nhật cấp bậc thành công",
+      "deleteSuccess": "Xóa cấp bậc thành công",  
+      "confirmUpdate": "Bạn có chắc chắn muốn cập nhật cấp bậc này?",
+      "confirmUpdateContent": "Hành động này không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?",
+      "error": {
+        "loading": "Đã xảy ra lỗi khi tải dữ liệu",
+        "deleting": "Đã xảy ra lỗi khi xóa cấp bậc",
+        "updating": "Đã xảy ra lỗi khi cập nhật"
+      }
     },
     "messages": {
       "deleteSuccess": "Xóa cấp bậc thành công",
@@ -21,6 +34,49 @@
         "loading": "Đã xảy ra lỗi khi tải dữ liệu",
         "deleting": "Đã xảy ra lỗi khi xóa cấp bậc",
         "updating": "Đã xảy ra lỗi khi cập nhật"
+      }
+    },
+    "validation": {
+      "name": {
+        "required": "Vui lòng nhập tên cấp bậc",
+        "maxLength": "Tên cấp bậc không được vượt quá 50 ký tự",
+        "exists": "Tên cấp bậc \"{name}\" đã tồn tại",
+        "error": "Đã xảy ra lỗi khi kiểm tra tên cấp bậc"
+      },
+      "rank": {
+        "required": "Vui lòng nhập thứ hạng",
+        "min": "Thứ hạng không được âm",
+        "exists": "Thứ hạng \"{rank}\" đã tồn tại", 
+        "error": "Đã xảy ra lỗi khi kiểm tra thứ hạng"  
+      },
+      "thresholdAmount": {
+        "required": "Vui lòng nhập số tiền ngưỡng",
+        "min": "Số tiền ngưỡng không được âm",
+        "error": "Đã xảy ra lỗi khi kiểm tra số tiền ngưỡng"
+      },  
+      "duration": { 
+        "required": "Vui lòng nhập thời hạn",
+        "min": "Thời hạn không được nhỏ hơn 1 tháng",
+        "max": "Thời hạn không được vượt quá 12 tháng",
+        "error": "Đã xảy ra lỗi khi kiểm tra thời hạn"
+      }
+    },
+    "fields": { 
+      "name": {
+        "label": "Tên cấp bậc",
+        "placeholder": "Nhập tên cấp bậc"
+      },
+      "rank": {
+        "label": "Thứ hạng",
+        "placeholder": "Nhập thứ hạng"
+      },
+      "thresholdAmount": {
+        "label": "Số tiền ngưỡng",
+        "placeholder": "Nhập số tiền ngưỡng"  
+      },
+      "duration": {
+        "label": "Thời hạn (Tháng)",
+        "placeholder": "Nhập thời hạn"
       }
     }
   }

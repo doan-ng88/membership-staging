@@ -2,12 +2,12 @@
 <template>
   <Modal
     :open="visible"
-    :title="isEdit ? 'Chỉnh Sửa Cấp Bậc' : 'Thêm Cấp Bậc Mới'"
+    :title="isEdit ? t('level.actions.edit') : t('level.actions.add')"
     @cancel="handleCancel"
     @ok="handleOk"
     :confirmLoading="loading"
-    :okText="isEdit ? 'Cập Nhật' : 'Thêm Mới'"
-    :cancelText="'Hủy'"
+    :okText="isEdit ? t('level.actions.update') : t('level.actions.add')"
+    :cancelText="t('level.actions.cancel')"
     :maskClosable="false"
     class="level-modal"
   >
@@ -20,7 +20,7 @@
       >
         <!-- Name Field -->
         <FormItem 
-          label="Tên Cấp Bậc" 
+          :label="t('level.fields.name.label')" 
           name="Name"
           :validateStatus="errors.Name ? 'error' : ''"
           :help="errors.Name"
@@ -29,14 +29,14 @@
           <Input 
             v-model:value="formState.Name" 
             @blur="validateField('Name')"
-            placeholder="Nhập tên cấp bậc"
+            :placeholder="t('level.fields.name.placeholder')"
             class="custom-input"
           />
         </FormItem>
 
         <!-- Rank Field -->
         <FormItem 
-          label="Thứ Hạng" 
+          :label="t('level.fields.rank.label')" 
           name="rank"
           :validateStatus="errors.rank ? 'error' : ''"
           :help="errors.rank"
@@ -47,13 +47,13 @@
             :min="0"
             class="w-full custom-input"
             @blur="validateField('rank')"
-            placeholder="Nhập thứ hạng"
+            :placeholder="t('level.fields.rank.placeholder')"
           />
         </FormItem>
 
         <!-- Threshold Amount Field -->
         <FormItem 
-          label="Số Tiền Ngưỡng" 
+          :label="t('level.fields.thresholdAmount.label')" 
           name="thresholdAmount"
           :validateStatus="errors.thresholdAmount ? 'error' : ''"
           :help="errors.thresholdAmount"
@@ -66,13 +66,13 @@
             @blur="validateField('thresholdAmount')"
             :formatter="value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
             :parser="value => value!.replace(/\$\s?|(,*)/g, '')"
-            placeholder="Nhập số tiền ngưỡng"
+            :placeholder="t('level.fields.thresholdAmount.placeholder')"
           />
         </FormItem>
 
         <!-- Duration Field -->
         <FormItem 
-          label="Thời Hạn (Tháng)" 
+          :label="t('level.fields.duration.label')" 
           name="durationExpired"
           :validateStatus="errors.durationExpired ? 'error' : ''"
           :help="errors.durationExpired"
@@ -84,7 +84,7 @@
             :max="12"
             class="w-full custom-input"
             @blur="validateField('durationExpired')"
-            placeholder="Nhập thời hạn"
+            :placeholder="t('level.fields.duration.placeholder')"
           />
         </FormItem>
 
@@ -111,6 +111,9 @@ import { type LevelSetting, defaultFormState } from '@/api/types/levelUpDownRule
 import { useLevelSettingStore } from '@/stores/levelUpDownRules';
 import { levelUpDownRulesApi, ApiError } from '@/api/services/levelUpDownRulesApi';
 const levelSettingStore = useLevelSettingStore();
+import { useI18nGlobal } from '@/i18n';
+
+const { t, locale: currentLocale } = useI18nGlobal();
 
 // Props
 const props = defineProps<{
@@ -135,20 +138,20 @@ const errors = ref<Record<string, string>>({});
 // Validation rules
 const rules = {
   Name: [
-    { required: true, message: 'Vui lòng nhập tên cấp bậc' },
-    { max: 50, message: 'Tên cấp bậc không được quá 50 ký tự' }
+    { required: true, message: t('level.validation.name.required') },
+    { max: 50, message: t('level.validation.name.maxLength') }
   ],
   rank: [
-    { required: true, message: 'Vui lòng nhập thứ hạng' },
-    { type: 'number', min: 0, message: 'Thứ hạng phải lớn hơn hoặc bằng 0' }
+    { required: true, message: t('level.validation.rank.required') },
+    { type: 'number', min: 0, message: t('level.validation.rank.min') }
   ],
   thresholdAmount: [
-    { required: true, message: 'Vui lòng nhập số tiền ngưỡng' },
-    { type: 'number', min: 0, message: 'Số tiền ngưỡng phải lớn hơn hoặc bằng 0' }
+    { required: true, message: t('level.validation.thresholdAmount.required') },
+    { type: 'number', min: 0, message: t('level.validation.thresholdAmount.min') }
   ],
   durationExpired: [
-    { required: true, message: 'Vui lòng nhập thời hạn' },
-    { type: 'number', min: 1, max: 12, message: 'Thời hạn phải từ 1-12 tháng' }
+    { required: true, message: t('level.validation.duration.required') },
+    { type: 'number', min: 1, max: 12, message: t('level.validation.duration.max') }
   ]
 };
 
@@ -159,11 +162,11 @@ const validateField = async (field: string) => {
   switch (field) {
     case 'Name':
       if (!formState.value.Name.trim()) {
-        errors.value.Name = 'Vui lòng nhập tên cấp bậc';
+        errors.value.Name = t('level.validation.name.required');
         return false;
       }
       if (formState.value.Name.length > 50) {
-        errors.value.Name = 'Tên cấp bậc không được quá 50 ký tự';
+        errors.value.Name = t('level.validation.name.maxLength');
         return false;
       }
       const nameExists = await levelUpDownRulesApi.checkNameExists(
@@ -172,14 +175,14 @@ const validateField = async (field: string) => {
         props.isEdit ? formState.value.id : undefined
       );
       if (nameExists) {
-        errors.value.Name = `Tên cấp bậc "${formState.value.Name}" đã tồn tại`;
+        errors.value.Name = t('level.validation.name.exists', { name: formState.value.Name });
         return false;
       }
       break;
 
     case 'rank':
       if (formState.value.rank === null || formState.value.rank === undefined) {
-        errors.value.rank = 'Vui lòng nhập thứ hạng';
+        errors.value.rank = t('level.validation.rank.required');
         return false;
       }
       const rankExists = await levelUpDownRulesApi.checkRankExists(
@@ -188,29 +191,29 @@ const validateField = async (field: string) => {
         props.isEdit ? formState.value.id : undefined
       );
       if (rankExists) {
-        errors.value.rank = `Thứ hạng ${formState.value.rank} đã tồn tại`;
+        errors.value.rank = t('level.validation.rank.exists', { rank: formState.value.rank });
         return false;
       }
       break;
 
     case 'thresholdAmount':
       if (!formState.value.thresholdAmount) {
-        errors.value.thresholdAmount = 'Vui lòng nhập số tiền ngưỡng';
+        errors.value.thresholdAmount = t('level.validation.thresholdAmount.required');
         return false;
       }
       if (formState.value.thresholdAmount < 0) {
-        errors.value.thresholdAmount = 'Số tiền ngưỡng không được âm';
+        errors.value.thresholdAmount = t('level.validation.thresholdAmount.min');
         return false;
       }
       break;
 
     case 'durationExpired':
       if (!formState.value.durationExpired) {
-        errors.value.durationExpired = 'Vui lòng nhập thời hạn';
+        errors.value.durationExpired = t('level.validation.duration.required');
         return false;
       }
       if (formState.value.durationExpired < 1 || formState.value.durationExpired > 12) {
-        errors.value.durationExpired = 'Thời hạn phải từ 1-12 tháng';
+        errors.value.durationExpired = t('level.validation.duration.max');
         return false;
       }
       break;
@@ -223,12 +226,12 @@ const validateName = async () => {
   errors.value.Name = '';
   
   if (!formState.value.Name.trim()) {
-    errors.value.Name = 'Vui lòng nhập tên cấp bậc';
+    errors.value.Name = t('level.validation.name.required');
     return false;
   }
 
   if (formState.value.Name.length > 50) {
-    errors.value.Name = 'Tên cấp bậc không được quá 50 ký tự';
+    errors.value.Name = t('level.validation.name.maxLength');
     return false;
   }
 
@@ -240,12 +243,12 @@ const validateName = async () => {
       props.isEdit ? formState.value.levelId : undefined
     );
     if (nameExists) {
-      errors.value.Name = `Tên cấp bậc "${formState.value.Name}" đã tồn tại`;
+      errors.value.Name = t('level.validation.name.exists', { name: formState.value.Name });
       return false;
     }
   } catch (error) {
     console.error('Error checking name:', error);
-    errors.value.Name = 'Có lỗi xảy ra khi kiểm tra tên';
+    errors.value.Name = t('level.validation.name.error');
     return false;
   }
 
@@ -256,12 +259,12 @@ const validateRank = async () => {
   errors.value.rank = '';
 
   if (formState.value.rank === null || formState.value.rank === undefined) {
-    errors.value.rank = 'Vui lòng nhập thứ hạng';
+    errors.value.rank = t('level.validation.rank.required');
     return false;
   }
 
   if (formState.value.rank < 0) {
-    errors.value.rank = 'Thứ hạng không được âm';
+    errors.value.rank = t('level.validation.rank.min');
     return false;
   }
 
@@ -273,12 +276,12 @@ const validateRank = async () => {
       props.isEdit ? formState.value.levelId : undefined
     );
     if (rankExists) {
-      errors.value.rank = `Thứ hạng ${formState.value.rank} đã tồn tại`;
+      errors.value.rank = t('level.validation.rank.exists', { rank: formState.value.rank });
       return false;
     }
   } catch (error) {
     console.error('Error checking rank:', error);
-    errors.value.rank = 'Có lỗi xảy ra khi kiểm tra thứ hạng';
+    errors.value.rank = t('level.validation.rank.error');
     return false;
   }
 
@@ -302,12 +305,12 @@ const validateForm = async () => {
   let isValid = nameValid && rankValid;
   
   if (!formState.value.thresholdAmount && formState.value.thresholdAmount !== 0) {
-    errors.value.thresholdAmount = 'Vui lòng nhập số tiền ngưỡng';
+    errors.value.thresholdAmount = t('level.validation.thresholdAmount.required');
     isValid = false;
   }
 
   if (!formState.value.durationExpired) {
-    errors.value.durationExpired = 'Vui lòng nhập thời hạn';
+    errors.value.durationExpired = t('level.validation.duration.required');
     isValid = false;
   }
 
@@ -319,9 +322,9 @@ const { confirm } = Modal;
 const handleOk = () => {
   if (props.isEdit) {
     confirm({
-      title: 'Xác nhận cập nhật',
+      title: t('level.actions.confirmUpdate'),
       icon: createVNode(ExclamationCircleOutlined),
-      content: 'Bạn có chắc chắn muốn cập nhật cấp bậc này?',
+      content: t('level.actions.confirmUpdateContent'),
       async onOk() {
         try {
           loading.value = true;
@@ -337,7 +340,7 @@ const handleOk = () => {
 
           const success = await levelSettingStore.updateLevel(payload);
           if (success) {
-            message.success('Cập nhật cấp bậc thành công');
+            message.success(t('level.actions.updateSuccess'));
             emit('submit', payload);
             emit('success');
             emit('update:visible', false);
@@ -347,7 +350,7 @@ const handleOk = () => {
           if (error instanceof ApiError) {
             message.error(error.message);
           } else {
-            message.error('Có lỗi xảy ra khi cập nhật cấp bậc');
+            message.error(t('level.actions.error.update'));
           }
         } finally {
           loading.value = false;
@@ -376,7 +379,7 @@ const handleSubmit = async () => {
     if (props.isEdit) {
       const success = await levelSettingStore.updateLevel(payload);
       if (success) {
-        message.success('Cập nhật cấp bậc thành công');
+        message.success(t('level.actions.updateSuccess'));
         emit('submit', payload);
         emit('success');
         emit('update:visible', false);
@@ -389,7 +392,7 @@ const handleSubmit = async () => {
           ...payload,
           levelId: undefined  // Đảm bảo không gửi levelId khi tạo mới
         });
-        message.success('Thêm cấp bậc mới thành công');
+        message.success(t('level.actions.addSuccess'));
         emit('success');
         emit('update:visible', false);
         resetForm();
@@ -397,7 +400,7 @@ const handleSubmit = async () => {
         if (error instanceof ApiError) {
           message.error(error.message);
         } else {
-          message.error('Có lỗi xảy ra khi thêm cấp bậc mới');
+          message.error(t('level.actions.error.add'));
         }
       }
     }
@@ -405,7 +408,7 @@ const handleSubmit = async () => {
     if (error instanceof ApiError) {
       message.error(error.message);
     } else {
-      message.error('Có lỗi xảy ra khi xử lý');
+      message.error(t('level.actions.error.add'));
     }
   } finally {
     loading.value = false;

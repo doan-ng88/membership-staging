@@ -52,8 +52,8 @@
       </Table>
     </div>
 
-    <UpDownRulesModal
-      v-model:open="showModal"
+    <UpDownRulesModal 
+      v-model:visible="showModal"
       :is-edit="isEdit"
       :initial-data="selectedLevel"
       :website-id="selectedWebsiteId"
