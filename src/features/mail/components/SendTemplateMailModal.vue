@@ -16,9 +16,13 @@
             required
             :rules="[{ required: true, type: 'email', message: t('sendTemplateMailModal.fields.mailSender.required') }]"
           >
-            <a-input 
-              v-model:value="mailSender" 
-              :placeholder="t('sendTemplateMailModal.fields.mailSender.placeholder')" 
+            <a-select
+              v-model:value="mailSender"
+              :options="mailSenderOptions"
+              :placeholder="t('sendTemplateMailModal.fields.mailSender.placeholder')"
+              show-search
+              :filter-option="filterOption"
+              allow-clear
             />
           </a-form-item>
           <a-form-item 
@@ -167,6 +171,30 @@ const emit = defineEmits<{
 
 // 2. States
 const mailSender = ref('')
+const mailSenderOptions = ref<Array<{ label: string; value: string }>>([])
+
+const filterOption = (input: string, option: any) => {
+  return option.label.toLowerCase().includes(input.toLowerCase())
+}
+
+const fetchMailSenders = async () => {
+  try {
+    // Sử dụng đường dẫn tương đối (không có hostname)
+    const response = await fetch('/api/membership/mail/mail-sender')
+    const result = await response.json()
+    
+    if (result?.data) {
+      mailSenderOptions.value = result.data.map((item: any) => ({
+        label: item.mailSender,
+        value: item.mailSender
+      }))
+    }
+  } catch (error) {
+    console.error('Error fetching mail sender:', error)
+    message.error('Failed to load mail sender data')
+  }
+}
+
 const subject = ref(props.template?.subject || '')
 const sending = ref(false)
 const loadingCampaigns = ref(false)
@@ -227,6 +255,9 @@ const fetchCampaignFields = async () => {
 // 5. Watchers
 watch(() => props.visible, (newValue) => {
   if (!newValue) return
+
+  // Fetch list mail sender cho dropdown
+  fetchMailSenders()
 
   // Validate template first
   if (!props.template) {
