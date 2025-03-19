@@ -72,7 +72,7 @@ interface GetPageParam {
 }
 
 class PurchaseApi {
-  async getPurchaseHistory(websiteId: number, page: number = 1, pageSize: number = 10) {
+  async getPurchaseHistoryUnsorted(websiteId: number, page: number = 1, pageSize: number = 10) {
     try {
       const body: GetPageParam = {
         pageIndex: page,
@@ -88,6 +88,26 @@ class PurchaseApi {
       console.error('Error fetching member orders:', error)
       throw error
     }
+  }
+
+  async getPurchaseHistory(websiteId: number, page: number = 1, pageSize: number = 10) {
+    try {
+      const response = await this.getPurchaseHistoryUnsorted(websiteId, page, pageSize)
+      if (response?.data) {
+        return {
+          data: this.sortOrdersById(response.data),
+          pagination: response.pagination
+        }
+      }
+      return response
+    } catch (error) {
+      console.error('Error fetching member orders:', error)
+      throw error
+    }
+  }
+
+  sortOrdersById(orders: Order[]): Order[] {
+    return orders.sort((a, b) => b.order_id - a.order_id)
   }
 }
 
