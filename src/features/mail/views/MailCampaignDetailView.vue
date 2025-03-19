@@ -27,7 +27,7 @@
           :columns="memberColumns"
           :data-source="campaign.memberships"
           :pagination="membersTableConfig.pagination"
-          :row-key="record => record.userId"
+          :row-key="(record: any) => record.userId"
           :loading="loading"
           bordered
         >
@@ -38,17 +38,20 @@
             <template v-if="column.key === 'level'">
               {{ text.Name || 'N/A' }}
             </template>
-            <template v-if="column.key === 'mailStatus'">
-              <a-tag :color="getMailStatusColor(record.membershipMailStatus)">
-                {{ getStatus(record.membershipMailStatus) }}
+            <template v-if="column.key === 'emailStatus'">
+              <a-tag :color="getEmailStatusColor(record.emailStatus)" class="animate__animated animate__fadeIn">
+                {{ record.emailStatus || 'N/A' }}
               </a-tag>
             </template>
-            <template v-if="column.key === 'actions'">
-              <a-space>
-                <a-button type="link" size="small" @click="showChangeStatusModal(record)">
-                  Change Status
-                </a-button>
-              </a-space>
+            <template v-if="column.key === 'emailSendingTime'">
+              <span class="animate__animated animate__fadeIn">
+                {{ record.emailSendingTime ? formatDate(record.emailSendingTime) : 'N/A' }}
+              </span>
+            </template>
+            <template v-if="column.key === 'emailTemplateID'">
+              <span class="animate__animated animate__fadeIn">
+                {{ record.emailTemplateID || 'N/A' }}
+              </span>
             </template>
           </template>
         </a-table>
@@ -262,15 +265,18 @@ const memberColumns: TableColumnsType = [
     key: 'level',
   },
   {
-    title: 'Mail Status',
-    dataIndex: 'membershipMailStatus',
-    key: 'mailStatus',
+    title: 'Email Status',
+    dataIndex: 'emailStatus',
+    key: 'emailStatus',
+    width: 120,
   },
   {
-    title: 'Actions',
-    key: 'actions',
-    width: 120,
+    title: 'Last Send At',
+    dataIndex: 'emailSendingTime',
+    key: 'emailSendingTime',
+    width: 150,
   }
+
 ];
 
 const membersPagination = reactive({
@@ -318,8 +324,14 @@ const getStatus = (status: MailStatus) => {
   return statuses[status] || 'Not Sent';
 };
 
-const getMailStatusColor = (status: MailStatus) => {
-  return getStatusColor(status);
+const getEmailStatusColor = (status: string) => {
+  const statusColors: Record<string, string> = {
+    'success': 'success',
+    'failed': 'error',
+    'pending': 'processing',
+    'bounced': 'warning'
+  };
+  return statusColors[status?.toLowerCase()] || 'default';
 };
 
 const statusOptions = Object.values(MailStatus);
@@ -590,5 +602,13 @@ const handleSearchCoupons = debounce((value: string) => {
 
 .ant-descriptions {
   margin-bottom: 0;
+}
+
+.animate__animated {
+  animation-duration: 0.5s;
+}
+
+.a-tag {
+  transition: all 0.3s;
 }
 </style> 
