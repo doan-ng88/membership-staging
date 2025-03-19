@@ -291,8 +291,6 @@
   }
   
   const handleSubmit = async () => {
-    const previousRoute = router.options.history.state.back
-    console.log('Previous route:', router.resolve(previousRoute).name)
     try {
       await formRef.value.validate()
       if (formState.members.length === 0) {
