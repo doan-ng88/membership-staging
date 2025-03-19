@@ -390,15 +390,20 @@ const handleSubmit = async () => {
         acc[cleanKey] = value
         return acc
       }, {}),
-      to: props.mode === 'campaign' ? 
-        [{
-          email: campaignData.value?.memberships?.[0]?.email || '',
+      to: props.mode === 'campaign' ?
+        (campaignData.value?.memberships || []).map((member: any) => ({
+          email: member.email || '',
           mergeData: Object.entries(fieldMapping.value).reduce((acc, [key, path]) => {
             const cleanKey = key.replace(/[{}]/g, '')
-            acc[cleanKey] = getMappedValue(path)
+            if (path.startsWith('memberships[0].')) {
+              const memberField = path.replace('memberships[0].', '')
+              acc[cleanKey] = member[memberField] || ''
+            } else {
+              acc[cleanKey] = getMappedValue(path)
+            }
             return acc
           }, {})
-        }] :
+        })) :
         props.selectedMembers.map(member => ({
           email: member.email || '',
           mergeData: Object.entries(fieldMapping.value).reduce((acc, [key, path]) => {
