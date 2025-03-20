@@ -1,6 +1,6 @@
 {
   "level": {
-    "management": "Level Management",
+    "management": "Level Up/Down Rules Management",
     "selectWebsite": "Select Website",
     "addLevel": "Add Level",
     "columns": {
@@ -21,6 +21,9 @@
       "deleteSuccess": "Level deleted successfully",
       "confirmUpdate": "Are you sure you want to update this level?",
       "confirmUpdateContent": "This action cannot be undone. Are you sure you want to proceed?",
+      "confirmDelete": "Are you sure you want to delete this level?",
+      "confirmDeleteContent": "This action cannot be undone. Are you sure you want to proceed?",
+      "confirmDeleteWarning": "Are you sure you want to delete this level?",
       "error": {
         "loading": "An error occurred while loading data",
         "deleting": "An error occurred while deleting the level",

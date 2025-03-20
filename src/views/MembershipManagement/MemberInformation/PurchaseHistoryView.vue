@@ -31,6 +31,7 @@
         >
           <span v-if="exporting">{{ t('common.exporting') }}</span>
           <span v-else>{{ t('purchaseHistory.common.exportExcel') }}</span>
+
         </button>
       </div>
 
@@ -231,9 +232,9 @@ const exportToExcel = async () => {
     const fileName = `purchase-history-${brandName}-${formatDate(new Date().toISOString())}.xlsx`
     
     XLSX.writeFile(wb, fileName)
-    message.success(t('common.exportSuccess'))
+    message.success(t('purchaseHistory.common.exportSuccess'))
   } catch (err) {
-    message.error(t('common.exportError'))
+    message.error(t('purchaseHistory.common.exportError'))
     console.error('Export failed:', err)
   } finally {
     exporting.value = false

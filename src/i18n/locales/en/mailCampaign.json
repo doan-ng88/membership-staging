@@ -131,6 +131,18 @@
           "not_sent": "Not Sent"
         }
       } 
+    },
+    "campaignActions": {
+      "buttons": {
+        "addCampaign": "Create Mail Campaign",
+        "refresh": "Refresh",
+        "exportExcel": "Export Excel",
+        "addMember": "Add member"
+      },
+      "messages": {
+        "exportSuccess": "File exported successfully",
+        "exportError": "Failed to export file"
+      }
     }
   }
 } 

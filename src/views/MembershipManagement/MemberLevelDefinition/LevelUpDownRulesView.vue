@@ -40,7 +40,7 @@
               <Button type="primary" @click="handleEdit(record)">
                 <EditOutlined /> {{ t('level.actions.edit') }}
               </Button>
-              <Button type="primary" danger @click="handleDelete(record)">
+              <Button type="primary" danger @click="confirmDelete(record)">
                 <DeleteOutlined /> {{ t('level.actions.delete') }}
               </Button>
             </div>
@@ -65,8 +65,9 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, computed } from 'vue';
-import { Button, Table, message, Select } from 'ant-design-vue';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
+import { Button, Table, message, Select, Modal } from 'ant-design-vue';
+import { EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import { createVNode } from 'vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import UpDownRulesModal from '@/components/LevelUpDownRules/upDownRulesModal.vue';
 import { useLevelSettingStore } from '@/stores/levelUpDownRules';
@@ -147,14 +148,42 @@ const handleEdit = (record: LevelSetting) => {
   showModal.value = true;
 };
 
+// Thêm modal xác nhận trước khi xóa
+const confirmDelete = (record: LevelSetting) => {
+  Modal.confirm({
+    title: t('level.actions.confirmDelete', { defaultValue: 'Xác nhận xóa cấp bậc?' }),
+    icon: createVNode(ExclamationCircleOutlined),
+    content: createVNode('div', {}, [
+      createVNode('p', {}, t('level.actions.confirmDeleteContent', { 
+        // defaultValue: 'Bạn có chắc chắn muốn xóa cấp bậc',
+        levelName: record.Name 
+      })),
+      createVNode('p', { style: 'color: #ff4d4f; font-weight: bold;' }, 
+        t('level.actions.confirmDeleteWarning', { 
+          // defaultValue: 'Lưu ý: Hành động này không thể hoàn tác và có thể ảnh hưởng đến dữ liệu hệ thống!'
+        })
+      )
+    ]),
+    okText: t('level.actions.delete', { defaultValue: 'Xóa' }),
+    cancelText: t('level.actions.cancel', { defaultValue: 'Hủy' }),
+    okButtonProps: { danger: true },
+    onOk() {
+      return handleDelete(record);
+    },
+  });
+};
+
 const handleDelete = async (record: LevelSetting) => {
   try {
+    loading.value = true;
     await levelSettingStore.deleteLevel(record.levelId);
     message.success(t('level.messages.deleteSuccess'));
     await fetchData();
   } catch (error) {
     console.error('Error deleting level:', error);
     message.error(t('level.messages.error.deleting'));
+  } finally {
+    loading.value = false;
   }
 };
 

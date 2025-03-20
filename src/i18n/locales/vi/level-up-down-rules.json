@@ -21,6 +21,9 @@
       "deleteSuccess": "Xóa cấp bậc thành công",  
       "confirmUpdate": "Bạn có chắc chắn muốn cập nhật cấp bậc này?",
       "confirmUpdateContent": "Hành động này không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?",
+      "confirmDelete": "Bạn có chắc chắn muốn xóa cấp bậc này?",
+      "confirmDeleteContent": "Hành động này không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?",
+      "confirmDeleteWarning": "Bạn có chắc chắn muốn xóa cấp bậc này?",
       "error": {
         "loading": "Đã xảy ra lỗi khi tải dữ liệu",
         "deleting": "Đã xảy ra lỗi khi xóa cấp bậc",

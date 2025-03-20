@@ -10,6 +10,7 @@
         <PlusOutlined class="flex items-center" />
       </template>
       {{ t('callCampaign.campaignActions.buttons.addCampaign') }}
+      
     </a-button>
 
     <a-button

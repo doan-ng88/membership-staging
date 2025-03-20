@@ -9,7 +9,7 @@
       <template #icon>
         <PlusOutlined class="flex items-center" />
       </template>
-      {{ t('callCampaign.campaignActions.buttons.addCampaign') }}
+      {{ t('mailCampaign.campaignActions.buttons.addCampaign') }}
     </a-button>
 
     <a-button

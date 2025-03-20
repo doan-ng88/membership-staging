@@ -54,7 +54,7 @@
             <td class="border border-gray-300 p-2">{{ member.email }}</td>
             <td class="border border-gray-300 p-2">{{ member.mainPhoneNumber }}</td>
             <td class="border border-gray-300 p-2">
-              {{ formatDate(tab === 'date-join-member' ? member.registeredTime : member.birthday) }}
+              {{ formatDate(getDateByTab(tab, member)) }}
             </td>
             <td class="border border-gray-300 p-2">{{ getWebsiteName(member.websiteId) }}</td>
             <template v-if="tab === 'date-join-member'">
@@ -738,6 +738,19 @@ const showTotal = (total: number, range: [number, number]) => {
     total: total 
   })
 }
+
+const getDateByTab = (tab, member) => {
+  switch (tab) {
+    case 'date-join-member':
+      return member.registeredTime;
+    case 'date-of-birth':
+      return member.birthday;
+    case 'order-date':
+      return member.latestOrder?.createTime || '-';
+    default:
+      return member.registeredTime;
+  }
+};
 
 // Expose necessary methods and properties
 defineExpose({
