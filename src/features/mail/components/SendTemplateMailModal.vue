@@ -16,9 +16,13 @@
             required
             :rules="[{ required: true, type: 'email', message: t('sendTemplateMailModal.fields.mailSender.required') }]"
           >
-            <a-input 
-              v-model:value="mailSender" 
-              :placeholder="t('sendTemplateMailModal.fields.mailSender.placeholder')" 
+            <a-select
+              v-model:value="mailSender"
+              :options="mailSenderOptions"
+              :placeholder="t('sendTemplateMailModal.fields.mailSender.placeholder')"
+              show-search
+              :filter-option="filterOption"
+              allow-clear
             />
           </a-form-item>
           <a-form-item 
@@ -167,7 +171,31 @@ const emit = defineEmits<{
 
 // 2. States
 const mailSender = ref('')
-const subject = ref(props.template?.subject || '')
+const mailSenderOptions = ref<Array<{ label: string; value: string }>>([])
+
+const filterOption = (input: string, option: any) => {
+  return option.label.toLowerCase().includes(input.toLowerCase())
+}
+
+const fetchMailSenders = async () => {
+  try {
+    // Sử dụng đường dẫn tương đối (không có hostname)
+    const response = await fetch('/api/membership/mail/mail-sender')
+    const result = await response.json()
+    
+    if (result?.data) {
+      mailSenderOptions.value = result.data.map((item: any) => ({
+        label: item.mailSender,
+        value: item.mailSender
+      }))
+    }
+  } catch (error) {
+    console.error('Error fetching mail sender:', error)
+    message.error('Failed to load mail sender data')
+  }
+}
+
+const subject = ref(props.template?.name || '')
 const sending = ref(false)
 const loadingCampaigns = ref(false)
 const campaignData = ref<any>(null)
@@ -227,6 +255,9 @@ const fetchCampaignFields = async () => {
 // 5. Watchers
 watch(() => props.visible, (newValue) => {
   if (!newValue) return
+
+  // Fetch list mail sender cho dropdown
+  fetchMailSenders()
 
   // Validate template first
   if (!props.template) {
@@ -387,25 +418,30 @@ const handleSubmit = async () => {
       subject: subject.value || props.template?.name || 'Mail Template',
       mergeFields: Object.entries(fieldMapping.value).reduce((acc, [key, value]) => {
         const cleanKey = key.replace(/[{}]/g, '')
-        acc[cleanKey] = value
+        acc[cleanKey as keyof typeof acc] = value
         return acc
-      }, {}),
-      to: props.mode === 'campaign' ? 
-        [{
-          email: campaignData.value?.memberships?.[0]?.email || '',
-          mergeData: Object.entries(fieldMapping.value).reduce((acc, [key, path]) => {
-            const cleanKey = key.replace(/[{}]/g, '')
-            acc[cleanKey] = getMappedValue(path)
-            return acc
-          }, {})
-        }] :
-        props.selectedMembers.map(member => ({
+      }, {} as Record<string, any>),
+      to: props.mode === 'campaign' ?
+        (campaignData.value?.memberships || []).map((member: any) => ({
           email: member.email || '',
           mergeData: Object.entries(fieldMapping.value).reduce((acc, [key, path]) => {
             const cleanKey = key.replace(/[{}]/g, '')
-            acc[cleanKey] = member[path] || ''
+            if (typeof path === 'string' && path.startsWith('memberships[0].')) {
+              const memberField = path.replace('memberships[0].', '')
+              acc[cleanKey as keyof typeof acc] = member[memberField] || ''
+            } else {
+              acc[cleanKey as keyof typeof acc] = getMappedValue(path as string)
+            }
             return acc
-          }, {})
+          }, {} as Record<string, any>)
+        })) :
+        (props.selectedMembers || []).map(member => ({
+          email: member.email || '',
+          mergeData: Object.entries(fieldMapping.value).reduce((acc, [key, path]) => {
+            const cleanKey = key.replace(/[{}]/g, '')
+            acc[cleanKey as keyof typeof acc] = member[path as keyof typeof member] || ''
+            return acc
+          }, {} as Record<string, any>)
         }))
     }
 
@@ -434,9 +470,9 @@ const handleCancel = () => {
   emit('update:visible', false)
 }
 
-const handleCampaignChange = (value: any) => {
-  selectedCampaign.value = value
-}
+// const handleCampaignChange = (value: any) => {
+//   selectedCampaign.value = value
+// }
 
 const handleRemoveMember = (member: any) => {
   emit('removeMember', member)
