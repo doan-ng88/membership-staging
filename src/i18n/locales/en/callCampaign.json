@@ -50,10 +50,13 @@
       }
     },
     "campaignMailFilters": {
+      "title": "Campaign Mail Filters",
       "search": {
+        "label": "Search by campaign name",
         "placeholder": "Search by campaign name"
       },
       "status": {
+        "label": "Status",
         "placeholder": "Status",
         "options": {
           "all": "All",
@@ -76,14 +79,25 @@
         }
       },
       "website": {
+        "label": "Website",
         "placeholder": "Select Website",
         "all": "All Websites"
       },
       "pic": {
+        "label": "PIC",
         "placeholder": "PIC",
         "options": {
           "all": "All",
           "user1": "User 1",
+          "user2": "User 2"
+        }
+      },
+      "dateRange": {
+        "label": "Date Range",
+        "placeholder": "Date Range",
+        "options": {
+          "all": "All",
+          "user1": "User 1",  
           "user2": "User 2"
         }
       },

@@ -51,9 +51,11 @@
     },
     "campaignMailFilters": {
       "search": {
+        "label": "Tìm kiếm theo tên chiến dịch",
         "placeholder": "Tìm kiếm theo tên chiến dịch"
       },
       "status": {
+        "label": "Trạng thái",
         "placeholder": "Trạng thái",
         "options": {
           "all": "Tất cả",
@@ -76,13 +78,24 @@
         }
       },
       "website": {
+        "label": "Trang web",
         "placeholder": "Trang web",
         "options": {
           "all": "Tất cả"
         }
       },
       "pic": {
+        "label": "Người phụ trách",
         "placeholder": "Người phụ trách",
+        "options": {
+          "all": "Tất cả",
+          "user1": "Người dùng 1",
+          "user2": "Người dùng 2"
+        }
+      },
+      "dateRange": {
+        "label": "Khoảng thời gian",
+        "placeholder": "Khoảng thời gian",
         "options": {
           "all": "Tất cả",
           "user1": "Người dùng 1",

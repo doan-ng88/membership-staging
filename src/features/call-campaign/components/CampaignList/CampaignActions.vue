@@ -79,13 +79,13 @@ const handleExport = async () => {
     
     const exportData = props.data.map(item => ({
       'ID': item.id,
-      'Tên chiến dịch': item.name,
-      'Trạng thái': t(`campaignFilters.status.options.${item.status}`),
-      'Ngày bắt đầu': formatDate(item.startDate),
-      'Ngày kết thúc': formatDate(item.endDate),
-      'Người phụ trách': item.pic,
-      'Ngày tạo': formatDate(item.createdAt),
-      'Người tạo': item.createdBy
+      'Campaign Name': item.name,
+      'Status': t(`campaignFilters.status.options.${item.status}`),
+      'Start Date': formatDate(item.startDate),
+      'End Date': formatDate(item.endDate),
+      'PIC': item.pic,
+      'Created Date': formatDate(item.createdAt),
+      'Created By': item.createdBy
     }));
 
     const ws = XLSX.utils.json_to_sheet(exportData);
@@ -98,7 +98,7 @@ const handleExport = async () => {
     XLSX.writeFile(wb, fileName);
     
     emit('export');
-    message.success(t('campaignActions.messages.exportSuccess'));
+    message.success(t('callCampaign.campaignActions.messages.exportSuccess'));
   } catch (error) {
     console.error('Export error:', error);
     message.error(t('callCampaign.campaignActions.messages.exportError'));
